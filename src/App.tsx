@@ -109,7 +109,7 @@ function AppContent() {
             )}
 
             {activeTab === 'favorites' && (
-              <div className="w-full h-full flex flex-col p-6 overflow-y-auto max-w-4xl mx-auto">
+              <div className="w-full h-full flex flex-col p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] overflow-y-auto max-w-4xl mx-auto">
                 <h2 className="text-3xl font-bold text-slate-800 mb-6">{t('fav.title')}</h2>
                 {favoritesSpots.length === 0 ? (
                   <div className="flex-1 flex flex-col items-center justify-center text-slate-400 py-20">
@@ -145,6 +145,7 @@ function AppContent() {
 
             {activeTab === 'list' && (
               <NearbySpots
+                className="pt-[env(safe-area-inset-top)]"
                 onSpotClick={(spot) => {
                   setSelectedSpot(spot);
                   setActiveTab('map');
@@ -154,7 +155,7 @@ function AppContent() {
 
             {activeTab === 'profile' && (
               <div className="w-full h-full overflow-y-auto">
-                <div className="max-w-2xl mx-auto py-8 px-4">
+                <div className="max-w-2xl mx-auto py-8 px-4 pt-[calc(2rem+env(safe-area-inset-top))]">
                   <Profile
                     onOpenAuth={() => setIsAuthModalOpen(true)}
                     onAdminClick={() => setIsAdminOpen(true)}

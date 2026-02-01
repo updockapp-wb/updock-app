@@ -60,7 +60,7 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
     }
 
     return (
-        <div className="bg-white border-t border-slate-100 h-[80px] pb-4 flex items-center justify-between px-2 z-[1000] relative shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
+        <div className="bg-white border-t border-slate-100 flex items-center justify-between px-2 z-[1000] relative shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pt-2 pb-[env(safe-area-inset-bottom)]">
             {/* Left Side (Map, Favorites) */}
             <div className="flex items-center flex-1 justify-around">
                 <button

@@ -6,9 +6,10 @@ import type { Spot } from '../data/spots';
 
 interface NearbySpotsProps {
     onSpotClick?: (spot: Spot) => void;
+    className?: string;
 }
 
-export default function NearbySpots({ onSpotClick }: NearbySpotsProps) {
+export default function NearbySpots({ onSpotClick, className = '' }: NearbySpotsProps) {
     const { spots } = useSpots();
     const { t } = useLanguage();
 
@@ -78,7 +79,7 @@ export default function NearbySpots({ onSpotClick }: NearbySpotsProps) {
     };
 
     return (
-        <div className="w-full h-full flex flex-col p-6 overflow-y-auto pb-24">
+        <div className={`w-full h-full flex flex-col p-6 overflow-y-auto pb-24 ${className}`}>
             <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <MapPin className="text-sky-500" />
                 {t('nearby.title') || 'Nearest Spots'}

@@ -218,7 +218,7 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
     return (
         <div className="w-full h-full relative bg-slate-900">
             {/* SOLID TOP BAR */}
-            <div className="absolute top-0 left-0 right-0 h-[70px] bg-white/95 backdrop-blur-md z-[1000] shadow-sm flex items-center justify-between px-4 border-b border-white/10 pointer-events-auto">
+            <div className="absolute top-0 left-0 right-0 min-h-[70px] pb-2 pt-[calc(0.5rem+env(safe-area-inset-top))] bg-white/95 backdrop-blur-md z-[1000] shadow-sm flex items-center justify-between px-4 border-b border-white/10 pointer-events-auto">
                 <button
                     onClick={() => setIsSearchOpen(true)}
                     className="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
@@ -292,7 +292,7 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
                 terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
             >
                 <GeolocateControl position="bottom-right" style={{ marginBottom: '10px' }} />
-                <NavigationControl position="bottom-right" style={{ marginBottom: '100px' }} />
+                <NavigationControl position="bottom-right" style={{ marginBottom: '130px' }} />
 
                 <Source
                     id="spots"

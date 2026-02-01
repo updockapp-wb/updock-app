@@ -26,7 +26,7 @@
   font-weight: 400;
 
   /* Handle Safe Areas for App Store/iOS */
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* Handle Safe Areas via Components */
 
   color-scheme: light;
   color: #1e293b;
@@ -69,11 +69,6 @@ body {
   overflow: hidden; /* Lock body */
   background-color: #f8fafc;
   
-  /* Safe Area Support */
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
 }
 
 #root {
