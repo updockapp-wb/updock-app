@@ -1,12 +1,16 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode, useMemo } from 'react';
 import { spots as staticSpots, type Spot, type StartType } from '../data/spots';
 import { supabase } from '../lib/supabase';
+import { getDistance } from '../utils/distance';
+import { Toast } from '@capacitor/toast';
 
 // We rely on the Spot type from data/spots.ts having is_approved?
 // If not, we extend it here or update data/spots.ts (which I did in step 1384).
 
 interface SpotsContextType {
     spots: Spot[];
+    nearbySpots: Spot[];
+    userLocation: [number, number] | null;
     loading: boolean;
     addSpot: (spot: Omit<Spot, 'id' | 'user_id'>, imageFiles?: File[]) => Promise<void>;
     approveSpot: (id: string) => Promise<void>;
@@ -17,11 +21,48 @@ interface SpotsContextType {
 const SpotsContext = createContext<SpotsContextType | undefined>(undefined);
 
 export function SpotsProvider({ children }: { children: ReactNode }) {
-    // Start with static spots (assumed approved)
-    const [spots, setSpots] = useState<Spot[]>(
-        staticSpots.map(s => ({ ...s, is_approved: true }))
-    );
+    // Start with static spots + cached spots
+    const [spots, setSpots] = useState<Spot[]>(() => {
+        const cached = localStorage.getItem('updock_spots_cache');
+        if (cached) {
+            try {
+                return JSON.parse(cached);
+            } catch (e) {
+                console.error('Failed to parse cached spots:', e);
+            }
+        }
+        return staticSpots.map(s => ({ ...s, is_approved: true }));
+    });
+    const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
     const [loading, setLoading] = useState(true);
+
+    // Watch user location
+    useEffect(() => {
+        if ('geolocation' in navigator) {
+            const watchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+                },
+                (_err) => { /* Geolocation error handled silently or via UI if critical */ },
+                { enableHighAccuracy: true }
+            );
+            return () => navigator.geolocation.clearWatch(watchId);
+        }
+    }, []);
+
+    // Compute nearby spots (Top 10)
+    const nearbySpots = useMemo(() => {
+        if (!userLocation) return [];
+
+        return spots
+            .filter(s => s.is_approved)
+            .map(s => ({
+                ...s,
+                distance: getDistance(userLocation[0], userLocation[1], s.position[0], s.position[1])
+            }))
+            .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+            .slice(0, 10);
+    }, [spots, userLocation]);
 
     // Fetch spots from Supabase
     useEffect(() => {
@@ -72,7 +113,9 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                 });
 
                 // Merge
-                setSpots([...staticSpots.map(s => ({ ...s, is_approved: true })), ...dbSpots]);
+                const allSpots = [...staticSpots.map(s => ({ ...s, is_approved: true })), ...dbSpots];
+                setSpots(allSpots);
+                localStorage.setItem('updock_spots_cache', JSON.stringify(allSpots));
             }
         } catch (error) {
             console.error('Error fetching spots:', error);
@@ -82,82 +125,100 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
     };
 
     const addSpot = async (newSpotData: Omit<Spot, 'id'>, imageFiles?: File[]) => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                alert('You must be logged in.');
-                return;
-            }
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            Toast.show({ text: 'You must be logged in.' });
+            return;
+        }
 
-            const imageUrls: string[] = [];
+        // Return immediately to close the form
+        Toast.show({
+            text: 'Envoi du spot en cours...',
+            duration: 'short'
+        });
 
-            // Upload Images if present (up to 5)
-            if (imageFiles && imageFiles.length > 0) {
-                const filesToUpload = imageFiles.slice(0, 5); // Limit to 5
+        // Background processing
+        (async () => {
+            try {
+                const imageUrls: string[] = [];
 
-                for (const imageFile of filesToUpload) {
-                    const fileExt = imageFile.name.split('.').pop();
-                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                    const filePath = `public/${fileName}`;
+                // Upload Images if present (up to 5)
+                if (imageFiles && imageFiles.length > 0) {
+                    const filesToUpload = imageFiles.slice(0, 5);
 
-                    const { error: uploadError } = await supabase.storage
-                        .from('spots')
-                        .upload(filePath, imageFile);
+                    for (const imageFile of filesToUpload) {
+                        const fileExt = imageFile.name.split('.').pop();
+                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                        const filePath = `public/${fileName}`;
 
-                    if (uploadError) {
-                        console.error('Upload error:', uploadError);
-                        alert(`Image upload failed: ${uploadError.message}`);
-                    } else {
-                        const { data: { publicUrl } } = supabase.storage
+                        const { error: uploadError } = await supabase.storage
                             .from('spots')
-                            .getPublicUrl(filePath);
-                        imageUrls.push(publicUrl);
+                            .upload(filePath, imageFile);
+
+                        if (uploadError) {
+                            console.error('Upload error:', uploadError);
+                        } else {
+                            const { data: { publicUrl } } = supabase.storage
+                                .from('spots')
+                                .getPublicUrl(filePath);
+                            imageUrls.push(publicUrl);
+                        }
                     }
                 }
-            }
 
-            const dbPayload = {
-                name: newSpotData.name,
-                description: newSpotData.description,
-                type: JSON.stringify(newSpotData.type),
-                lat: newSpotData.position[0],
-                lng: newSpotData.position[1],
-                difficulty: newSpotData.difficulty,
-                height: newSpotData.height,
-                image_urls: imageUrls.length > 0 ? imageUrls : null,
-                user_id: user.id
-            };
-
-            const { data, error } = await supabase.from('spots').insert([dbPayload]).select().single();
-            if (error) throw error;
-
-            if (data) {
-                let spotType: StartType[] = ['Dockstart'];
-                try {
-                    const parsed = typeof data.type === 'string' ? JSON.parse(data.type) : data.type;
-                    spotType = Array.isArray(parsed) ? parsed : [parsed];
-                } catch {
-                    spotType = [data.type as StartType];
-                }
-
-                const createdSpot: Spot = {
-                    id: data.id,
-                    name: data.name,
-                    type: spotType,
-                    position: [data.lat, data.lng],
-                    description: data.description,
-                    difficulty: data.difficulty as any,
-                    height: data.height,
-                    image_urls: data.image_urls,
-                    is_approved: data.is_approved
+                const dbPayload = {
+                    name: newSpotData.name,
+                    description: newSpotData.description,
+                    type: JSON.stringify(newSpotData.type),
+                    lat: newSpotData.position[0],
+                    lng: newSpotData.position[1],
+                    difficulty: newSpotData.difficulty,
+                    height: newSpotData.height,
+                    image_urls: imageUrls.length > 0 ? imageUrls : null,
+                    user_id: user.id
                 };
-                setSpots(prev => [createdSpot, ...prev]);
-                alert('Spot submitted! It will appear once approved by an admin.');
+
+                const { data, error } = await supabase.from('spots').insert([dbPayload]).select().single();
+                if (error) throw error;
+
+                if (data) {
+                    let spotType: StartType[] = ['Dockstart'];
+                    try {
+                        const parsed = typeof data.type === 'string' ? JSON.parse(data.type) : data.type;
+                        spotType = Array.isArray(parsed) ? parsed : [parsed];
+                    } catch {
+                        spotType = [data.type as StartType];
+                    }
+
+                    const createdSpot: Spot = {
+                        id: data.id,
+                        name: data.name,
+                        type: spotType,
+                        position: [data.lat, data.lng],
+                        description: data.description,
+                        difficulty: data.difficulty as any,
+                        height: data.height,
+                        image_urls: data.image_urls,
+                        is_approved: data.is_approved
+                    };
+
+                    setSpots(prev => [createdSpot, ...prev]);
+                    Toast.show({
+                        text: 'Spot envoyé ! Il apparaîtra après validation.',
+                        duration: 'long'
+                    });
+                }
+            } catch (error: any) {
+                console.error('Error adding spot in background:', error);
+                Toast.show({
+                    text: `Erreur : ${error.message || 'Échec de l\'envoi'}`,
+                    duration: 'long'
+                });
             }
-        } catch (error: any) {
-            console.error('Error adding spot:', error);
-            alert(`Failed to add spot: ${error.message || error.details || JSON.stringify(error)}`);
-        }
+        })();
+
+        // Resolve immediately so the UI doesn't wait
+        return Promise.resolve();
     };
 
     const approveSpot = async (id: string) => {
@@ -226,7 +287,16 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <SpotsContext.Provider value={{ spots, loading, addSpot, approveSpot, deleteSpot, updateSpot }}>
+        <SpotsContext.Provider value={{
+            spots,
+            nearbySpots,
+            userLocation,
+            loading,
+            addSpot,
+            approveSpot,
+            deleteSpot,
+            updateSpot
+        }}>
             {children}
         </SpotsContext.Provider>
     );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Loader2, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useLanguage } from '../context/LanguageContext';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -9,6 +10,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+    const { t } = useLanguage();
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,6 +19,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const mapAuthError = (message: string) => {
+        if (message.includes('Invalid login credentials')) return t('error.invalid_credentials');
+        if (message.includes('User already registered')) return t('error.email_exists');
+        if (message.includes('Password should be at least 6 characters')) return t('error.weak_password');
+        return t('error.generic');
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,12 +53,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     }
                 });
                 if (error) throw error;
-                // Suggest checking email
-                alert('Account created! Please check your email to verify.');
+                alert(t('auth.alert_signup'));
                 onClose();
             }
         } catch (err: any) {
-            setError(err.message);
+            setError(mapAuthError(err.message));
         } finally {
             setLoading(false);
         }
@@ -74,10 +82,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         </button>
 
                         <h2 className="text-2xl font-bold text-white mb-2">
-                            {isLogin ? 'Welcome Back' : 'Join Updock'}
+                            {isLogin ? t('auth.title_login') : t('auth.title_signup')}
                         </h2>
                         <p className="text-white/50 text-sm mb-8">
-                            {isLogin ? 'Sign in to access your account' : 'Start your journey with us today'}
+                            {isLogin ? t('auth.subtitle_login') : t('auth.subtitle_signup')}
                         </p>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,7 +94,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     <>
                                         <div className="grid grid-cols-2 gap-2">
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">First Name</label>
+                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.first_name')}</label>
                                                 <div className="relative">
                                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
                                                     <input
@@ -95,12 +103,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                                         value={firstName}
                                                         onChange={(e) => setFirstName(e.target.value)}
                                                         className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                        placeholder="John"
+                                                        placeholder={t('auth.placeholder_first_name')}
                                                     />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">Last Name</label>
+                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.last_name')}</label>
                                                 <div className="relative">
                                                     <input
                                                         type="text"
@@ -108,14 +116,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                                         value={lastName}
                                                         onChange={(e) => setLastName(e.target.value)}
                                                         className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-4 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                        placeholder="Doe"
+                                                        placeholder={t('auth.placeholder_last_name')}
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">Username (Pseudo)</label>
+                                            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.username')}</label>
                                             <div className="relative">
                                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
                                                 <input
@@ -124,7 +132,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                                     value={username}
                                                     onChange={(e) => setUsername(e.target.value)}
                                                     className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                    placeholder="CaptainDock"
+                                                    placeholder={t('auth.placeholder_username')}
                                                 />
                                             </div>
                                         </div>
@@ -132,7 +140,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 )}
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">Email</label>
+                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.email')}</label>
                                     <div className="relative">
                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
                                         <input
@@ -141,13 +149,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                            placeholder="you@example.com"
+                                            placeholder={t('auth.placeholder_email')}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">Password</label>
+                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.password')}</label>
                                     <div className="relative">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
                                         <input
@@ -156,7 +164,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                            placeholder="••••••••"
+                                            placeholder={t('auth.placeholder_password')}
                                             minLength={6}
                                         />
                                     </div>
@@ -175,7 +183,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-500/20 transition-all active:scale-[0.98] mt-4 flex items-center justify-center gap-2"
                             >
                                 {loading && <Loader2 size={18} className="animate-spin" />}
-                                {isLogin ? 'Sign In' : 'Create Account'}
+                                {isLogin ? t('auth.btn_login') : t('auth.btn_signup')}
                             </button>
                         </form>
 
@@ -184,7 +192,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 onClick={() => setIsLogin(!isLogin)}
                                 className="text-white/50 hover:text-white text-sm transition-colors"
                             >
-                                {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+                                {isLogin ? t('auth.no_account') + ' ' + t('auth.link_signup') : t('auth.have_account') + ' ' + t('auth.link_login')}
                             </button>
                         </div>
                     </motion.div>

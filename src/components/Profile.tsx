@@ -1,9 +1,19 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import PremiumModal from './PremiumModal';
+
+// Avatar assets mapping
+const AVATARS = [
+    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
+    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
+    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
+    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
+    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
+];
 
 interface ProfileProps {
     onOpenAuth?: () => void;
@@ -15,9 +25,49 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
     const { favorites } = useFavorites();
     const { user, signOut } = useAuth();
     const spotsCount = favorites.length;
+
     const [isPremiumOpen, setIsPremiumOpen] = useState(false);
+    const [avatarId, setAvatarId] = useState<number>(1);
+    const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
+
+    // Fetch profile data (including avatar_id)
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchProfile = async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('avatar_id')
+                .eq('id', user.id)
+                .single();
+
+            if (data && !error) {
+                setAvatarId(data.avatar_id);
+            }
+        };
+
+        fetchProfile();
+    }, [user]);
+
+    const handleAvatarSelect = async (id: number) => {
+        if (!user) return;
+        setIsUpdating(true);
+
+        const { error } = await supabase
+            .from('profiles')
+            .upsert({ id: user.id, avatar_id: id });
+
+        if (!error) {
+            setAvatarId(id);
+            setIsAvatarPickerOpen(false);
+        }
+        setIsUpdating(false);
+    };
+
+    const currentAvatar = AVATARS.find(a => a.id === avatarId) || AVATARS[0];
 
     // Simple gamification logic
     const getLevel = (count: number) => {
@@ -32,34 +82,41 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
         <div className="w-full h-full flex flex-col p-6 overflow-y-auto bg-slate-50">
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 p-1 shadow-lg shadow-sky-200">
-                    <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-                        {user ? (
-                            <div className="w-full h-full bg-slate-100 flex items-center justify-center text-2xl font-bold text-sky-600">
-                                {user.user_metadata?.first_name
-                                    ? user.user_metadata.first_name.charAt(0).toUpperCase()
-                                    : user.email?.charAt(0).toUpperCase()}
-                            </div>
-                        ) : (
-                            <User size={40} className="text-slate-300" />
-                        )}
+                <div className="relative group">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 p-1 shadow-lg shadow-sky-200">
+                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                            {user ? (
+                                <img
+                                    src={currentAvatar.src}
+                                    className="w-full h-full object-cover"
+                                    alt="Avatar"
+                                />
+                            ) : (
+                                <User size={40} className="text-slate-300" />
+                            )}
+                        </div>
                     </div>
+                    {user && (
+                        <button
+                            onClick={() => setIsAvatarPickerOpen(!isAvatarPickerOpen)}
+                            className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-100 text-sky-500 hover:text-sky-600 transition-transform active:scale-90"
+                        >
+                            <Edit2 size={14} />
+                        </button>
+                    )}
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-800">Dockstarter</h2>
+                    <h2 className="text-2xl font-bold text-slate-800">
+                        {user ? (user.user_metadata?.first_name || 'Updocker') : 'Guest'}
+                    </h2>
                     {user ? (
                         <>
                             <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${level.bg} ${level.color}`}>
                                 {level.name}
                             </span>
-                            <h3 className="font-bold text-slate-800 text-sm mt-1 truncate max-w-[150px]">
-                                {user.user_metadata?.first_name
-                                    ? `${user.user_metadata.first_name} ${user.user_metadata.last_name || ''}`
-                                    : user.user_metadata?.username || user.email}
-                            </h3>
-                            {user.user_metadata?.username && (
-                                <p className="text-slate-400 text-xs text-center">@{user.user_metadata.username}</p>
-                            )}
+                            <p className="text-slate-400 text-sm mt-1 truncate max-w-[200px]">
+                                {user.email}
+                            </p>
                         </>
                     ) : (
                         <div className="flex flex-col items-start gap-2 mt-1">
@@ -74,6 +131,30 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
                     )}
                 </div>
             </div>
+
+            {/* Avatar Picker Modal/Popover */}
+            {isAvatarPickerOpen && (
+                <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-xl mb-8 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide">Choose Avatar</h4>
+                        <button onClick={() => setIsAvatarPickerOpen(false)} className="text-slate-400 hover:text-slate-600">
+                            <X size={16} />
+                        </button>
+                    </div>
+                    <div className="grid grid-cols-5 gap-3">
+                        {AVATARS.map((avatar) => (
+                            <button
+                                key={avatar.id}
+                                onClick={() => handleAvatarSelect(avatar.id)}
+                                disabled={isUpdating}
+                                className={`aspect-square rounded-2xl p-1 transition-all ${avatarId === avatar.id ? 'bg-sky-50 ring-2 ring-sky-500 scale-105' : 'bg-slate-50 hover:bg-slate-100 hover:scale-105'}`}
+                            >
+                                <img src={avatar.src} alt={avatar.name} className="w-full h-full" />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-8">

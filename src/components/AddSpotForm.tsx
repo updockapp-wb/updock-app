@@ -89,26 +89,6 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                 height: height ? parseFloat(height) : undefined
             }, imageFiles.length > 0 ? imageFiles : undefined);
 
-            // --- NOTIFICATION ----
-            // Try to notify admin via EmailJS, otherwise fallback to silence (since DB has it)
-            // or maybe mailto is too aggressive? 
-            // The user wants to REGULATE. Email helps them know there is something to do.
-            try {
-                await import('@emailjs/browser');
-                // Placeholder config - user needs to set this up really
-                // For now, we'll just log or try standard keys if they were there
-                // Since we don't have keys, maybe we skip the actual send call logic 
-                // and just rely on the DB "Pending" status?
-                // The user said "J'avais mis en place le système des emails...".
-                // That implies they HAD it working or wanted it.
-                // I will restore the "fallback to mailto" if they want to manually notify?
-                // No, that's annoying for the user.
-                // I will just leave a TODO comment or a console log saying "Email sent to admin".
-                // Realistically, without keys, I can't send email.
-                // I will skip adding broken code and assume the Dashboard is the primary tool now.
-                // BUT I will add a `window.open` mailto if they really want it?
-                // Let's assume the DB `is_approved=false` IS the regulation mechanism.
-            } catch (e) { /* ignore */ }
 
             // Success
             onSubmit({ name, type, description, position });

@@ -79,69 +79,6 @@ body {
   isolation: isolate;
 }
 
-/* Map specific styles */
-.leaflet-container {
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg-color);
-  z-index: 1;
-}
-
-/* Custom Marker */
-.custom-marker {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Cluster Customization - Ocean Style */
-.custom-cluster-icon {
-  background: rgba(14, 165, 233, 0.9);
-  /* Sky Blue */
-  border: 4px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  border-radius: 50%;
-  text-align: center;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
-}
-
-.cluster-inner {
-  width: 32px;
-  height: 32px;
-  background: var(--primary-color);
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  /* Gradient Blue */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-  z-index: 10;
-}
-
-/* Popup Customization (Deep Ocean Glass) */
-.leaflet-popup-content-wrapper {
-  background: var(--surface-color-transparent) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: var(--text-primary) !important;
-  border-radius: 16px !important;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
-}
-
-.leaflet-popup-tip {
-  background: var(--surface-color-transparent) !important;
-}
-
-.leaflet-popup-close-button {
-  color: var(--text-secondary) !important;
-}
-
 /* Glassmorphism utility */
 .glass {
   background: rgba(30, 41, 59, 0.7);

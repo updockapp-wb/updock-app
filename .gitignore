@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Agent & System
+_bmad/
+_bmad-output/
+.antigravityignore
+.env
+.DS_Store

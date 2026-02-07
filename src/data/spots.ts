@@ -11,6 +11,7 @@ export interface Spot {
     height?: number; // For Dropstart
     image_urls?: string[];
     is_approved?: boolean;
+    distance?: number; // Distance in km from user
 }
 
 export const spots: Spot[] = [

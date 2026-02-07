@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect as useLayoutEffect } from 'react';
 import { Heart } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Map from './components/Map';
 import NavBar from './components/NavBar';
 import Profile from './components/Profile';
-import NearbySpots from './components/NearbySpots';
+import NearbySpotsList from './components/NearbySpotsList';
 import LandingPage from './components/LandingPage';
 import { useFavorites } from './context/FavoritesContext';
 import { useSpots } from './context/SpotsContext';
@@ -15,6 +16,7 @@ import { PremiumProvider } from './context/PremiumContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthModal from './components/AuthModal';
 import SpotDetail from './components/SpotDetail';
+import WelcomeScreen from './components/WelcomeScreen';
 import AdminDashboard from './components/AdminDashboard';
 import { type Spot } from './data/spots';
 
@@ -31,6 +33,17 @@ function AppContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Detect Redirect from Email Confirmation
+  useLayoutEffect(() => {
+    const hash = window.location.hash;
+    if (hash && (hash.includes('access_token=') || hash.includes('type=signup'))) {
+      setShowWelcome(true);
+      // Clean URL
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
 
 
 
@@ -64,7 +77,7 @@ function AppContent() {
         </>
       ) : (
         /* Main App Content (Only if Logged In) */
-        <>
+        <div vaul-drawer-wrapper="" className="w-full h-full flex flex-col md:flex-row bg-white">
           {/* Desktop Sidebar - Visible only on md+ */}
           <div className="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 shrink-0">
             <div className="p-6 flex items-center gap-3">
@@ -91,78 +104,108 @@ function AppContent() {
           </div>
 
           <main className="flex-1 w-full h-full relative overflow-hidden flex flex-col">
-            {activeTab === 'map' && (
-              <div className="flex-1 relative w-full h-full">
-                <Map
-                  onSpotClick={handleSpotClick}
-                  selectedSpot={selectedSpot}
-                  isAddingSpotMode={isAddingSpotMode}
-                  onSetAddingSpotMode={setIsAddingSpotMode}
-                />
-                {selectedSpot && (
-                  <SpotDetail
-                    spot={selectedSpot}
-                    onClose={() => setSelectedSpot(null)}
+            <AnimatePresence mode="wait">
+              {activeTab === 'map' && (
+                <motion.div
+                  key="map"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex-1 relative w-full h-full"
+                >
+                  <Map
+                    onSpotClick={handleSpotClick}
+                    selectedSpot={selectedSpot}
+                    isAddingSpotMode={isAddingSpotMode}
+                    onSetAddingSpotMode={setIsAddingSpotMode}
                   />
-                )}
-              </div>
-            )}
+                </motion.div>
+              )}
 
-            {activeTab === 'favorites' && (
-              <div className="w-full h-full flex flex-col p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] overflow-y-auto max-w-4xl mx-auto">
-                <h2 className="text-3xl font-bold text-slate-800 mb-6">{t('fav.title')}</h2>
-                {favoritesSpots.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-slate-400 py-20">
-                    <Heart size={48} className="mb-4 opacity-20" />
-                    <p className="text-lg">{t('fav.empty')}</p>
-                    <button onClick={() => setActiveTab('map')} className="text-sky-500 font-bold mt-4 hover:underline">{t('fav.explore')}</button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {favoritesSpots.map(spot => (
-                      <div key={spot.id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex justify-between items-center group cursor-pointer" onClick={() => { setSelectedSpot(spot); setActiveTab('map'); }}>
-                        <div>
-                          <h3 className="font-bold text-slate-800 text-lg">{spot.name}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs text-slate-500 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded-md">{spot.type}</span>
+              {activeTab === 'favorites' && (
+                <motion.div
+                  key="favorites"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="w-full h-full flex flex-col p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] overflow-y-auto max-w-4xl mx-auto"
+                >
+                  <h2 className="text-3xl font-bold text-slate-800 mb-6">{t('fav.title')}</h2>
+                  {favoritesSpots.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-slate-400 py-20">
+                      <Heart size={48} className="mb-4 opacity-20" />
+                      <p className="text-lg">{t('fav.empty')}</p>
+                      <button onClick={() => setActiveTab('map')} className="text-sky-500 font-bold mt-4 hover:underline">{t('fav.explore')}</button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {favoritesSpots.map(spot => (
+                        <div key={spot.id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex justify-between items-center group cursor-pointer" onClick={() => { setSelectedSpot(spot); setActiveTab('map'); }}>
+                          <div>
+                            <h3 className="font-bold text-slate-800 text-lg">{spot.name}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-xs text-slate-500 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded-md">{spot.type}</span>
+                            </div>
                           </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleFavorite(spot.id);
+                            }}
+                            className="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
+                          >
+                            <Heart size={20} className="fill-rose-500" />
+                          </button>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFavorite(spot.id);
-                          }}
-                          className="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
-                        >
-                          <Heart size={20} className="fill-rose-500" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
 
-            {activeTab === 'list' && (
-              <NearbySpots
-                className="pt-[env(safe-area-inset-top)]"
-                onSpotClick={(spot) => {
-                  setSelectedSpot(spot);
-                  setActiveTab('map');
-                }}
-              />
-            )}
-
-            {activeTab === 'profile' && (
-              <div className="w-full h-full overflow-y-auto">
-                <div className="max-w-2xl mx-auto py-8 px-4 pt-[calc(2rem+env(safe-area-inset-top))]">
-                  <Profile
-                    onOpenAuth={() => setIsAuthModalOpen(true)}
-                    onAdminClick={() => setIsAdminOpen(true)}
+              {activeTab === 'list' && (
+                <motion.div
+                  key="list"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="w-full h-full p-6 pt-[calc(1.5rem+env(safe-area-inset-top))] overflow-y-auto max-w-2xl mx-auto"
+                >
+                  <NearbySpotsList
+                    onSpotClick={(spot) => {
+                      setSelectedSpot(spot);
+                    }}
                   />
-                </div>
-              </div>
-            )}
+                </motion.div>
+              )}
+
+              {activeTab === 'profile' && (
+                <motion.div
+                  key="profile"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="w-full h-full overflow-y-auto"
+                >
+                  <div className="max-w-2xl mx-auto py-8 px-4 pt-[calc(2rem+env(safe-area-inset-top))]">
+                    <Profile
+                      onOpenAuth={() => setIsAuthModalOpen(true)}
+                      onAdminClick={() => setIsAdminOpen(true)}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Global Spot Detail - Triggered from any tab */}
+            <AnimatePresence>
+              {selectedSpot && (
+                <SpotDetail
+                  spot={selectedSpot}
+                  onClose={() => setSelectedSpot(null)}
+                />
+              )}
+            </AnimatePresence>
 
             {/* Mobile Bottom Navigation - Hidden on md+ */}
             <div className="md:hidden z-[1001]">
@@ -179,7 +222,13 @@ function AppContent() {
             onClose={() => setIsAdminOpen(false)}
             onSpotSelect={handleSpotSelect}
           />
-        </>
+
+          <AnimatePresence>
+            {showWelcome && (
+              <WelcomeScreen onClose={() => setShowWelcome(false)} />
+            )}
+          </AnimatePresence>
+        </div>
       )}
     </div>
   );
@@ -190,11 +239,11 @@ export default function App() {
     <LanguageProvider>
       <AuthProvider>
         <PremiumProvider>
-          <FavoritesProvider>
-            <SpotsProvider>
+          <SpotsProvider>
+            <FavoritesProvider>
               <AppContent />
-            </SpotsProvider>
-          </FavoritesProvider>
+            </FavoritesProvider>
+          </SpotsProvider>
         </PremiumProvider>
       </AuthProvider>
     </LanguageProvider>

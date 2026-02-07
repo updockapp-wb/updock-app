@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import Map, { NavigationControl, GeolocateControl, Source, Layer, Marker, type LayerProps, type MapRef, type GeoJSONSource } from 'react-map-gl';
-import { spots as _, type Spot, type StartType } from '../data/spots'; // StartType used in state
+import { type Spot, type StartType } from '../data/spots';
 import AddSpotInfoModal from './AddSpotInfoModal';
 import AddSpotForm from './AddSpotForm';
 import FiltersModal from './FiltersModal';
@@ -273,8 +273,8 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
                                     essential: true
                                 });
                             },
-                            (error) => {
-                                console.log('Geolocation denied or failed, staying on globe view', error);
+                            (_error) => {
+                                // Staying on globe view if denied
                             }
                         );
                     }
