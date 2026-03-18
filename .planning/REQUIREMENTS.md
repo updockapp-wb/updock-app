@@ -68,22 +68,22 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TECH-01 | Phase 1 | Pending |
-| FIX-01 | Phase 1 | Pending |
-| FIX-02 | Phase 1 | Pending |
-| PROF-01 | Phase 2 | Pending |
-| PROF-02 | Phase 2 | Pending |
-| AVIS-01 | Phase 3 | Pending |
-| AVIS-02 | Phase 3 | Pending |
-| AVIS-03 | Phase 3 | Pending |
-| AVIS-04 | Phase 3 | Pending |
-| SESS-01 | Phase 4 | Pending |
-| SESS-02 | Phase 4 | Pending |
-| SESS-03 | Phase 4 | Pending |
-| SESS-04 | Phase 4 | Pending |
-| NOTIF-01 | Phase 5 | Pending |
-| NOTIF-02 | Phase 5 | Pending |
-| NOTIF-03 | Phase 5 | Pending |
+| TECH-01 | Phase 1 — Foundation | Pending |
+| FIX-01 | Phase 1 — Foundation | Pending |
+| FIX-02 | Phase 1 — Foundation | Pending |
+| PROF-01 | Phase 1 — Foundation | Pending |
+| PROF-02 | Phase 1 — Foundation | Pending |
+| AVIS-01 | Phase 2 — Reviews | Pending |
+| AVIS-02 | Phase 2 — Reviews | Pending |
+| AVIS-03 | Phase 2 — Reviews | Pending |
+| AVIS-04 | Phase 2 — Reviews | Pending |
+| SESS-01 | Phase 3 — Sessions | Pending |
+| SESS-02 | Phase 3 — Sessions | Pending |
+| SESS-03 | Phase 3 — Sessions | Pending |
+| SESS-04 | Phase 3 — Sessions | Pending |
+| NOTIF-01 | Phase 4 — Push Notifications | Pending |
+| NOTIF-02 | Phase 4 — Push Notifications | Pending |
+| NOTIF-03 | Phase 4 — Push Notifications | Pending |
 
 **Coverage:**
 - v1 requirements: 16 total
@@ -92,4 +92,4 @@
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-18 — traceability updated after roadmap creation (4-phase coarse structure)*
