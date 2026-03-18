@@ -87,5 +87,10 @@
     "error.generic": "An error occurred. Please try again.",
     "welcome.title": "Welcome to Updock!",
     "welcome.subtitle": "Your account is verified. You're now part of the global dockstart community.",
-    "welcome.btn": "Get Started"
+    "welcome.btn": "Get Started",
+    "profile.display_name": "Display name",
+    "profile.name_placeholder": "Enter your name",
+    "profile.set_name": "Tap to set your name",
+    "profile.save": "Save",
+    "profile.upload_photo": "Upload photo"
 }

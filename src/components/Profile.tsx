@@ -1,9 +1,9 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { useProfile } from '../context/ProfileContext';
+import { useState, useRef } from 'react';
 import PremiumModal from './PremiumModal';
 
 // Avatar assets mapping
@@ -24,50 +24,19 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
     const { t, language, setLanguage } = useLanguage();
     const { favorites } = useFavorites();
     const { user, signOut } = useAuth();
+    const { profile, updateDisplayName, uploadAvatar, selectPresetAvatar } = useProfile();
     const spotsCount = favorites.length;
 
     const [isPremiumOpen, setIsPremiumOpen] = useState(false);
-    const [avatarId, setAvatarId] = useState<number>(1);
     const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [editingName, setEditingName] = useState(false);
+    const [nameInput, setNameInput] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
 
-    // Fetch profile data (including avatar_id)
-    useEffect(() => {
-        if (!user) return;
-
-        const fetchProfile = async () => {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('avatar_id')
-                .eq('id', user.id)
-                .single();
-
-            if (data && !error) {
-                setAvatarId(data.avatar_id);
-            }
-        };
-
-        fetchProfile();
-    }, [user]);
-
-    const handleAvatarSelect = async (id: number) => {
-        if (!user) return;
-        setIsUpdating(true);
-
-        const { error } = await supabase
-            .from('profiles')
-            .upsert({ id: user.id, avatar_id: id });
-
-        if (!error) {
-            setAvatarId(id);
-            setIsAvatarPickerOpen(false);
-        }
-        setIsUpdating(false);
-    };
-
-    const currentAvatar = AVATARS.find(a => a.id === avatarId) || AVATARS[0];
+    const currentAvatar = AVATARS.find(a => a.id === (profile?.avatar_id || 1)) || AVATARS[0];
 
     // Simple gamification logic
     const getLevel = (count: number) => {
@@ -86,11 +55,19 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
                     <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 p-1 shadow-lg shadow-sky-200">
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                             {user ? (
-                                <img
-                                    src={currentAvatar.src}
-                                    className="w-full h-full object-cover"
-                                    alt="Avatar"
-                                />
+                                profile?.avatar_url ? (
+                                    <img
+                                        src={profile.avatar_url}
+                                        className="w-full h-full object-cover"
+                                        alt="Avatar"
+                                    />
+                                ) : (
+                                    <img
+                                        src={currentAvatar.src}
+                                        className="w-full h-full object-cover"
+                                        alt="Avatar"
+                                    />
+                                )
                             ) : (
                                 <User size={40} className="text-slate-300" />
                             )}
@@ -107,7 +84,7 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
                 </div>
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800">
-                        {user ? (user.user_metadata?.first_name || 'Updocker') : 'Guest'}
+                        {user ? (profile?.display_name || user?.email?.split('@')[0] || 'Updocker') : 'Guest'}
                     </h2>
                     {user ? (
                         <>
@@ -141,18 +118,100 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
                             <X size={16} />
                         </button>
                     </div>
+
+                    {/* Avatar Upload */}
+                    <div className="mb-4">
+                        <div className="flex items-center gap-4 mb-4">
+                            {/* Current avatar display */}
+                            <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100 border-2 border-white shadow-lg">
+                                {profile?.avatar_url ? (
+                                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                                ) : (
+                                    <img src={currentAvatar.src} alt={currentAvatar.name} className="w-full h-full" />
+                                )}
+                            </div>
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-xl font-medium hover:bg-sky-100 transition-colors"
+                            >
+                                <Camera size={18} />
+                                {t('profile.upload_photo')}
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        await uploadAvatar(file);
+                                    }
+                                    e.target.value = '';
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Preset Avatar Grid */}
                     <div className="grid grid-cols-5 gap-3">
                         {AVATARS.map((avatar) => (
                             <button
                                 key={avatar.id}
-                                onClick={() => handleAvatarSelect(avatar.id)}
+                                onClick={async () => {
+                                    setIsUpdating(true);
+                                    await selectPresetAvatar(avatar.id);
+                                    setIsAvatarPickerOpen(false);
+                                    setIsUpdating(false);
+                                }}
                                 disabled={isUpdating}
-                                className={`aspect-square rounded-2xl p-1 transition-all ${avatarId === avatar.id ? 'bg-sky-50 ring-2 ring-sky-500 scale-105' : 'bg-slate-50 hover:bg-slate-100 hover:scale-105'}`}
+                                className={`aspect-square rounded-2xl p-1 transition-all ${profile?.avatar_id === avatar.id && !profile?.avatar_url ? 'bg-sky-50 ring-2 ring-sky-500 scale-105' : 'bg-slate-50 hover:bg-slate-100 hover:scale-105'}`}
                             >
                                 <img src={avatar.src} alt={avatar.name} className="w-full h-full" />
                             </button>
                         ))}
                     </div>
+                </div>
+            )}
+
+            {/* Display Name Section */}
+            {user && (
+                <div className="mb-6">
+                    <label className="block text-sm font-medium text-slate-500 mb-2">{t('profile.display_name')}</label>
+                    {editingName ? (
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={nameInput}
+                                onChange={(e) => setNameInput(e.target.value)}
+                                maxLength={30}
+                                className="flex-1 p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium"
+                                placeholder={t('profile.name_placeholder')}
+                                autoFocus
+                            />
+                            <button
+                                onClick={async () => {
+                                    if (nameInput.trim()) {
+                                        await updateDisplayName(nameInput.trim());
+                                    }
+                                    setEditingName(false);
+                                }}
+                                className="px-4 py-3 bg-sky-500 text-white rounded-xl font-medium"
+                            >
+                                {t('profile.save')}
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                setNameInput(profile?.display_name || '');
+                                setEditingName(true);
+                            }}
+                            className="w-full text-left p-3 bg-slate-50 rounded-xl font-medium text-slate-900 hover:bg-slate-100 transition-colors"
+                        >
+                            {profile?.display_name || t('profile.set_name')}
+                        </button>
+                    )}
                 </div>
             )}
 

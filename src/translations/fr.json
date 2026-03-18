@@ -87,5 +87,10 @@
     "error.generic": "Une erreur est survenue. Veuillez réessayer.",
     "welcome.title": "Bienvenue sur Updock !",
     "welcome.subtitle": "Votre compte est vérifié. Vous faites maintenant partie de la communauté mondiale du dockstart.",
-    "welcome.btn": "C'est parti !"
+    "welcome.btn": "C'est parti !",
+    "profile.display_name": "Nom d'affichage",
+    "profile.name_placeholder": "Entrez votre nom",
+    "profile.set_name": "Appuyez pour choisir un nom",
+    "profile.save": "Enregistrer",
+    "profile.upload_photo": "Choisir une photo"
 }
