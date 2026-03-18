@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All Capacitor native builds succeed without CLI/core version warnings
   4. A logged-in user can set a display name and upload an avatar visible on their profile
   5. All 5 new database tables (profiles, reviews, sessions, session_attendees, push_tokens) exist with correct RLS policies
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Capacitor fix + database schema (TECH-01, all tables + RLS + triggers + spot_ratings view)
-- [ ] 01-02: Bug fixes — spot list proximity sort + add-spot form simplification (FIX-01, FIX-02)
-- [ ] 01-03: User profiles — display name, avatar upload, profile screen (PROF-01, PROF-02)
+- [ ] 01-01-PLAN.md — Capacitor fix + database schema (TECH-01, all tables + RLS + triggers + spot_ratings view)
+- [ ] 01-02-PLAN.md — Bug fixes: spot list proximity sort + add-spot form simplification (FIX-01, FIX-02)
+- [ ] 01-03-PLAN.md — User profiles: display name, avatar upload, profile screen (PROF-01, PROF-02)
 
 ### Phase 2: Reviews
 **Goal**: Users can rate and comment on spots, and anyone can see the community's verdict on a spot
