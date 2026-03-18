@@ -7,9 +7,9 @@
 
 ### Correctifs techniques
 
-- [ ] **TECH-01**: Résoudre le mismatch de version Capacitor (CLI v7 / core v8) avant toute modification native
-- [ ] **FIX-01**: L'onglet liste affiche les spots triés par distance croissante par rapport à la position GPS de l'utilisateur
-- [ ] **FIX-02**: Le formulaire d'ajout de spot ne contient plus le champ "hauteur" et propose une UX simplifiée et esthétique
+- [x] **TECH-01**: Résoudre le mismatch de version Capacitor (CLI v7 / core v8) avant toute modification native
+- [x] **FIX-01**: L'onglet liste affiche les spots triés par distance croissante par rapport à la position GPS de l'utilisateur
+- [x] **FIX-02**: Le formulaire d'ajout de spot ne contient plus le champ "hauteur" et propose une UX simplifiée et esthétique
 
 ### Profils utilisateurs
 
@@ -68,9 +68,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TECH-01 | Phase 1 — Foundation | Pending |
-| FIX-01 | Phase 1 — Foundation | Pending |
-| FIX-02 | Phase 1 — Foundation | Pending |
+| TECH-01 | Phase 1 — Foundation | Complete |
+| FIX-01 | Phase 1 — Foundation | Complete |
+| FIX-02 | Phase 1 — Foundation | Complete |
 | PROF-01 | Phase 1 — Foundation | Pending |
 | PROF-02 | Phase 1 — Foundation | Pending |
 | AVIS-01 | Phase 2 — Reviews | Pending |

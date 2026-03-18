@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-18T16:41:44.571Z"
+last_activity: "2026-03-18 — Completed 01-01: CLI upgrade + community schema migration"
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 2
+  percent: 67
+---
+
 # Project State
 
 ## Project Reference
@@ -10,30 +26,31 @@ See: .planning/PROJECT.md (updated 2026-03-18)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-18 — Roadmap created, community features milestone initialized
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-18 — Completed 01-01: CLI upgrade + community schema migration
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: ~3 min
+- Total execution time: ~3 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation | 1/3 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: —
+- Last 5 plans: 01-01 (3 min)
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P02 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -46,6 +63,11 @@ Recent decisions affecting current work:
 - Pre-roadmap: Capacitor CLI/core mismatch (v7 CLI vs v8 core) must be fixed before any native work
 - Pre-roadmap: Sessions before push notifications — push is isolatable; sessions ship as pull-only if push blocks
 - Pre-roadmap: Use @capacitor-firebase/messaging (not @capacitor/push-notifications) — unified FCM token on iOS
+- 01-01: Upgraded @capacitor/cli to ^8.2.0 (package.json) but CLI execution deferred — requires Node >=22 (env has v20)
+- 01-01: Combined all 5 community tables into single migration file for atomic apply
+- 01-01: Recreated handle_new_user trigger with ON CONFLICT DO NOTHING to prevent duplicate profile creation
+- [Phase 01-foundation]: useEffect cleanup for imagePreviews depends on array so revocation fires on shrink as well as unmount
+- [Phase 01-foundation]: Pre-existing lint errors (no-explicit-any, set-state-in-effect) are out-of-scope; build passes cleanly
 
 ### Pending Todos
 
@@ -53,13 +75,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- **TECH-01 (Phase 1):** Capacitor CLI v7.4.4 vs core v8.0.0 mismatch confirmed. Must be resolved before any native plugin work. Run `npx cap doctor` first.
+- **TECH-01 (RESOLVED - package.json):** @capacitor/cli upgraded to ^8.2.0. Remaining: cap doctor/sync require Node >=22; current env is v20.19.2. Upgrade Node before any native plugin work.
 - **NOTIF (Phase 4):** Push notifications require physical iOS device (APNs does not work in Simulator). Confirm device availability before committing Phase 4 scope. This is a go/no-go gate.
 - **NOTIF (Phase 4):** Firebase project setup (Xcode entitlements, google-services.json, APNs .p8 key upload) needs research during Phase 4 planning — flag for `/gsd:research-phase`.
 - **SESS (Phase 3):** No native date/time picker in codebase. Evaluate options during Phase 3 planning (HTML `<input type="datetime-local">` vs Capacitor date picker plugin).
 
 ## Session Continuity
 
-Last session: 2026-03-18
-Stopped at: Roadmap created — ready to plan Phase 1
+Last session: 2026-03-18T16:41:44.567Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
