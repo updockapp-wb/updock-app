@@ -12,7 +12,7 @@ Updock already delivers core spot discovery (map, auth, favorites, admin). This 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Fix technical debt, database schema, and user profiles
+- [x] **Phase 1: Foundation** - Fix technical debt, database schema, and user profiles (completed 2026-03-18)
 - [ ] **Phase 2: Reviews** - Spot ratings and comments with author identity
 - [ ] **Phase 3: Sessions** - Scheduled sessions with join/leave on spots
 - [ ] **Phase 4: Push Notifications** - FCM push for session activity on favorited spots
@@ -87,7 +87,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress|  |
+| 1. Foundation | 3/3 | Complete   | 2026-03-18 |
 | 2. Reviews | 0/1 | Not started | - |
 | 3. Sessions | 0/1 | Not started | - |
 | 4. Push Notifications | 0/2 | Not started | - |

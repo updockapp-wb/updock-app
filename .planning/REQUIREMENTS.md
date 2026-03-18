@@ -13,8 +13,8 @@
 
 ### Profils utilisateurs
 
-- [ ] **PROF-01**: L'utilisateur peut définir un pseudo affiché sur ses avis et sessions
-- [ ] **PROF-02**: L'utilisateur peut uploader une photo de profil (avatar)
+- [x] **PROF-01**: L'utilisateur peut définir un pseudo affiché sur ses avis et sessions
+- [x] **PROF-02**: L'utilisateur peut uploader une photo de profil (avatar)
 
 ### Avis et notation
 
@@ -71,8 +71,8 @@
 | TECH-01 | Phase 1 — Foundation | Complete |
 | FIX-01 | Phase 1 — Foundation | Complete |
 | FIX-02 | Phase 1 — Foundation | Complete |
-| PROF-01 | Phase 1 — Foundation | Pending |
-| PROF-02 | Phase 1 — Foundation | Pending |
+| PROF-01 | Phase 1 — Foundation | Complete |
+| PROF-02 | Phase 1 — Foundation | Complete |
 | AVIS-01 | Phase 2 — Reviews | Pending |
 | AVIS-02 | Phase 2 — Reviews | Pending |
 | AVIS-03 | Phase 2 — Reviews | Pending |
