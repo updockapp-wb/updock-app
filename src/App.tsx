@@ -1,4 +1,6 @@
 import { useState, useEffect as useLayoutEffect } from 'react';
+import { App as CapApp } from '@capacitor/app';
+import { supabase } from './lib/supabase';
 import { Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Map from './components/Map';
@@ -35,14 +37,29 @@ function AppContent() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
 
-  // Detect Redirect from Email Confirmation
+  // Detect Redirect from Email Confirmation (web)
   useLayoutEffect(() => {
     const hash = window.location.hash;
     if (hash && (hash.includes('access_token=') || hash.includes('type=signup'))) {
       setShowWelcome(true);
-      // Clean URL
       window.history.replaceState(null, '', window.location.pathname);
     }
+  }, []);
+
+  // Detect Redirect from Email Confirmation (native iOS/Android via Universal Links)
+  useLayoutEffect(() => {
+    const listener = CapApp.addListener('appUrlOpen', async (event) => {
+      const url = new URL(event.url);
+      const hash = url.hash;
+      const params = new URLSearchParams(hash.substring(1));
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      if (accessToken && refreshToken) {
+        await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        setShowWelcome(true);
+      }
+    });
+    return () => { listener.then(l => l.remove()); };
   }, []);
 
 

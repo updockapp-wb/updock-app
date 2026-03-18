@@ -45,6 +45,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     email,
                     password,
                     options: {
+                        emailRedirectTo: 'https://updock-app.vercel.app',
                         data: {
                             first_name: firstName,
                             last_name: lastName,

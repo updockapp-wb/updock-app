@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "MRP323ZTYM.com.updock.app.wandrille",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
