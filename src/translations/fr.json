@@ -29,6 +29,8 @@
     "nav.list": "Liste",
     "nav.profile": "Profil",
     "nearby.title": "Spots Proches",
+    "nearby.locating": "Localisation en cours...",
+    "nearby.empty": "Aucun spot trouvé à proximité",
     "filters.title": "Filtres",
     "filters.start_type": "Type de Départ",
     "filters.difficulty": "Difficulté",

@@ -29,6 +29,8 @@
     "nav.list": "List",
     "nav.profile": "Profile",
     "nearby.title": "Nearest Spots",
+    "nearby.locating": "Getting your location...",
+    "nearby.empty": "No spots found nearby",
     "filters.title": "Filters",
     "filters.start_type": "Start Type",
     "filters.difficulty": "Difficulty",

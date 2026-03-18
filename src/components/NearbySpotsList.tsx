@@ -13,8 +13,26 @@ export default function NearbySpotsList({ onSpotClick }: NearbySpotsListProps) {
     const { nearbySpots, userLocation } = useSpots();
     const { t } = useLanguage();
 
-    if (!userLocation || nearbySpots.length === 0) {
-        return null;
+    if (!userLocation) {
+        return (
+            <div className="bg-white/95 backdrop-blur-md rounded-[32px] p-6 shadow-xl border border-white/20">
+                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <Navigation size={32} className="mb-3 animate-pulse" />
+                    <p className="text-sm font-medium">{t('nearby.locating')}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (nearbySpots.length === 0) {
+        return (
+            <div className="bg-white/95 backdrop-blur-md rounded-[32px] p-6 shadow-xl border border-white/20">
+                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <MapPin size={32} className="mb-3" />
+                    <p className="text-sm font-medium">{t('nearby.empty')}</p>
+                </div>
+            </div>
+        );
     }
 
     return (
