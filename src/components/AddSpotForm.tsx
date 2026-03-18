@@ -17,7 +17,6 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     const [type, setType] = useState<StartType[]>(['Dockstart']);
     const [description, setDescription] = useState('');
     const [difficulty, setDifficulty] = useState<'Easy' | 'Medium' | 'Hard' | 'Extreme'>('Medium');
-    const [height, setHeight] = useState('');
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
@@ -30,7 +29,6 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         setType(['Dockstart']);
         setDescription('');
         setDifficulty('Medium');
-        setHeight('');
         setImageFiles([]);
         setImagePreviews([]);
         setIsSending(false);
@@ -56,9 +54,16 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     };
 
     const handleRemoveImage = (index: number) => {
+        URL.revokeObjectURL(imagePreviews[index]);
         setImageFiles(prev => prev.filter((_, i) => i !== index));
         setImagePreviews(prev => prev.filter((_, i) => i !== index));
     };
+
+    useEffect(() => {
+        return () => {
+            imagePreviews.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [imagePreviews]);
 
     const toggleType = (t: StartType) => {
         if (type.includes(t)) {
@@ -86,7 +91,6 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                 position: position,
                 description,
                 difficulty: difficulty,
-                height: height ? parseFloat(height) : undefined
             }, imageFiles.length > 0 ? imageFiles : undefined);
 
 
@@ -157,32 +161,19 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                                 </div>
                             </div>
 
-                            {/* Difficulty & Height Row */}
-                            <div className="flex gap-4">
-                                <div className="flex-1">
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.difficulty')}</label>
-                                    <select
-                                        value={difficulty}
-                                        onChange={(e) => setDifficulty(e.target.value as any)}
-                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium appearance-none"
-                                    >
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
-                                        <option value="Extreme">Extreme</option>
-                                    </select>
-                                </div>
-                                <div className="w-1/3">
-                                    <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.height')}</label>
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        value={height}
-                                        onChange={(e) => setHeight(e.target.value)}
-                                        placeholder="0.0"
-                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium text-center"
-                                    />
-                                </div>
+                            {/* Difficulty */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.difficulty')}</label>
+                                <select
+                                    value={difficulty}
+                                    onChange={(e) => setDifficulty(e.target.value as any)}
+                                    className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium appearance-none"
+                                >
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                    <option value="Extreme">Extreme</option>
+                                </select>
                             </div>
 
                             {/* Name Input */}
