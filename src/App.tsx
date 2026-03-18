@@ -12,7 +12,7 @@ import { useLanguage } from './context/LanguageContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { SpotsProvider } from './context/SpotsContext';
-import { PremiumProvider } from './context/PremiumContext';
+
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthModal from './components/AuthModal';
 import SpotDetail from './components/SpotDetail';
@@ -238,13 +238,11 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <PremiumProvider>
-          <SpotsProvider>
+        <SpotsProvider>
             <FavoritesProvider>
               <AppContent />
             </FavoritesProvider>
           </SpotsProvider>
-        </PremiumProvider>
       </AuthProvider>
     </LanguageProvider>
   );

@@ -1,73 +1,79 @@
-# React + TypeScript + Vite
+# Updock
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application mobile de découverte et de partage de pumpfoil (dockstart, rockstart, deadstart...).
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Couche | Tech |
+|--------|------|
+| Frontend | React 19 + TypeScript + Vite |
+| Mobile | Capacitor 8 (iOS + Android) |
+| Backend | Supabase (Auth + Postgres + Storage) |
+| Carte | Mapbox GL + react-map-gl |
+| UI | Tailwind CSS 4 + Framer Motion + Lucide |
+| i18n | FR / EN |
 
-## React Compiler
+## Prérequis
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 18+
+- Un projet Supabase actif
+- Un token Mapbox
+- Xcode (pour le build iOS)
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Variables d'environnement
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Crée un fichier `.env` à la racine :
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+VITE_MAPBOX_TOKEN=...
 ```
+
+## Développement web
+
+```bash
+npm run dev
+```
+
+## Build web
+
+```bash
+npm run build
+```
+
+## Build iOS
+
+```bash
+npm run build
+npx cap sync ios
+npx cap open ios
+```
+
+Les icônes et splash screens iOS sont générés depuis `assets/icon.png` et `assets/splash.png` via `@capacitor/assets` :
+
+```bash
+npx @capacitor/assets generate
+```
+
+## Structure `src/`
+
+```
+src/
+├── components/     # Composants UI (Map, SpotDetail, Profile, NavBar, ...)
+├── context/        # Contextes React (Auth, Favorites, Spots, Language)
+├── data/           # Données statiques (spots.ts)
+├── lib/            # Client Supabase
+├── translations/   # Fichiers i18n (fr.json, en.json)
+└── utils/          # Helpers (distance, offline cache)
+```
+
+## Base de données
+
+Les migrations SQL sont dans `supabase/migrations/`. À appliquer via la CLI Supabase ou le dashboard.

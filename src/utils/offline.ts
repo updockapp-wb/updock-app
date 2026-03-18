@@ -30,14 +30,3 @@ export async function cacheSpotImages(imageUrls: string[] | null | undefined) {
     }
 }
 
-/**
- * Cleanup old caches (standard maintenance)
- */
-export async function cleanOldCaches() {
-    const cacheNames = await caches.keys();
-    for (const name of cacheNames) {
-        if (name !== CACHE_NAME) {
-            await caches.delete(name);
-        }
-    }
-}
