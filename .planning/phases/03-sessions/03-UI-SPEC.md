@@ -46,7 +46,7 @@ All values are multiples of 4. Sourced from Tailwind v4 defaults as used across 
 **Exceptions:**
 - Touch targets (Join/Leave/Cancel buttons): minimum 44px height to meet iOS HIG — use `min-h-[44px]` on all tappable action buttons.
 - Avatar size in SessionCard: 32px (`w-8 h-8`) — exact match to ReviewList author avatar.
-- Tab bar badge (participant count): use existing `px-1.5 py-0.5 rounded-full` pill pattern from reviews tab count badge.
+- Tab bar badge (participant count): use `px-2 py-1 rounded-full` pill pattern (8px horizontal, 4px vertical — on the 4px grid).
 
 ---
 
@@ -63,9 +63,8 @@ No new type sizes introduced — mirrors Phase 2 pattern exactly.
 | Micro | 10px (`text-[10px]`) | 700 (`font-bold`) | 1 | Uppercase category labels (existing pattern from SpotDetail stats cards) |
 
 **Notes:**
-- `font-semibold` (600) is used for CTA button labels (established by ReviewForm edit/delete buttons).
-- `font-bold` (700) is used for card headings and data values.
-- Only weights 400 and 600/700 appear in the codebase — do not introduce 500 or 300.
+- Only weights 400 and 700 are used in this phase. `font-bold` (700) covers both headings and interactive element labels (CTA buttons, session time display).
+- Do not introduce 500, 300, or 600 (`font-semibold`).
 
 ---
 
@@ -111,7 +110,7 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 - Calendar icon (lucide Calendar, size 14) in `text-sky-500`
 - Date: `toLocaleDateString()` — locale-appropriate, no library
 - Time: `toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })`
-- Together: `text-sm font-semibold text-slate-800`
+- Together: `text-sm font-bold text-slate-800`
 
 **Participant count:**
 - Users icon (lucide Users, size 14) in `text-slate-400`
@@ -125,9 +124,9 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 
 | State | Condition | Button |
 |-------|-----------|--------|
-| Join | `!user_is_attending && creator_id !== user.id` | Outline button: `border border-sky-200 text-sky-600 hover:bg-sky-50 rounded-xl py-2 text-sm font-semibold min-h-[44px]` |
-| Leave | `user_is_attending && creator_id !== user.id` | Outline button: `border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl py-2 text-sm font-semibold min-h-[44px]` |
-| Cancel session | `creator_id === user.id` | Outline button: `border border-red-200 text-red-500 hover:bg-red-50 rounded-xl py-2 text-sm font-semibold min-h-[44px]` |
+| Join | `!user_is_attending && creator_id !== user.id` | Outline button: `border border-sky-200 text-sky-600 hover:bg-sky-50 rounded-xl py-2 text-sm font-bold min-h-[44px]` |
+| Leave | `user_is_attending && creator_id !== user.id` | Outline button: `border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl py-2 text-sm font-bold min-h-[44px]` |
+| Cancel session | `creator_id === user.id` | Outline button: `border border-red-200 text-red-500 hover:bg-red-50 rounded-xl py-2 text-sm font-bold min-h-[44px]` |
 | Not logged in | `!user` | No action button shown; session is read-only |
 
 **Loading/disabled state:** `opacity-50 pointer-events-none` on button during async operation.
@@ -138,7 +137,7 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 
 **Purpose:** Inline form to create a new session on a spot. Shown only to authenticated users.
 **Card shell:** `bg-white rounded-xl p-4 border border-slate-100` — same as ReviewForm.
-**Section label:** `text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2` — "Annoncer une session" — same as "Votre Avis" label in ReviewForm.
+**Section label:** `text-xs font-bold text-slate-500 uppercase tracking-wide mb-2` — "Annoncer une session" — same as "Votre Avis" label in ReviewForm.
 
 **datetime-local input:**
 - `w-full border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500`
@@ -152,7 +151,7 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 - `rows={3}`
 
 **Submit button:**
-- Full width: `w-full py-3 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-600 active:bg-sky-700 transition-colors min-h-[44px]`
+- Full width: `w-full py-3 rounded-xl bg-sky-500 text-white text-sm font-bold hover:bg-sky-600 active:bg-sky-700 transition-colors min-h-[44px]`
 - Disabled when no date selected or while submitting
 - Label: translation key `session.submit` → "Annoncer"
 - Loading state: spinner inline (same `w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin` pattern)
@@ -174,9 +173,9 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 ### Sessions Tab in SpotDetail
 
 **Tab button addition:** Third tab after Info and Avis.
-- Inactive: `text-sm font-semibold text-slate-400 pb-2 transition-colors`
-- Active: `text-sm font-semibold text-sky-600 border-b-2 border-sky-500 pb-2`
-- Count badge: `text-xs bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full` — same as reviewCount badge
+- Inactive: `text-sm font-bold text-slate-400 pb-2 transition-colors`
+- Active: `text-sm font-bold text-sky-600 border-b-2 border-sky-500 pb-2`
+- Count badge: `text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full` — same as reviewCount badge, using 4px-grid values (8px horizontal, 4px vertical)
 - Icon: Calendar (lucide, size 14) inline before label
 - Label: translation key `session.tab` → "Sessions"
 
@@ -195,7 +194,7 @@ New components for this phase. All mirror Phase 2 patterns exactly.
 **Item layout (compact, not full SessionCard):**
 - `div.flex.items-center.gap-3.py-3.border-b.border-slate-100`
 - Calendar icon (size 16) in `text-sky-500`
-- Spot name: `text-sm font-semibold text-slate-800` (from spots join)
+- Spot name: `text-sm font-bold text-slate-800` (from spots join)
 - Date + time: `text-xs text-slate-400`
 - Participant count: `text-xs text-slate-400` with Users icon (size 12)
 **Empty:** section not rendered (no empty state text needed — profile shows full content without it)
@@ -217,8 +216,8 @@ On tap:
 On tap "Annuler la session":
 1. Show inline confirmation row within the card (not a modal) — matches existing review delete inline UX
 2. Confirmation row: `text-sm text-slate-600` question + two buttons side-by-side
-   - Confirm: `text-red-500 border-red-200 rounded-xl py-1.5 px-4 text-sm font-semibold hover:bg-red-50`
-   - Dismiss: `text-slate-500 border-slate-200 rounded-xl py-1.5 px-4 text-sm font-semibold hover:bg-slate-50`
+   - Confirm: `text-red-500 border-red-200 rounded-xl py-1.5 px-4 text-sm font-bold hover:bg-red-50`
+   - Dismiss: `text-slate-500 border-slate-200 rounded-xl py-1.5 px-4 text-sm font-bold hover:bg-slate-50`
 3. On confirm: update `is_cancelled = true`, remove card from list with `AnimatePresence` exit animation `opacity: 0, y: -10`
 
 ### Tab Switching
