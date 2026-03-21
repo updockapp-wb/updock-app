@@ -61,10 +61,11 @@ Plans:
   3. A user can join an existing session and leave it; the participant count updates immediately
   4. A user can cancel their own session; session creator and participants see it removed from upcoming sessions
   5. A user's own upcoming sessions are visible on their profile screen
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Sessions feature — SessionsContext, SessionForm, SessionCard, SessionList, SpotDetail Sessions tab, join/leave, profile session list (SESS-01, SESS-02, SESS-03, SESS-04)
+- [ ] 03-01-PLAN.md — SessionsContext, SessionForm, SessionCard, SessionList, translations (SESS-01, SESS-02, SESS-03, SESS-04)
+- [ ] 03-02-PLAN.md — SpotDetail sessions tab, Profile upcoming sessions, App.tsx provider wiring (SESS-01, SESS-02, SESS-03, SESS-04)
 
 ### Phase 4: Push Notifications
 **Goal**: Users are notified of session activity on spots they care about, without being asked for permission at launch
@@ -90,5 +91,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-18 |
 | 2. Reviews | 2/2 | Complete   | 2026-03-21 |
-| 3. Sessions | 0/1 | Not started | - |
+| 3. Sessions | 0/2 | Not started | - |
 | 4. Push Notifications | 0/2 | Not started | - |
