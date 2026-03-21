@@ -20,7 +20,7 @@
 
 - [x] **AVIS-01**: L'utilisateur authentifié peut attribuer une note (1 à 5 étoiles) à un spot
 - [x] **AVIS-02**: L'utilisateur authentifié peut laisser un commentaire textuel sur un spot
-- [ ] **AVIS-03**: Les avis et la note moyenne sont visibles dans la fiche détail du spot
+- [x] **AVIS-03**: Les avis et la note moyenne sont visibles dans la fiche détail du spot
 - [x] **AVIS-04**: L'utilisateur peut voir et modifier son propre avis
 
 ### Sessions programmées
@@ -75,7 +75,7 @@
 | PROF-02 | Phase 1 — Foundation | Complete |
 | AVIS-01 | Phase 2 — Reviews | Complete |
 | AVIS-02 | Phase 2 — Reviews | Complete |
-| AVIS-03 | Phase 2 — Reviews | Pending |
+| AVIS-03 | Phase 2 — Reviews | Complete |
 | AVIS-04 | Phase 2 — Reviews | Complete |
 | SESS-01 | Phase 3 — Sessions | Pending |
 | SESS-02 | Phase 3 — Sessions | Pending |
