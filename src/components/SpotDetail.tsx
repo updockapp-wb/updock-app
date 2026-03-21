@@ -26,6 +26,14 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [snap, setSnap] = useState<number | string | null>(0.35);
     const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
     const [activeTab, setActiveTab] = useState<'info' | 'reviews'>('info');
     const [reviews, setReviews] = useState<Review[]>([]);
     const [userReview, setUserReview] = useState<Review | null>(null);
@@ -363,7 +371,7 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
             {/* MOBILE DRAWER (Vaul) */}
             <div className="md:hidden">
                 <Drawer.Root
-                    open={!!spot}
+                    open={!!spot && isMobile}
                     onClose={onClose}
                     snapPoints={[0.35, 0.95]}
                     activeSnapPoint={snap}
