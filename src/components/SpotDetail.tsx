@@ -1,4 +1,4 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare } from 'lucide-react';
 import { type Spot } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
@@ -7,6 +7,11 @@ import { useState, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import { createPortal } from 'react-dom';
 import { Share } from '@capacitor/share';
+import ReviewForm from './ReviewForm';
+import { type Review } from './ReviewForm';
+import ReviewList from './ReviewList';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 interface SpotDetailProps {
     spot: Spot | null;
@@ -16,10 +21,17 @@ interface SpotDetailProps {
 export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
     const { toggleFavorite, isFavorite } = useFavorites();
     const { t, language } = useLanguage();
+    const { user } = useAuth();
     const [isImageOpen, setIsImageOpen] = useState(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [snap, setSnap] = useState<number | string | null>(0.35);
     const [mounted, setMounted] = useState(false);
+    const [activeTab, setActiveTab] = useState<'info' | 'reviews'>('info');
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [userReview, setUserReview] = useState<Review | null>(null);
+    const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+    const [avgRating, setAvgRating] = useState<number | null>(null);
+    const [reviewCount, setReviewCount] = useState(0);
 
     useEffect(() => {
         setMounted(true);
@@ -32,6 +44,70 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
             setCurrentPhotoIndex(0);
         }
     }, [spot]);
+
+    // Reset reviews and fetch when spot changes
+    useEffect(() => {
+        if (!spot) return;
+        // Reset tab to info when opening a new spot
+        setActiveTab('info');
+        // Reset stale reviews synchronously before async fetch (Pitfall 2)
+        setReviews([]);
+        setUserReview(null);
+        setAvgRating(null);
+        setReviewCount(0);
+
+        const fetchReviews = async () => {
+            setIsLoadingReviews(true);
+            const { data, error } = await supabase
+                .from('reviews')
+                .select('*, profiles(display_name, avatar_url, avatar_id)')
+                .eq('spot_id', spot.id)
+                .order('created_at', { ascending: false });
+
+            if (data && !error) {
+                setReviews(data as Review[]);
+                setUserReview((data as Review[]).find(r => r.user_id === user?.id) ?? null);
+                // Client-side avg calculation for immediate consistency
+                if (data.length > 0) {
+                    const sum = (data as Review[]).reduce((acc, r) => acc + r.rating, 0);
+                    setAvgRating(Math.round((sum / data.length) * 10) / 10);
+                    setReviewCount(data.length);
+                }
+            }
+            setIsLoadingReviews(false);
+        };
+
+        fetchReviews();
+    }, [spot?.id, user?.id]);
+
+    const handleReviewSubmit = (review: Review) => {
+        setReviews(prev => {
+            const filtered = prev.filter(r => r.user_id !== review.user_id);
+            const updated = [review, ...filtered];
+            // Recalculate avg immediately (Pitfall 4 — success criterion 4)
+            const sum = updated.reduce((acc, r) => acc + r.rating, 0);
+            setAvgRating(Math.round((sum / updated.length) * 10) / 10);
+            setReviewCount(updated.length);
+            return updated;
+        });
+        setUserReview(review);
+    };
+
+    const handleReviewDelete = () => {
+        setReviews(prev => {
+            const filtered = prev.filter(r => r.user_id !== user?.id);
+            // Recalculate avg immediately
+            if (filtered.length > 0) {
+                const sum = filtered.reduce((acc, r) => acc + r.rating, 0);
+                setAvgRating(Math.round((sum / filtered.length) * 10) / 10);
+            } else {
+                setAvgRating(null);
+            }
+            setReviewCount(filtered.length);
+            return filtered;
+        });
+        setUserReview(null);
+    };
 
     if (!spot) return null;
 
@@ -124,59 +200,139 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-12">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                    <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                        <div className="text-sky-500 mb-1"><Wind size={18} /></div>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.difficulty')}</p>
-                        <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.difficulty}</p>
-                    </div>
-                    <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                        <div className="text-teal-500 mb-1"><Waves size={18} /></div>
-                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.height')}</p>
-                        <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.height || '-'}m</p>
-                    </div>
+                {/* Tab Navigation */}
+                <div className="flex gap-2 mb-6">
+                    <button
+                        onClick={() => setActiveTab('info')}
+                        className={`px-4 py-2 text-sm font-bold rounded-full transition-colors ${
+                            activeTab === 'info'
+                                ? 'bg-sky-100 text-sky-700'
+                                : 'text-slate-400 hover:text-slate-600'
+                        }`}
+                    >
+                        {t('spot.tab_info')}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('reviews')}
+                        className={`px-4 py-2 text-sm font-bold rounded-full transition-colors flex items-center gap-1.5 ${
+                            activeTab === 'reviews'
+                                ? 'bg-sky-100 text-sky-700'
+                                : 'text-slate-400 hover:text-slate-600'
+                        }`}
+                    >
+                        <MessageSquare size={14} />
+                        {t('spot.tab_reviews')}
+                        {reviewCount > 0 && (
+                            <span className="text-xs bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full">
+                                {reviewCount}
+                            </span>
+                        )}
+                    </button>
                 </div>
 
-                {/* Photo Preview */}
-                <div className="mb-6">
-                    <h3 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
-                        📷 Photos
-                    </h3>
-                    <div
-                        className="aspect-video w-full rounded-2xl overflow-hidden bg-slate-100 relative cursor-pointer hover:opacity-90 transition-opacity border border-slate-100"
-                        onClick={() => {
-                            if (spot.image_urls && spot.image_urls.length > 0) {
-                                setCurrentPhotoIndex(0);
-                                setIsImageOpen(true);
-                            }
-                        }}
-                    >
-                        {spot.image_urls && spot.image_urls.length > 0 ? (
-                            <>
-                                <img src={spot.image_urls[0]} alt={spot.name} className="w-full h-full object-cover" />
-                                {spot.image_urls.length > 1 && (
-                                    <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/10 uppercase tracking-widest">
-                                        View {spot.image_urls.length} Photos
+                {activeTab === 'info' && (
+                    <>
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-2 gap-3 mb-6">
+                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                <div className="text-sky-500 mb-1"><Wind size={18} /></div>
+                                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.difficulty')}</p>
+                                <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.difficulty}</p>
+                            </div>
+                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                                <div className="text-teal-500 mb-1"><Waves size={18} /></div>
+                                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.height')}</p>
+                                <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.height || '-'}m</p>
+                            </div>
+                        </div>
+
+                        {/* Photo Preview */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                                📷 Photos
+                            </h3>
+                            <div
+                                className="aspect-video w-full rounded-2xl overflow-hidden bg-slate-100 relative cursor-pointer hover:opacity-90 transition-opacity border border-slate-100"
+                                onClick={() => {
+                                    if (spot.image_urls && spot.image_urls.length > 0) {
+                                        setCurrentPhotoIndex(0);
+                                        setIsImageOpen(true);
+                                    }
+                                }}
+                            >
+                                {spot.image_urls && spot.image_urls.length > 0 ? (
+                                    <>
+                                        <img src={spot.image_urls[0]} alt={spot.name} className="w-full h-full object-cover" />
+                                        {spot.image_urls.length > 1 && (
+                                            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/10 uppercase tracking-widest">
+                                                View {spot.image_urls.length} Photos
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 text-xs gap-2">
+                                        <div className="p-3 bg-white rounded-full"><Waves size={24} className="opacity-20" /></div>
+                                        No photos available
                                     </div>
                                 )}
-                            </>
-                        ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 text-xs gap-2">
-                                <div className="p-3 bg-white rounded-full"><Waves size={24} className="opacity-20" /></div>
-                                No photos available
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider opacity-60">{t('spot.desc')}</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                                {language === 'fr' && spot.description_fr ? spot.description_fr : spot.description}
+                            </p>
+                        </div>
+                    </>
+                )}
+
+                {activeTab === 'reviews' && (
+                    <div>
+                        {/* Average Rating Summary */}
+                        {avgRating !== null && (
+                            <div className="flex items-center gap-3 mb-6 bg-white rounded-2xl p-4 border border-slate-100">
+                                <div className="text-3xl font-bold text-slate-900">{avgRating}</div>
+                                <div>
+                                    <div className="flex gap-0.5">
+                                        {[1, 2, 3, 4, 5].map(v => (
+                                            <Star
+                                                key={v}
+                                                size={16}
+                                                className={v <= Math.round(avgRating)
+                                                    ? 'fill-amber-400 text-amber-400'
+                                                    : 'text-slate-200'}
+                                            />
+                                        ))}
+                                    </div>
+                                    <p className="text-xs text-slate-400 mt-0.5">
+                                        {reviewCount} {t('review.stars')}
+                                    </p>
+                                </div>
                             </div>
                         )}
-                    </div>
-                </div>
 
-                {/* Description */}
-                <div className="mb-6">
-                    <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider opacity-60">{t('spot.desc')}</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                        {language === 'fr' && spot.description_fr ? spot.description_fr : spot.description}
-                    </p>
-                </div>
+                        {/* Review Form */}
+                        {user && (
+                            <div className="mb-6">
+                                <ReviewForm
+                                    spotId={spot.id}
+                                    userReview={userReview}
+                                    onSubmit={handleReviewSubmit}
+                                    onDelete={handleReviewDelete}
+                                />
+                            </div>
+                        )}
+
+                        {/* Review List */}
+                        <ReviewList
+                            reviews={reviews.filter(r => r.user_id !== user?.id)}
+                            isLoading={isLoadingReviews}
+                            currentUserId={user?.id}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
