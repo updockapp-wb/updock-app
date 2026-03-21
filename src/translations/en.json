@@ -92,5 +92,20 @@
     "profile.name_placeholder": "Enter your name",
     "profile.set_name": "Tap to set your name",
     "profile.save": "Save",
-    "profile.upload_photo": "Upload photo"
+    "profile.upload_photo": "Upload photo",
+    "review.tab": "Reviews",
+    "review.write": "Write a review",
+    "review.edit": "Edit your review",
+    "review.update": "Update",
+    "review.delete": "Delete",
+    "review.submit": "Submit",
+    "review.placeholder": "Share your experience at this spot... (min 20 characters)",
+    "review.avg_rating": "Average rating",
+    "review.no_reviews": "No reviews yet. Be the first!",
+    "review.your_review": "Your Review",
+    "review.anonymous": "Anonymous",
+    "review.confirm_delete": "Delete your review?",
+    "review.stars": "stars",
+    "spot.tab_info": "Info",
+    "spot.tab_reviews": "Reviews"
 }

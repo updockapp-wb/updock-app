@@ -92,5 +92,20 @@
     "profile.name_placeholder": "Entrez votre nom",
     "profile.set_name": "Appuyez pour choisir un nom",
     "profile.save": "Enregistrer",
-    "profile.upload_photo": "Choisir une photo"
+    "profile.upload_photo": "Choisir une photo",
+    "review.tab": "Avis",
+    "review.write": "Laisser un avis",
+    "review.edit": "Modifier votre avis",
+    "review.update": "Mettre a jour",
+    "review.delete": "Supprimer",
+    "review.submit": "Envoyer",
+    "review.placeholder": "Partagez votre experience sur ce spot... (min 20 caracteres)",
+    "review.avg_rating": "Note moyenne",
+    "review.no_reviews": "Aucun avis pour le moment. Soyez le premier !",
+    "review.your_review": "Votre Avis",
+    "review.anonymous": "Anonyme",
+    "review.confirm_delete": "Supprimer votre avis ?",
+    "review.stars": "etoiles",
+    "spot.tab_info": "Info",
+    "spot.tab_reviews": "Avis"
 }
