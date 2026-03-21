@@ -210,6 +210,7 @@ function AppContent() {
                     <Profile
                       onOpenAuth={() => setIsAuthModalOpen(true)}
                       onAdminClick={() => setIsAdminOpen(true)}
+                      onSpotSelect={(spotId) => { const spot = spots.find(s => s.id === spotId); if (spot) setSelectedSpot(spot); }}
                     />
                   </div>
                 </motion.div>

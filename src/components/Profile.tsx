@@ -1,9 +1,10 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSessions } from '../context/SessionsContext';
 import PremiumModal from './PremiumModal';
 
 // Avatar assets mapping
@@ -18,9 +19,10 @@ const AVATARS = [
 interface ProfileProps {
     onOpenAuth?: () => void;
     onAdminClick?: () => void;
+    onSpotSelect?: (spotId: string) => void;
 }
 
-export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
+export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: ProfileProps) {
     const { t, language, setLanguage } = useLanguage();
     const { favorites } = useFavorites();
     const { user, signOut } = useAuth();
@@ -33,6 +35,14 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
     const [editingName, setEditingName] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const { userUpcomingSessions, fetchUserSessions } = useSessions();
+
+    useEffect(() => {
+        if (user) {
+            fetchUserSessions();
+        }
+    }, [user]);
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
 
@@ -226,6 +236,39 @@ export default function Profile({ onOpenAuth, onAdminClick }: ProfileProps) {
                     <p className="text-2xl font-black text-slate-800">{spotsCount}</p>
                 </div>
             </div>
+
+            {/* Upcoming Sessions */}
+            {user && userUpcomingSessions.length > 0 && (
+                <div className="mt-6 mb-8">
+                    <h3 className="text-sm font-bold text-slate-800 mb-3">{t('session.upcoming')}</h3>
+                    <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
+                        {userUpcomingSessions.map((session, index) => {
+                            const date = new Date(session.starts_at);
+                            const dateStr = date.toLocaleDateString();
+                            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            return (
+                                <button
+                                    key={session.id}
+                                    onClick={() => onSpotSelect?.(session.spot_id)}
+                                    className={`w-full flex items-center gap-3 py-3 px-4 text-left ${
+                                        index < userUpcomingSessions.length - 1 ? 'border-b border-slate-100' : ''
+                                    }`}
+                                >
+                                    <Calendar size={16} className="text-sky-500 shrink-0" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-bold text-slate-800 truncate">{session.spot_name}</p>
+                                        <p className="text-xs text-slate-400">{dateStr} {timeStr}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1 shrink-0">
+                                        <Users size={12} className="text-slate-400" />
+                                        <span className="text-xs text-slate-400">{session.attendee_count}</span>
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
 
             {/* Settings Sections */}
             <h3 className="text-slate-400 text-xs font-bold uppercase mb-4 ml-2">{t('profile.settings')}</h3>
