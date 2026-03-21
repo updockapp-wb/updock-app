@@ -53,10 +53,10 @@ completed: 2026-03-21
 
 ## Performance
 
-- **Duration:** ~4 min
+- **Duration:** ~45 min (including post-checkpoint fixes and user verification)
 - **Started:** 2026-03-21T19:50:52Z
-- **Completed:** 2026-03-21T19:54:29Z
-- **Tasks:** 1/2 (Task 2 is a human-verify checkpoint — awaiting user verification)
+- **Completed:** 2026-03-21T20:30:00Z
+- **Tasks:** 2/2 (verified end-to-end by user)
 - **Files modified:** 1
 
 ## Accomplishments
@@ -64,15 +64,20 @@ completed: 2026-03-21
 - Wired ReviewForm and ReviewList into the Reviews tab with full local state management
 - Implemented synchronous stale-reset before async review fetch (prevents stale data between spots)
 - Average rating recalculates client-side immediately on submit, edit, and delete
+- Fixed Supabase profiles join syntax and desktop dual-panel rendering after initial commit
+- Fixed Vaul drawer close event to prevent collapsing desktop sidebar panel
+- Feature verified end-to-end by user: tabs, review CRUD, average rating update, no stale data between spots
 
 ## Task Commits
 
 Each task was committed atomically:
 
 1. **Task 1: Add tab navigation and reviews integration to SpotDetail** - `f1d7c84` (feat)
-2. **Task 2: Verify reviews feature end-to-end** - pending human verification
+2. **Fix: Supabase profiles join and desktop dual-panel** - `14628c1` (fix)
+3. **Fix: Prevent Vaul drawer from closing desktop panel** - `0401404` (fix)
+4. **Task 2: Verify reviews feature end-to-end** - approved by user (human-verify, no code commit)
 
-**Plan metadata:** pending (after checkpoint completion)
+**Plan metadata:** (docs commit — see below)
 
 ## Files Created/Modified
 - `src/components/SpotDetail.tsx` - Added tab nav, reviews state, fetch useEffect, handleReviewSubmit/Delete, Reviews tab content (avg rating, ReviewForm, ReviewList)
@@ -93,21 +98,39 @@ Each task was committed atomically:
 - **Fix:** No fix applied — this pattern is deliberate (required by plan for Pitfall 2 synchronous reset) and matches pre-existing codebase style. Net new lint errors: +1 error, +1 warning vs the original SpotDetail baseline.
 - **Impact:** Minimal — build passes cleanly, behavior is correct, pattern is consistent with project norms.
 
+### Auto-fixed Issues (post-Task 1, pre-verification)
+
+**2. [Rule 1 - Bug] Fixed Supabase profiles join syntax and desktop dual-panel rendering**
+- **Found during:** Post-commit runtime testing
+- **Issue:** Profiles join returned a Supabase query error; desktop dual-panel rendering was lost in the rewrite
+- **Fix:** Corrected join syntax to inline object notation; restored dual-panel rendering logic
+- **Files modified:** src/components/SpotDetail.tsx
+- **Committed in:** 14628c1
+
+**3. [Rule 1 - Bug] Prevented Vaul drawer close event from collapsing desktop sidebar panel**
+- **Found during:** Post-commit desktop viewport testing
+- **Issue:** Vaul's internal `onOpenChange(false)` propagated on desktop, calling `onClose` and hiding the sidebar panel
+- **Fix:** Added guard so Vaul close callback only propagates on mobile
+- **Files modified:** src/components/SpotDetail.tsx
+- **Committed in:** 0401404
+
 ---
 
-**Total deviations:** 0 auto-fixes. Minor lint count increase is an accepted consequence of following plan-mandated synchronous reset pattern.
-**Impact on plan:** None — plan executed as specified.
+**Total deviations:** 2 auto-fixed (2 bugs). Minor lint count increase is an accepted baseline.
+**Impact on plan:** Both bug fixes required for correct cross-device behavior. No scope creep.
 
 ## Issues Encountered
-None.
+
+- Supabase join syntax for related tables required inline object notation; array-style caused a runtime query error caught during testing after build passed
+- Vaul drawer's `onOpenChange` fires on all viewports — required a viewport guard to preserve desktop panel state
 
 ## User Setup Required
 None - no external service configuration required.
 
 ## Next Phase Readiness
-- Full reviews feature ready for end-to-end user verification (Task 2 checkpoint)
-- After verification: Phase 02 reviews complete, ready for Phase 03 sessions
-- No blockers identified
+- Phase 02 (02-reviews) is fully complete — both plans executed and user-verified
+- Ready to proceed to Phase 03 (sessions)
+- Phase 03 will need a date/time picker decision (flagged in STATE.md: HTML `<input type="datetime-local">` vs Capacitor plugin)
 
 ---
 *Phase: 02-reviews*
