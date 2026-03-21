@@ -27,7 +27,7 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 - [ ] Formulaire d'ajout de spot simplifié : retirer le champ "hauteur", garder nom / type / photos / description ; meilleure UX visuelle
 - [ ] Profils utilisateurs simples : nom, avatar, historique des spots soumis — sans surcharger l'expérience
 - [ ] Avis et notation des spots : les utilisateurs peuvent laisser une note et un commentaire sur un spot
-- [ ] Sessions programmées : un utilisateur indique qu'il sera sur un spot à une heure précise ; les autres peuvent être notifiés et le rejoindre
+- ✓ Sessions programmées : un utilisateur indique qu'il sera sur un spot à une heure précise ; les autres peuvent être notifiés et le rejoindre — Validated in Phase 03: sessions
 
 ### Out of Scope
 
@@ -57,8 +57,8 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 | Décision | Rationale | Outcome |
 |----------|-----------|---------|
 | Profils simples avant fonctionnalités communautaires | Base nécessaire pour avis + sessions sans alourdir l'UX | — Pending |
-| Sessions programmées avec notifications push | Fonctionnalité communautaire différenciante, naturelle pour les riders | — Pending |
+| Sessions programmées avec notifications push | Fonctionnalité communautaire différenciante, naturelle pour les riders | Sessions livrées (Phase 03) — Notifications push en Phase 04 |
 | Ne pas refactoriser le type de spot (JSON string) maintenant | Hors scope des correctifs prioritaires | — Pending |
 
 ---
-*Last updated: 2026-03-18 after initialization*
+*Last updated: 2026-03-21 after Phase 03 (sessions) completion*
