@@ -25,10 +25,10 @@
 
 ### Sessions programmées
 
-- [ ] **SESS-01**: L'utilisateur peut annoncer une session sur un spot (date + heure + message optionnel)
-- [ ] **SESS-02**: Les sessions à venir sont visibles dans la fiche détail du spot
-- [ ] **SESS-03**: L'utilisateur peut rejoindre une session annoncée par quelqu'un d'autre
-- [ ] **SESS-04**: L'utilisateur peut annuler sa propre session ou son inscription à une session
+- [x] **SESS-01**: L'utilisateur peut annoncer une session sur un spot (date + heure + message optionnel)
+- [x] **SESS-02**: Les sessions à venir sont visibles dans la fiche détail du spot
+- [x] **SESS-03**: L'utilisateur peut rejoindre une session annoncée par quelqu'un d'autre
+- [x] **SESS-04**: L'utilisateur peut annuler sa propre session ou son inscription à une session
 
 ### Notifications push
 
@@ -77,10 +77,10 @@
 | AVIS-02 | Phase 2 — Reviews | Complete |
 | AVIS-03 | Phase 2 — Reviews | Complete |
 | AVIS-04 | Phase 2 — Reviews | Complete |
-| SESS-01 | Phase 3 — Sessions | Pending |
-| SESS-02 | Phase 3 — Sessions | Pending |
-| SESS-03 | Phase 3 — Sessions | Pending |
-| SESS-04 | Phase 3 — Sessions | Pending |
+| SESS-01 | Phase 3 — Sessions | Complete |
+| SESS-02 | Phase 3 — Sessions | Complete |
+| SESS-03 | Phase 3 — Sessions | Complete |
+| SESS-04 | Phase 3 — Sessions | Complete |
 | NOTIF-01 | Phase 4 — Push Notifications | Pending |
 | NOTIF-02 | Phase 4 — Push Notifications | Pending |
 | NOTIF-03 | Phase 4 — Push Notifications | Pending |
