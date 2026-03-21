@@ -1,4 +1,4 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare } from 'lucide-react';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar } from 'lucide-react';
 import { type Spot } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
@@ -10,7 +10,10 @@ import { Share } from '@capacitor/share';
 import ReviewForm from './ReviewForm';
 import { type Review } from './ReviewForm';
 import ReviewList from './ReviewList';
+import SessionForm from './SessionForm';
+import SessionList from './SessionList';
 import { useAuth } from '../context/AuthContext';
+import { useSessions } from '../context/SessionsContext';
 import { supabase } from '../lib/supabase';
 
 interface SpotDetailProps {
@@ -22,6 +25,8 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
     const { toggleFavorite, isFavorite } = useFavorites();
     const { t, language } = useLanguage();
     const { user } = useAuth();
+    const { sessions, isLoadingSessions, fetchSessionsForSpot } = useSessions();
+    const sessionCount = sessions.length;
     const [isImageOpen, setIsImageOpen] = useState(false);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [snap, setSnap] = useState<number | string | null>(0.35);
@@ -34,7 +39,7 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
         window.addEventListener('resize', check);
         return () => window.removeEventListener('resize', check);
     }, []);
-    const [activeTab, setActiveTab] = useState<'info' | 'reviews'>('info');
+    const [activeTab, setActiveTab] = useState<'info' | 'reviews' | 'sessions'>('info');
     const [reviews, setReviews] = useState<Review[]>([]);
     const [userReview, setUserReview] = useState<Review | null>(null);
     const [isLoadingReviews, setIsLoadingReviews] = useState(false);
@@ -63,6 +68,8 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
         setUserReview(null);
         setAvgRating(null);
         setReviewCount(0);
+
+        fetchSessionsForSpot(spot.id);
 
         const fetchReviews = async () => {
             setIsLoadingReviews(true);
@@ -244,6 +251,20 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
                             </span>
                         )}
                     </button>
+                    <button
+                        onClick={() => setActiveTab('sessions')}
+                        className={`flex items-center gap-1 text-sm font-bold rounded-full px-4 py-2 transition-colors ${
+                            activeTab === 'sessions'
+                                ? 'bg-sky-100 text-sky-700'
+                                : 'text-slate-400 hover:text-slate-600'
+                        }`}
+                    >
+                        <Calendar size={14} />
+                        {t('spot.tab_sessions')}
+                        {sessionCount > 0 && (
+                            <span className="text-xs bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-full">{sessionCount}</span>
+                        )}
+                    </button>
                 </div>
 
                 {activeTab === 'info' && (
@@ -347,6 +368,20 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
                             isLoading={isLoadingReviews}
                             currentUserId={user?.id}
                         />
+                    </div>
+                )}
+
+                {activeTab === 'sessions' && (
+                    <div>
+                        {user && (
+                            <SessionForm
+                                spotId={spot.id}
+                                onSessionCreated={() => fetchSessionsForSpot(spot.id)}
+                            />
+                        )}
+                        <div className="mt-4">
+                            <SessionList sessions={sessions} isLoading={isLoadingSessions} />
+                        </div>
                     </div>
                 )}
             </div>
