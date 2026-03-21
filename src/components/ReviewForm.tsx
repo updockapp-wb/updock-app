@@ -61,13 +61,19 @@ export default function ReviewForm({ spotId, userReview, onSubmit, onDelete }: R
         },
         { onConflict: 'spot_id,user_id' }
       )
-      .select('*, profiles(display_name, avatar_url, avatar_id)')
+      .select('*')
       .single();
 
     if (submitError) {
       setError(submitError.message);
     } else if (data) {
-      onSubmit(data as Review);
+      // Fetch profile separately — no FK required
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name, avatar_url, avatar_id')
+        .eq('id', user.id)
+        .single();
+      onSubmit({ ...data, profiles: profile || null } as Review);
       setIsEditing(false);
     }
 

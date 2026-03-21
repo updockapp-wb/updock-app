@@ -60,16 +60,24 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
             setIsLoadingReviews(true);
             const { data, error } = await supabase
                 .from('reviews')
-                .select('*, profiles(display_name, avatar_url, avatar_id)')
+                .select('*')
                 .eq('spot_id', spot.id)
                 .order('created_at', { ascending: false });
 
             if (data && !error) {
-                setReviews(data as Review[]);
-                setUserReview((data as Review[]).find(r => r.user_id === user?.id) ?? null);
+                // Fetch profiles separately — no FK required
+                const userIds = [...new Set(data.map(r => r.user_id))];
+                const { data: profilesData } = userIds.length > 0
+                    ? await supabase.from('profiles').select('id, display_name, avatar_url, avatar_id').in('id', userIds)
+                    : { data: [] };
+                const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p]));
+                const reviewsWithProfiles = data.map(r => ({ ...r, profiles: profilesMap[r.user_id] || null }));
+
+                setReviews(reviewsWithProfiles as Review[]);
+                setUserReview((reviewsWithProfiles as Review[]).find(r => r.user_id === user?.id) ?? null);
                 // Client-side avg calculation for immediate consistency
                 if (data.length > 0) {
-                    const sum = (data as Review[]).reduce((acc, r) => acc + r.rating, 0);
+                    const sum = data.reduce((acc, r) => acc + r.rating, 0);
                     setAvgRating(Math.round((sum / data.length) * 10) / 10);
                     setReviewCount(data.length);
                 }
@@ -363,8 +371,8 @@ export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
                     shouldScaleBackground
                 >
                     <Drawer.Portal>
-                        <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2000]" />
-                        <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl">
+                        <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2000] md:hidden" />
+                        <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-slate-300 mt-3 mb-2" />
                             <div className="flex-1 overflow-hidden">
                                 {content}
