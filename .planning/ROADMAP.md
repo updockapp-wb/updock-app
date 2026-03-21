@@ -41,14 +41,15 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: AVIS-01, AVIS-02, AVIS-03, AVIS-04
 **Success Criteria** (what must be TRUE):
-  1. A logged-in user can submit a 1–5 star rating with a written comment on any spot
+  1. A logged-in user can submit a 1-5 star rating with a written comment on any spot
   2. The spot detail sheet shows a Reviews tab with all reviews, author avatars, and average rating
   3. A user can edit or delete their own review; they cannot modify another user's review
   4. The average rating on a spot updates immediately after a review is submitted or changed
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: Reviews feature — schema integration, ReviewForm, ReviewList, SpotDetail Reviews tab, star picker, spot_ratings view display (AVIS-01, AVIS-02, AVIS-03, AVIS-04)
+- [ ] 02-01-PLAN.md — ReviewForm + ReviewList components, translation keys (AVIS-01, AVIS-02, AVIS-04)
+- [ ] 02-02-PLAN.md — SpotDetail tab integration, reviews fetch/display, avg rating wiring (AVIS-01, AVIS-02, AVIS-03, AVIS-04)
 
 ### Phase 3: Sessions
 **Goal**: Users can announce they will be at a spot at a specific time and others can join them
@@ -83,11 +84,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-18 |
-| 2. Reviews | 0/1 | Not started | - |
+| 2. Reviews | 0/2 | Not started | - |
 | 3. Sessions | 0/1 | Not started | - |
 | 4. Push Notifications | 0/2 | Not started | - |
