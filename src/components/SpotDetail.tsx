@@ -1,4 +1,4 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar } from 'lucide-react';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock } from 'lucide-react';
 import { type Spot } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
@@ -22,7 +22,7 @@ interface SpotDetailProps {
     onOpenAuth?: () => void;
 }
 
-export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: SpotDetailProps) {
+export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProps) {
     const { toggleFavorite, isFavorite } = useFavorites();
     const { t, language } = useLanguage();
     const { user } = useAuth();
@@ -192,14 +192,23 @@ export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: S
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
+                                if (!user) {
+                                    onOpenAuth?.();
+                                    return;
+                                }
                                 toggleFavorite(spot.id);
                             }}
-                            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors shadow-sm"
+                            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors shadow-sm relative overflow-visible"
                         >
                             <Heart
                                 size={20}
-                                className={isFavorite(spot.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}
+                                className={user && isFavorite(spot.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}
                             />
+                            {!user && (
+                                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-white rounded-full border border-slate-200 flex items-center justify-center">
+                                    <Lock size={10} className="text-slate-400" />
+                                </span>
+                            )}
                         </button>
                         <button
                             onClick={onClose}
@@ -352,7 +361,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: S
                         )}
 
                         {/* Review Form */}
-                        {user && (
+                        {user ? (
                             <div className="mb-6">
                                 <ReviewForm
                                     spotId={spot.id}
@@ -361,6 +370,14 @@ export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: S
                                     onDelete={handleReviewDelete}
                                 />
                             </div>
+                        ) : (
+                            <button
+                                onClick={() => onOpenAuth?.()}
+                                className="w-full mb-6 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
+                            >
+                                {t('review.write')}
+                                <Lock size={14} className="text-slate-400" />
+                            </button>
                         )}
 
                         {/* Review List */}
@@ -374,11 +391,19 @@ export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: S
 
                 {activeTab === 'sessions' && (
                     <div>
-                        {user && (
+                        {user ? (
                             <SessionForm
                                 spotId={spot.id}
                                 onSessionCreated={() => fetchSessionsForSpot(spot.id)}
                             />
+                        ) : (
+                            <button
+                                onClick={() => onOpenAuth?.()}
+                                className="w-full mb-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
+                            >
+                                {t('session.create')}
+                                <Lock size={14} className="text-slate-400" />
+                            </button>
                         )}
                         <div className="mt-4">
                             <SessionList sessions={sessions} isLoading={isLoadingSessions} />
