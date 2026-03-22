@@ -93,16 +93,14 @@ function AppContent() {
           {/* Desktop Sidebar - Visible only on md+ */}
           <div className="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 shrink-0">
             <div className="p-6 flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-sky-500/30">
-                U
-              </div>
+              <img src="/icon.png" alt="Updock" className="h-10 w-10 rounded-xl object-cover" />
               <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">UPDOCK</h1>
             </div>
 
             <div className="flex-1 px-4 py-4 space-y-2">
               <NavBar
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                onTabChange={(tab) => { setActiveTab(tab); setSelectedSpot(null); }}
                 onAddSpotClick={() => setIsAddingSpotMode(true)}
                 isVertical={true}
                 user={user}
@@ -188,6 +186,7 @@ function AppContent() {
                   <NearbySpotsList
                     onSpotClick={(spot) => {
                       setSelectedSpot(spot);
+                      setActiveTab('map');
                     }}
                   />
                 </motion.div>
@@ -227,7 +226,7 @@ function AppContent() {
             <div className="md:hidden z-[1001]">
               <NavBar
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                onTabChange={(tab) => { setActiveTab(tab); setSelectedSpot(null); }}
                 onAddSpotClick={() => setIsAddingSpotMode(true)}
                 user={user}
                 onOpenAuth={() => setIsAuthModalOpen(true)}
