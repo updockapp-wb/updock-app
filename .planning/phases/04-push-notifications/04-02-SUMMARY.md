@@ -41,9 +41,9 @@ decisions:
   - "pg_cron schedule commented out in migration — requires Vault secrets (project_url, anon_key) to be configured first; user runs SQL manually after setup"
   - "Stale token cleanup uses DELETE IN (tokens) batch rather than per-token delete for efficiency"
 metrics:
-  duration: "~2 min"
+  duration: "~30 min (including human verification)"
   completed_date: "2026-03-22"
-  tasks_completed: 2
+  tasks_completed: 3
   files_created: 3
   files_modified: 0
 ---
@@ -97,23 +97,25 @@ Notification content: `"Reminder: session in 1 hour"` / `"Your session at ${spot
 
 None — plan executed exactly as written.
 
-## Setup Requirements (User Action Needed)
+## Setup Requirements (Completed by User)
 
-Before deploying, the user must complete these steps (documented in plan frontmatter `user_setup`):
+All required external service configuration was completed by the user during Task 3 (human-verify checkpoint, approved 2026-03-22):
 
-1. **Firebase service account:** Download from Firebase Console > Project Settings > Service accounts > Generate new private key. Place as `supabase/functions/service-account.json` (already gitignored).
+1. **Firebase service account:** Downloaded and placed as `supabase/functions/service-account.json` (gitignored).
 
-2. **Deploy Edge Functions:**
-   ```bash
-   supabase functions deploy notify-session-created --no-verify-jwt
-   supabase functions deploy send-session-reminders --no-verify-jwt
-   ```
+2. **Edge Functions deployed:**
+   - `notify-session-created` deployed to Supabase
+   - `send-session-reminders` deployed to Supabase
 
-3. **Apply migration:** Run `002_notification_triggers.sql` via Supabase SQL Editor.
+3. **Migration applied:** `002_notification_triggers.sql` applied via Supabase SQL Editor (`sent_reminders` table created).
 
-4. **Database webhook:** Supabase Dashboard > Database > Webhooks > Create webhook on `sessions` INSERT calling `{project_url}/functions/v1/notify-session-created`.
+4. **Database webhook created:** sessions INSERT event triggers `notify-session-created` Edge Function.
 
-5. **pg_cron setup:** Enable pg_cron + pg_net extensions, add `project_url` and `anon_key` to Vault secrets, then run the commented `cron.schedule` SQL from the migration file.
+5. **pg_cron + pg_net extensions enabled** in Supabase Dashboard.
+
+6. **Vault secrets configured:** `project_url` and `anon_key` added to Supabase Vault.
+
+7. **pg_cron job scheduled:** Runs every 5 minutes calling `send-session-reminders`.
 
 ## Self-Check: PASSED
 
@@ -125,3 +127,4 @@ Files exist:
 Commits:
 - 2a86b1e: Task 1 — notify-session-created + migration
 - d669861: Task 2 — send-session-reminders
+- Task 3: human-verify checkpoint approved by user (no code commit — infrastructure deployed via Supabase Dashboard)
