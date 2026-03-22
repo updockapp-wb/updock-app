@@ -42,7 +42,7 @@
 - [x] **ANON-02**: La LandingPage est supprimee, aucune reference restante
 - [ ] **ANON-03**: Le SpotDetail affiche les avis et sessions en lecture seule pour les utilisateurs anonymes
 - [ ] **ANON-04**: Les actions protegees (favori, avis, session, ajout spot) affichent un cadenas et declenchent AuthModal
-- [ ] **ANON-05**: L'onglet Profil affiche un ecran de connexion dedie pour les utilisateurs anonymes avec toggle de langue
+- [x] **ANON-05**: L'onglet Profil affiche un ecran de connexion dedie pour les utilisateurs anonymes avec toggle de langue
 - [ ] **ANON-06**: La navigation GPS fonctionne sans compte
 - [ ] **ANON-07**: L'onglet Favoris declenche AuthModal pour les utilisateurs anonymes
 - [x] **ANON-08**: Le role anon Supabase peut lire les reviews, sessions et session_attendees

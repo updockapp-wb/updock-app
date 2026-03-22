@@ -108,7 +108,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
   6. GPS navigation works without account
   7. Favorites tab triggers AuthModal for anonymous users
   8. Supabase anon role can read reviews, sessions, and session_attendees
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 05-01-PLAN.md — RLS anon SELECT migration, auth wall removal, LandingPage deletion, translation keys (ANON-01, ANON-02, ANON-08)
