@@ -85,7 +85,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -97,9 +97,20 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 ### Phase 5: Anonymous Access
 
 **Goal:** Allow users to browse the map, view spot details and navigate to spots without creating an account. All other features (sessions, reviews, favorites, profile) require authentication.
-**Requirements**: TBD
+**Requirements**: ANON-01, ANON-02, ANON-03, ANON-04, ANON-05, ANON-06, ANON-07, ANON-08
 **Depends on:** Phase 4
-**Plans:** 0 plans
+**Success Criteria** (what must be TRUE):
+  1. Anonymous users see the full app (map + tabs) instead of a login wall
+  2. LandingPage is deleted and no references remain
+  3. SpotDetail shows reviews and sessions in read-only for anonymous users
+  4. Protected actions (favorite, review, session, add spot) show lock icons and trigger AuthModal
+  5. Profile tab shows a dedicated login screen for anonymous users with language toggle
+  6. GPS navigation works without account
+  7. Favorites tab triggers AuthModal for anonymous users
+  8. Supabase anon role can read reviews, sessions, and session_attendees
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 5 to break down)
+- [ ] 05-01-PLAN.md — RLS anon SELECT migration, auth wall removal, LandingPage deletion, translation keys (ANON-01, ANON-02, ANON-08)
+- [ ] 05-02-PLAN.md — NavBar auth-gating (favorites, add-spot) + SpotDetail lock badges (favorite, review, session) (ANON-03, ANON-04, ANON-06, ANON-07)
+- [ ] 05-03-PLAN.md — Anonymous Profile screen with login/signup CTAs and language toggle (ANON-05)

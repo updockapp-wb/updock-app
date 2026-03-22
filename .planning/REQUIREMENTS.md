@@ -36,6 +36,17 @@
 - [x] **NOTIF-02**: L'utilisateur reçoit une notification quand une session est créée sur un spot qu'il a en favori
 - [x] **NOTIF-03**: Les participants d'une session reçoivent une notification de rappel avant l'heure de la session
 
+### Acces anonyme
+
+- [ ] **ANON-01**: L'app se lance directement sur la carte pour les utilisateurs non connectes (pas de mur d'auth)
+- [ ] **ANON-02**: La LandingPage est supprimee, aucune reference restante
+- [ ] **ANON-03**: Le SpotDetail affiche les avis et sessions en lecture seule pour les utilisateurs anonymes
+- [ ] **ANON-04**: Les actions protegees (favori, avis, session, ajout spot) affichent un cadenas et declenchent AuthModal
+- [ ] **ANON-05**: L'onglet Profil affiche un ecran de connexion dedie pour les utilisateurs anonymes avec toggle de langue
+- [ ] **ANON-06**: La navigation GPS fonctionne sans compte
+- [ ] **ANON-07**: L'onglet Favoris declenche AuthModal pour les utilisateurs anonymes
+- [ ] **ANON-08**: Le role anon Supabase peut lire les reviews, sessions et session_attendees
+
 ## v2 Requirements
 
 ### Données spots
@@ -84,12 +95,20 @@
 | NOTIF-01 | Phase 4 — Push Notifications | Complete |
 | NOTIF-02 | Phase 4 — Push Notifications | Complete |
 | NOTIF-03 | Phase 4 — Push Notifications | Complete |
+| ANON-01 | Phase 5 — Anonymous Access | Planned |
+| ANON-02 | Phase 5 — Anonymous Access | Planned |
+| ANON-03 | Phase 5 — Anonymous Access | Planned |
+| ANON-04 | Phase 5 — Anonymous Access | Planned |
+| ANON-05 | Phase 5 — Anonymous Access | Planned |
+| ANON-06 | Phase 5 — Anonymous Access | Planned |
+| ANON-07 | Phase 5 — Anonymous Access | Planned |
+| ANON-08 | Phase 5 — Anonymous Access | Planned |
 
 **Coverage:**
-- v1 requirements: 16 total
-- Mapped to phases: 16
-- Unmapped: 0 ✓
+- v1 requirements: 24 total
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 — traceability updated after roadmap creation (4-phase coarse structure)*
+*Last updated: 2026-03-22 — Phase 5 anonymous access requirements added*
