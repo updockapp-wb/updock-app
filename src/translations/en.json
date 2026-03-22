@@ -132,5 +132,9 @@
     "spot.tab_sessions": "Sessions",
     "notification.active": "Active",
     "notification.disabled": "Disabled — tap to enable",
-    "notification.banner": "We'll notify your favorited spots' fans when you create a session"
+    "notification.banner": "We'll notify your favorited spots' fans when you create a session",
+    "anon_profile.title": "Join the Updock community",
+    "anon_profile.subtitle": "Discover spots, share your sessions and join the community.",
+    "anon_profile.btn_login": "Sign in",
+    "anon_profile.btn_signup": "Create an account"
 }
