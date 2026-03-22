@@ -76,11 +76,11 @@ Plans:
   2. A user who has favorited a spot receives a push notification when a new session is created on that spot
   3. Session participants receive a push reminder before the session start time
   4. The FCM token is stored per device in push_tokens (not overwritten if user has multiple devices)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Firebase + Capacitor push setup — Firebase project, @capacitor-firebase/messaging, APNs config, push_tokens registration (NOTIF-01)
-- [ ] 04-02: Notification dispatch — Edge Function, DB webhook on notifications table, favorite-spot trigger, session reminder with idempotency guard (NOTIF-02, NOTIF-03)
+- [ ] 04-01-PLAN.md — Client-side push setup: @capacitor-firebase/messaging, NotificationsContext, deferred permission in SessionsContext, Profile notification row, AppDelegate APNs methods (NOTIF-01)
+- [ ] 04-02-PLAN.md — Server-side dispatch: notify-session-created Edge Function for favorite-spot users, send-session-reminders Edge Function with pg_cron + idempotency (NOTIF-02, NOTIF-03)
 
 ## Progress
 
