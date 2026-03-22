@@ -7,7 +7,7 @@ import Map from './components/Map';
 import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import NearbySpotsList from './components/NearbySpotsList';
-import LandingPage from './components/LandingPage';
+
 import { useFavorites } from './context/FavoritesContext';
 import { useSpots } from './context/SpotsContext';
 import { useLanguage } from './context/LanguageContext';
@@ -30,7 +30,7 @@ function AppContent() {
   const { favorites, toggleFavorite } = useFavorites();
   const { spots } = useSpots();
   const { t } = useLanguage();
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
   const favoritesSpots = spots.filter(s => favorites.includes(s.id));
 
   // Lifted state used for Map interaction triggered from NavBar
@@ -89,15 +89,7 @@ function AppContent() {
   return (
     <div className="w-full h-full relative flex flex-col md:flex-row bg-slate-50 text-slate-900 overflow-hidden">
 
-      {/* Auth Wall: If not logged in, show Landing Page */}
-      {!user ? (
-        <>
-          <LandingPage onStart={() => setIsAuthModalOpen(true)} />
-          <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-        </>
-      ) : (
-        /* Main App Content (Only if Logged In) */
-        <div vaul-drawer-wrapper="" className="w-full h-full flex flex-col md:flex-row bg-white">
+      <div vaul-drawer-wrapper="" className="w-full h-full flex flex-col md:flex-row bg-white">
           {/* Desktop Sidebar - Visible only on md+ */}
           <div className="hidden md:flex flex-col w-64 h-full bg-white border-r border-slate-200 z-50 shrink-0">
             <div className="p-6 flex items-center gap-3">
@@ -249,8 +241,9 @@ function AppContent() {
               <WelcomeScreen onClose={() => setShowWelcome(false)} />
             )}
           </AnimatePresence>
+
+          <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
         </div>
-      )}
     </div>
   );
 }
