@@ -52,13 +52,13 @@ Source: Existing Tailwind utility usage across components (p-3, p-6, gap-2, gap-
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 16px (text-base) | 400 (font-normal) | 1.5 |
-| Label | 14px (text-sm) | 600 (font-semibold) | 1.4 |
+| Label | 14px (text-sm) | 700 (font-bold) | 1.4 |
 | Heading | 20px (text-xl) | 700 (font-bold) | 1.2 |
-| Display | 28px (text-2xl) | 900 (font-black) | 1.2 |
+| Display | 28px (text-2xl) | 700 (font-bold) | 1.2 |
 
-Note: Display is used only for the anonymous profile screen title. All other new text in this phase uses Body and Label sizes.
+Two weights only: 400 (font-normal) for Body, 700 (font-bold) for Label, Heading, and Display. Display achieves visual dominance through size (28px) rather than a heavier weight. Label at 14px font-bold remains distinct from Body at 16px font-normal through the combined difference in size and weight.
 
-Source: Existing patterns -- LandingPage uses text-3xl font-black, AuthModal uses text-base, NavBar uses text-sm. Normalized to the 4 roles above.
+Source: Existing patterns -- LandingPage uses text-3xl font-bold, AuthModal uses text-base, NavBar uses text-sm. Normalized to the 4 roles above with 2 weights.
 
 ---
 
