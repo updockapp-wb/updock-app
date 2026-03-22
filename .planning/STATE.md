@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-03-21T22:35:39.330Z"
+stopped_at: "Checkpoint: 04-01 Task 3 human-verify — awaiting push infrastructure verification"
+last_updated: "2026-03-22T10:12:11.744Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 03 — sessions
+**Current focus:** Phase 04 — push-notifications
 
 ## Current Position
 
-Phase: 03 (sessions) — EXECUTING
+Phase: 04 (push-notifications) — EXECUTING
 Plan: 1 of 2
 
 ## Performance Metrics
@@ -53,6 +53,7 @@ Plan: 1 of 2
 | Phase 02-reviews P02 | 45 | 2 tasks | 1 files |
 | Phase 03-sessions P01 | 3 | 2 tasks | 6 files |
 | Phase 03-sessions P02 | 8 | 2 tasks | 3 files |
+| Phase 04-push-notifications P01 | 8 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,8 @@ Recent decisions affecting current work:
 - [Phase 03-sessions]: cancelSession captures spot_id before optimistic filter-out for rollback refetch capability
 - [Phase 03-sessions]: Sessions tab button uses rounded-full pill style matching Info/Reviews tabs (not border-b underline from spec) for visual consistency
 - [Phase 03-sessions]: isLoadingUserSessions removed from Profile destructure — no loading skeleton in profile sessions section, unused var causes build error
+- [Phase 04-push-notifications]: App.openUrl not in @capacitor/app v8 — use window.location.href='app-settings:' for iOS settings navigation on permission denied
+- [Phase 04-push-notifications]: NotificationsProvider placed between ProfileProvider and SessionsProvider so SessionsContext can call useNotifications
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T22:31:11.030Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-03-22T10:12:11.588Z
+Stopped at: Checkpoint: 04-01 Task 3 human-verify — awaiting push infrastructure verification
 Resume file: None
