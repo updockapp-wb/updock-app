@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
+import { Geolocation } from '@capacitor/geolocation';
 import Map, { NavigationControl, GeolocateControl, Source, Layer, Marker, type LayerProps, type MapRef, type GeoJSONSource } from 'react-map-gl';
 import { type Spot, type StartType } from '../data/spots';
 import AddSpotInfoModal from './AddSpotInfoModal';
@@ -263,21 +264,16 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
                     }
 
                     // 2. Otherwise animation to user position
-                    if ('geolocation' in navigator) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                mapRef.current?.flyTo({
-                                    center: [position.coords.longitude, position.coords.latitude],
-                                    zoom: 12,
-                                    duration: 3500,
-                                    essential: true
-                                });
-                            },
-                            (_error) => {
-                                // Staying on globe view if denied
-                            }
-                        );
-                    }
+                    Geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((position) => {
+                        mapRef.current?.flyTo({
+                            center: [position.coords.longitude, position.coords.latitude],
+                            zoom: 12,
+                            duration: 3500,
+                            essential: true
+                        });
+                    }).catch(() => {
+                        // Staying on globe view if denied
+                    });
                 }}
                 onClick={onMapClick}
                 cursor={isInteractingWithMap ? 'crosshair' : cursor}

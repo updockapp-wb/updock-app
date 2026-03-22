@@ -3,6 +3,7 @@ import { spots as staticSpots, type Spot, type StartType } from '../data/spots';
 import { supabase } from '../lib/supabase';
 import { getDistance } from '../utils/distance';
 import { Toast } from '@capacitor/toast';
+import { Geolocation } from '@capacitor/geolocation';
 
 // We rely on the Spot type from data/spots.ts having is_approved?
 // If not, we extend it here or update data/spots.ts (which I did in step 1384).
@@ -38,16 +39,12 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
 
     // Watch user location
     useEffect(() => {
-        if ('geolocation' in navigator) {
-            const watchId = navigator.geolocation.watchPosition(
-                (pos) => {
-                    setUserLocation([pos.coords.latitude, pos.coords.longitude]);
-                },
-                (_err) => { /* Geolocation error handled silently or via UI if critical */ },
-                { enableHighAccuracy: true }
-            );
-            return () => navigator.geolocation.clearWatch(watchId);
-        }
+        let watchId: string;
+        Geolocation.watchPosition({ enableHighAccuracy: true }, (pos, err) => {
+            if (err || !pos) return;
+            setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+        }).then((id) => { watchId = id; });
+        return () => { if (watchId) Geolocation.clearWatch({ id: watchId }); };
     }, []);
 
     // Compute nearby spots (Top 10)
