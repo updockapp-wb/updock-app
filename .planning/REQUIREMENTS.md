@@ -33,8 +33,8 @@
 ### Notifications push
 
 - [x] **NOTIF-01**: L'utilisateur peut activer les notifications push (permission demandée au moment de créer ou rejoindre une session, pas au lancement)
-- [ ] **NOTIF-02**: L'utilisateur reçoit une notification quand une session est créée sur un spot qu'il a en favori
-- [ ] **NOTIF-03**: Les participants d'une session reçoivent une notification de rappel avant l'heure de la session
+- [x] **NOTIF-02**: L'utilisateur reçoit une notification quand une session est créée sur un spot qu'il a en favori
+- [x] **NOTIF-03**: Les participants d'une session reçoivent une notification de rappel avant l'heure de la session
 
 ## v2 Requirements
 
@@ -82,8 +82,8 @@
 | SESS-03 | Phase 3 — Sessions | Complete |
 | SESS-04 | Phase 3 — Sessions | Complete |
 | NOTIF-01 | Phase 4 — Push Notifications | Complete |
-| NOTIF-02 | Phase 4 — Push Notifications | Pending |
-| NOTIF-03 | Phase 4 — Push Notifications | Pending |
+| NOTIF-02 | Phase 4 — Push Notifications | Complete |
+| NOTIF-03 | Phase 4 — Push Notifications | Complete |
 
 **Coverage:**
 - v1 requirements: 16 total

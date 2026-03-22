@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: "Completed 04-01-PLAN.md — ready for 04-02"
-last_updated: "2026-03-22T16:30:00.000Z"
+status: unknown
+stopped_at: Completed 04-02-PLAN.md — awaiting human verification (Task 3 checkpoint)
+last_updated: "2026-03-22T16:13:17.561Z"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
   completed_plans: 9
 ---
@@ -54,6 +54,7 @@ Plan: 2 of 2
 | Phase 03-sessions P01 | 3 | 2 tasks | 6 files |
 | Phase 03-sessions P02 | 8 | 2 tasks | 3 files |
 | Phase 04-push-notifications P01 | 8 | 2 tasks | 10 files |
+| Phase 04-push-notifications P02 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,9 @@ Recent decisions affecting current work:
 - [Phase 03-sessions]: isLoadingUserSessions removed from Profile destructure — no loading skeleton in profile sessions section, unused var causes build error
 - [Phase 04-push-notifications]: App.openUrl not in @capacitor/app v8 — use window.location.href='app-settings:' for iOS settings navigation on permission denied
 - [Phase 04-push-notifications]: NotificationsProvider placed between ProfileProvider and SessionsProvider so SessionsContext can call useNotifications
+- [Phase 04-push-notifications]: Service role key used in Edge Functions to bypass RLS — webhooks have no user JWT
+- [Phase 04-push-notifications]: Reminder window is 55-65 minutes (+/- 5 min) to ensure 5-min cron catches each session exactly once
+- [Phase 04-push-notifications]: pg_cron schedule commented in migration — requires Vault secrets before running; user executes SQL manually after setup
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T16:30:00.000Z
-Stopped at: Completed 04-01-PLAN.md — client-side push notification infrastructure complete
+Last session: 2026-03-22T16:13:17.556Z
+Stopped at: Completed 04-02-PLAN.md — awaiting human verification (Task 3 checkpoint)
 Resume file: None
