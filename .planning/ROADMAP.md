@@ -93,3 +93,13 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 2. Reviews | 2/2 | Complete   | 2026-03-21 |
 | 3. Sessions | 2/2 | Complete   | 2026-03-21 |
 | 4. Push Notifications | 2/2 | Complete   | 2026-03-22 |
+
+### Phase 5: Anonymous Access
+
+**Goal:** Allow users to browse the map, view spot details and navigate to spots without creating an account. All other features (sessions, reviews, favorites, profile) require authentication.
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 5 to break down)

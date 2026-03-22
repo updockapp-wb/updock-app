@@ -58,6 +58,10 @@ Plan: 2 of 2
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 5 added: Anonymous access — map, spot details and navigation without account; all other features require auth
+
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
