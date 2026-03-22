@@ -12,6 +12,9 @@ import { mapboxConfig } from '../config/mapbox';
 import type { FeatureCollection } from 'geojson';
 import SearchModal from './SearchModal';
 
+// Persists across tab remounts — fly-to runs only once per app session
+let hasFlownToUserLocation = false;
+
 // Layer Styles
 const clusterLayer: LayerProps = {
     id: 'clusters',
@@ -263,17 +266,20 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
                         return; // Skip geolocation if we have a spot
                     }
 
-                    // 2. Otherwise animation to user position
-                    Geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((position) => {
-                        mapRef.current?.flyTo({
-                            center: [position.coords.longitude, position.coords.latitude],
-                            zoom: 12,
-                            duration: 3500,
-                            essential: true
+                    // 2. Otherwise animation to user position — only on first load
+                    if (!hasFlownToUserLocation) {
+                        hasFlownToUserLocation = true;
+                        Geolocation.getCurrentPosition({ enableHighAccuracy: true }).then((position) => {
+                            mapRef.current?.flyTo({
+                                center: [position.coords.longitude, position.coords.latitude],
+                                zoom: 12,
+                                duration: 3500,
+                                essential: true
+                            });
+                        }).catch(() => {
+                            // Staying on globe view if denied
                         });
-                    }).catch(() => {
-                        // Staying on globe view if denied
-                    });
+                    }
                 }}
                 onClick={onMapClick}
                 cursor={isInteractingWithMap ? 'crosshair' : cursor}
