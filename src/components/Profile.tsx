@@ -1,4 +1,5 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users, Bell } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users, Bell, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
@@ -49,6 +50,77 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     useEffect(() => {
         checkPermission();
     }, []);
+
+    // Anonymous Profile Screen
+    if (!user) {
+        return (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="w-full h-full flex flex-col items-center justify-center px-6 bg-slate-50"
+            >
+                {/* Illustration */}
+                <div className="w-[120px] h-[120px] rounded-full bg-sky-50 flex items-center justify-center">
+                    <MapPin size={48} className="text-sky-500" />
+                </div>
+
+                {/* Title */}
+                <h2 className="text-xl font-bold text-slate-800 text-center mt-6">
+                    {t('anon_profile.title')}
+                </h2>
+
+                {/* Subtitle */}
+                <p className="text-base font-normal text-slate-500 text-center mt-2 max-w-[280px]">
+                    {t('anon_profile.subtitle')}
+                </p>
+
+                {/* Sign in button (primary) */}
+                <button
+                    onClick={() => onOpenAuth?.()}
+                    className="w-full max-w-[320px] bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-xl mt-8 transition-colors"
+                >
+                    {t('anon_profile.btn_login')}
+                </button>
+
+                {/* Create account button (secondary) */}
+                <button
+                    onClick={() => onOpenAuth?.()}
+                    className="w-full max-w-[320px] bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-xl mt-3 hover:bg-slate-50 transition-colors"
+                >
+                    {t('anon_profile.btn_signup')}
+                </button>
+
+                {/* Language toggle (settings accessible for anonymous) */}
+                <div className="mt-12 w-full max-w-[320px]">
+                    <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+                        <div className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                            <div className="flex items-center gap-3 text-slate-700">
+                                <Globe size={20} className="text-sky-500" />
+                                <span className="font-medium">{t('profile.language')}</span>
+                            </div>
+                            <div className="flex bg-slate-100 rounded-lg p-1">
+                                <button
+                                    onClick={() => setLanguage('fr')}
+                                    className={`px-3 py-1 rounded-md text-sm font-bold transition-all ${language === 'fr' ? 'bg-white shadow text-sky-600' : 'text-slate-400'}`}
+                                >
+                                    FR
+                                </button>
+                                <button
+                                    onClick={() => setLanguage('en')}
+                                    className={`px-3 py-1 rounded-md text-sm font-bold transition-all ${language === 'en' ? 'bg-white shadow text-sky-600' : 'text-slate-400'}`}
+                                >
+                                    EN
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Version */}
+                <p className="text-xs text-slate-300 mt-8">Updock v1.1.0 (Beta)</p>
+            </motion.div>
+        );
+    }
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
 
