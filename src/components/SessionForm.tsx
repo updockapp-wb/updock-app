@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { Bell } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSessions } from '../context/SessionsContext';
+import { useNotifications } from '../context/NotificationsContext';
 
 interface SessionFormProps {
   spotId: string;
@@ -12,6 +15,9 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
   const { user } = useAuth();
   const { t } = useLanguage();
   const { createSession } = useSessions();
+
+  const { hasToken, permissionStatus } = useNotifications();
+  const showPermissionBanner = !hasToken && permissionStatus !== 'granted';
 
   const [startsAt, setStartsAt] = useState('');
   const [note, setNote] = useState('');
@@ -82,6 +88,19 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
           t('session.submit')
         )}
       </button>
+
+      {showPermissionBanner && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+          role="status"
+          className="bg-sky-50 rounded-xl p-3 flex items-start gap-2 mt-3"
+        >
+          <Bell size={16} className="text-sky-500 mt-0.5 shrink-0" />
+          <span className="text-sm text-sky-700">{t('notification.banner')}</span>
+        </motion.div>
+      )}
 
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>

@@ -1,10 +1,11 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users, Bell } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
 import { useState, useRef, useEffect } from 'react';
 import { useSessions } from '../context/SessionsContext';
+import { useNotifications } from '../context/NotificationsContext';
 import PremiumModal from './PremiumModal';
 
 // Avatar assets mapping
@@ -37,12 +38,17 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { userUpcomingSessions, fetchUserSessions } = useSessions();
+    const { permissionStatus, checkPermission } = useNotifications();
 
     useEffect(() => {
         if (user) {
             fetchUserSessions();
         }
     }, [user]);
+
+    useEffect(() => {
+        checkPermission();
+    }, []);
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
 
@@ -294,6 +300,36 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                             EN
                         </button>
                     </div>
+                </div>
+
+                {/* Notification Status */}
+                <div
+                    onClick={permissionStatus === 'denied' ? () => {
+                        // Open system settings on iOS
+                        window.location.href = 'app-settings:';
+                    } : undefined}
+                    className={`flex items-center justify-between p-4 border-b border-slate-50 ${permissionStatus === 'denied' ? 'hover:bg-slate-50 transition-colors cursor-pointer' : ''}`}
+                >
+                    <div className="flex items-center gap-3 text-slate-700">
+                        <Bell size={20} className={permissionStatus === 'granted' ? 'text-sky-500' : 'text-slate-400'} />
+                        <span className="font-medium">{t('profile.notifications')}</span>
+                    </div>
+                    {permissionStatus === 'granted' && (
+                        <span className="text-xs font-bold text-sky-600 bg-sky-50 rounded-full px-2 py-0.5">
+                            {t('notification.active')}
+                        </span>
+                    )}
+                    {permissionStatus === 'denied' && (
+                        <span className="text-xs text-slate-500">
+                            {t('notification.disabled')}
+                        </span>
+                    )}
+                    {permissionStatus === 'unknown' && (
+                        <ChevronRight size={20} className="text-slate-300" />
+                    )}
+                    {permissionStatus === 'loading' && (
+                        <div className="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+                    )}
                 </div>
 
                 <div

@@ -17,6 +17,7 @@ import { SpotsProvider } from './context/SpotsContext';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProfileProvider } from './context/ProfileContext';
+import { NotificationsProvider } from './context/NotificationsContext';
 import { SessionsProvider } from './context/SessionsContext';
 import AuthModal from './components/AuthModal';
 import SpotDetail from './components/SpotDetail';
@@ -261,9 +262,11 @@ export default function App() {
         <SpotsProvider>
             <FavoritesProvider>
               <ProfileProvider>
-                <SessionsProvider>
-                  <AppContent />
-                </SessionsProvider>
+                <NotificationsProvider>
+                  <SessionsProvider>
+                    <AppContent />
+                  </SessionsProvider>
+                </NotificationsProvider>
               </ProfileProvider>
             </FavoritesProvider>
           </SpotsProvider>

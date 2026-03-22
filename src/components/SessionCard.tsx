@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Users } from 'lucide-react';
+import { Calendar, Users, Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSessions, type Session } from '../context/SessionsContext';
+import { useNotifications } from '../context/NotificationsContext';
 
 const AVATARS = [
   { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
@@ -22,6 +23,8 @@ export default function SessionCard({ session, index }: SessionCardProps) {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { joinSession, leaveSession, cancelSession } = useSessions();
+  const { hasToken, permissionStatus } = useNotifications();
+  const showPermissionBanner = !hasToken && permissionStatus !== 'granted';
 
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -128,6 +131,20 @@ export default function SessionCard({ session, index }: SessionCardProps) {
       {/* Note */}
       {session.note && (
         <p className="text-sm text-slate-600 mt-1">{session.note}</p>
+      )}
+
+      {/* Permission banner — shown near join button for users without push token */}
+      {showPermissionBanner && !session.user_is_attending && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+          role="status"
+          className="bg-sky-50 rounded-xl p-3 flex items-start gap-2 mt-3"
+        >
+          <Bell size={16} className="text-sky-500 mt-0.5 shrink-0" />
+          <span className="text-sm text-sky-700">{t('notification.banner')}</span>
+        </motion.div>
       )}
 
       {/* Action row */}

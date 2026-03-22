@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
+import { useNotifications } from './NotificationsContext';
 
 export interface Session {
   id: string;
@@ -36,6 +37,7 @@ const SessionsContext = createContext<SessionsContextType | undefined>(undefined
 
 export function SessionsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { ensurePushToken } = useNotifications();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   const [userUpcomingSessions, setUserUpcomingSessions] = useState<(Session & { spot_name: string })[]>([]);
@@ -108,6 +110,9 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
   const createSession = async (spotId: string, startsAt: string, note?: string) => {
     if (!user) return;
 
+    // Request push permission + register token (silent fail — never blocks session creation)
+    await ensurePushToken();
+
     const { data, error } = await supabase
       .from('sessions')
       .insert({
@@ -139,6 +144,9 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
 
   const joinSession = async (sessionId: string) => {
     if (!user) return;
+
+    // Request push permission + register token (silent fail — never blocks join)
+    await ensurePushToken();
 
     // Optimistic update
     setSessions((prev) =>
