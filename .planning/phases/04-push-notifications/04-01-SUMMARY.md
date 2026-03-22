@@ -44,7 +44,7 @@ decisions:
 metrics:
   duration: "8 minutes"
   completed_date: "2026-03-22"
-  tasks_completed: 2
+  tasks_completed: 3
   tasks_total: 3
   files_modified: 10
 ---
@@ -117,7 +117,7 @@ Added `supabase/functions/service-account.json` to prevent Firebase private key 
 
 ## Checkpoint Status
 
-Task 3 is `type="checkpoint:human-verify"` — awaiting human verification before proceeding.
+Task 3 (`checkpoint:human-verify`) — human verification approved 2026-03-22. Plan complete.
 
 ## Self-Check: PASSED
 
