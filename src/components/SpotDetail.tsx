@@ -19,9 +19,10 @@ import { supabase } from '../lib/supabase';
 interface SpotDetailProps {
     spot: Spot | null;
     onClose: () => void;
+    onOpenAuth?: () => void;
 }
 
-export default function SpotDetail({ spot, onClose }: SpotDetailProps) {
+export default function SpotDetail({ spot, onClose, onOpenAuth: _onOpenAuth }: SpotDetailProps) {
     const { toggleFavorite, isFavorite } = useFavorites();
     const { t, language } = useLanguage();
     const { user } = useAuth();

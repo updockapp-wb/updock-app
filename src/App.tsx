@@ -30,7 +30,7 @@ function AppContent() {
   const { favorites, toggleFavorite } = useFavorites();
   const { spots } = useSpots();
   const { t } = useLanguage();
-  const { loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const favoritesSpots = spots.filter(s => favorites.includes(s.id));
 
   // Lifted state used for Map interaction triggered from NavBar
@@ -105,6 +105,8 @@ function AppContent() {
                 onTabChange={setActiveTab}
                 onAddSpotClick={() => setIsAddingSpotMode(true)}
                 isVertical={true}
+                user={user}
+                onOpenAuth={() => setIsAuthModalOpen(true)}
               />
             </div>
 
@@ -216,6 +218,7 @@ function AppContent() {
                 <SpotDetail
                   spot={selectedSpot}
                   onClose={() => setSelectedSpot(null)}
+                  onOpenAuth={() => setIsAuthModalOpen(true)}
                 />
               )}
             </AnimatePresence>
@@ -226,6 +229,8 @@ function AppContent() {
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
                 onAddSpotClick={() => setIsAddingSpotMode(true)}
+                user={user}
+                onOpenAuth={() => setIsAuthModalOpen(true)}
               />
             </div>
           </main>
