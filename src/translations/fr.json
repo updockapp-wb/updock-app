@@ -129,5 +129,8 @@
     "session.leave_error": "Impossible de se désinscrire. Réessayez.",
     "session.cancel_error": "Impossible d'annuler. Réessayez.",
     "session.create_error": "Erreur lors de la création. Réessayez.",
-    "spot.tab_sessions": "Sessions"
+    "spot.tab_sessions": "Sessions",
+    "notification.active": "Activées",
+    "notification.disabled": "Désactivées — touchez pour activer",
+    "notification.banner": "On alertera les fans de vos spots favoris quand vous créez une session"
 }

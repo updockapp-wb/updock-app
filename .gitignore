@@ -29,3 +29,6 @@ _bmad-output/
 .antigravityignore
 .env
 .DS_Store
+
+# Firebase service account (contains private key — NEVER commit)
+supabase/functions/service-account.json

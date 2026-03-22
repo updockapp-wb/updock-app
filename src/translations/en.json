@@ -129,5 +129,8 @@
     "session.leave_error": "Could not leave. Please try again.",
     "session.cancel_error": "Could not cancel. Please try again.",
     "session.create_error": "Error creating session. Please try again.",
-    "spot.tab_sessions": "Sessions"
+    "spot.tab_sessions": "Sessions",
+    "notification.active": "Active",
+    "notification.disabled": "Disabled — tap to enable",
+    "notification.banner": "We'll notify your favorited spots' fans when you create a session"
 }
