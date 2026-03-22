@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-22T22:10:52.468Z"
+stopped_at: Phase 5 UI-SPEC approved
+last_updated: "2026-03-22T22:43:25.785Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 04 — push-notifications
+**Current focus:** Phase 05 — anonymous-access
 
 ## Current Position
 
-Phase: 04 (push-notifications) — EXECUTING
-Plan: 2 of 2
+Phase: 05 (anonymous-access) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Plan: 2 of 2
 | Phase 03-sessions P02 | 8 | 2 tasks | 3 files |
 | Phase 04-push-notifications P01 | 8 | 2 tasks | 10 files |
 | Phase 04-push-notifications P02 | 2 | 2 tasks | 3 files |
+| Phase 05-anonymous-access P01 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,8 @@ Recent decisions affecting current work:
 - [Phase 04-push-notifications]: Service role key used in Edge Functions to bypass RLS — webhooks have no user JWT
 - [Phase 04-push-notifications]: Reminder window is 55-65 minutes (+/- 5 min) to ensure 5-min cron catches each session exactly once
 - [Phase 04-push-notifications]: pg_cron schedule commented in migration — requires Vault secrets before running; user executes SQL manually after setup
+- [Phase 05-anonymous-access]: Removed `user` from useAuth() destructure — unused after auth wall removal, avoids TS6133 build error
+- [Phase 05-anonymous-access]: AuthModal moved inside vaul-drawer-wrapper div, always available regardless of auth state
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T22:10:52.440Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-anonymous-access/05-CONTEXT.md
+Last session: 2026-03-22T22:42:30Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: .planning/phases/05-anonymous-access/05-02-PLAN.md
