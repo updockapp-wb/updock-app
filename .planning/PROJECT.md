@@ -28,6 +28,7 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 - [ ] Profils utilisateurs simples : nom, avatar, historique des spots soumis — sans surcharger l'expérience
 - [ ] Avis et notation des spots : les utilisateurs peuvent laisser une note et un commentaire sur un spot
 - ✓ Sessions programmées : un utilisateur indique qu'il sera sur un spot à une heure précise ; les autres peuvent être notifiés et le rejoindre — Validated in Phase 03: sessions
+- ✓ Spot ownership : afficher l'uploader et permettre la modification par le créateur du spot et l'admin — Validated in Phase 07: spot-ownership
 
 ### Out of Scope
 
@@ -61,4 +62,4 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 | Ne pas refactoriser le type de spot (JSON string) maintenant | Hors scope des correctifs prioritaires | — Pending |
 
 ---
-*Last updated: 2026-03-21 after Phase 03 (sessions) completion*
+*Last updated: 2026-04-05 after Phase 07 (spot-ownership) completion*
