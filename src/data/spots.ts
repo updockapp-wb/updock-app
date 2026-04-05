@@ -12,6 +12,7 @@ export interface Spot {
     image_urls?: string[];
     is_approved?: boolean;
     distance?: number; // Distance in km from user
+    user_id?: string;
 }
 
 export const spots: Spot[] = [
