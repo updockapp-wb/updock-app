@@ -51,5 +51,14 @@
 	<string>Updock uses your location to show nearby skate spots and sessions.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Updock uses your location to show nearby skate spots and sessions.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>updock</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

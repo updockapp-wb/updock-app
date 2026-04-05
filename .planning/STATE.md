@@ -6,7 +6,7 @@ status: executing
 stopped_at: Completed 07-01-PLAN.md
 last_updated: "2026-04-05T21:03:37Z"
 progress:
-  total_phases: 7
+  total_phases: 9
   completed_phases: 5
   total_plans: 14
   completed_plans: 13
@@ -65,6 +65,9 @@ Plan: 1 of 2 (COMPLETE)
 ### Roadmap Evolution
 
 - Phase 5 added: Anonymous access — map, spot details and navigation without account; all other features require auth
+- Phase 7 added: Spot Ownership — afficher l'uploader et permettre la modification par le créateur du spot et l'admin
+- Phase 8 added: Bug Fixes — corriger les bugs de l'admin dashboard et le bouton fermer de la galerie photos
+- Phase 9 added: Community Stats — section statistiques globales de la communauté dans l'onglet Profil
 
 ### Decisions
 
