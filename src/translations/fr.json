@@ -136,5 +136,16 @@
     "anon_profile.title": "Rejoins la communaute Updock",
     "anon_profile.subtitle": "Decouvre les spots, partage tes sessions et retrouve la communaute.",
     "anon_profile.btn_login": "Se connecter",
-    "anon_profile.btn_signup": "Creer un compte"
+    "anon_profile.btn_signup": "Creer un compte",
+    "spot.added_by": "Ajoute par",
+    "spot.edit": "Modifier",
+    "spot.edit_title": "Modifier le spot",
+    "spot.edit_save": "Enregistrer",
+    "spot.edit_photos": "Photos",
+    "spot.edit_add_photo": "Ajouter une photo",
+    "spot.edit_delete_photo": "Supprimer",
+    "spot.edit_name": "Nom",
+    "spot.edit_description": "Description",
+    "spot.edit_type": "Type",
+    "spot.edit_difficulty": "Difficulte"
 }

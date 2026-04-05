@@ -105,7 +105,8 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                         difficulty: s.difficulty as any,
                         height: s.height,
                         image_urls: s.image_urls,
-                        is_approved: s.is_approved
+                        is_approved: s.is_approved,
+                        user_id: s.user_id || null
                     };
                 });
 
@@ -196,7 +197,8 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                         difficulty: data.difficulty as any,
                         height: data.height,
                         image_urls: data.image_urls,
-                        is_approved: data.is_approved
+                        is_approved: data.is_approved,
+                        user_id: data.user_id
                     };
 
                     setSpots(prev => [createdSpot, ...prev]);
@@ -271,6 +273,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                     type: JSON.stringify(updatedSpot.type), // Use JSON string
                     // lat/lng could also be updated if we added dragndrop, but for now we assume simple text edits
                     difficulty: updatedSpot.difficulty,
+                    image_urls: updatedSpot.image_urls || null,
                 })
                 .eq('id', updatedSpot.id);
 
