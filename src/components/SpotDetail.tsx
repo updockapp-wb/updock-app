@@ -1,5 +1,5 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock } from 'lucide-react';
-import { type Spot } from '../data/spots';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil, Save, Plus, Trash2 } from 'lucide-react';
+import { type Spot, type StartType } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -14,7 +14,16 @@ import SessionForm from './SessionForm';
 import SessionList from './SessionList';
 import { useAuth } from '../context/AuthContext';
 import { useSessions } from '../context/SessionsContext';
+import { useSpots } from '../context/SpotsContext';
 import { supabase } from '../lib/supabase';
+
+const AVATARS = [
+    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
+    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
+    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
+    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
+    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
+];
 
 interface SpotDetailProps {
     spot: Spot | null;
@@ -46,6 +55,17 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     const [isLoadingReviews, setIsLoadingReviews] = useState(false);
     const [avgRating, setAvgRating] = useState<number | null>(null);
     const [reviewCount, setReviewCount] = useState(0);
+    const [uploaderProfile, setUploaderProfile] = useState<{
+        display_name: string | null;
+        avatar_url: string | null;
+        avatar_id: number | null;
+    } | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editForm, setEditForm] = useState<Spot | null>(null);
+    const [newPhotoFiles, setNewPhotoFiles] = useState<File[]>([]);
+    const [photosToDelete, setPhotosToDelete] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
+    const { updateSpot } = useSpots();
 
     useEffect(() => {
         setMounted(true);
@@ -56,6 +76,8 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         if (spot) {
             setIsImageOpen(false);
             setCurrentPhotoIndex(0);
+            setIsEditing(false);
+            setUploaderProfile(null);
         }
     }, [spot]);
 
@@ -103,6 +125,20 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
 
         fetchReviews();
     }, [spot?.id, user?.id]);
+
+    // Fetch uploader profile
+    useEffect(() => {
+        if (!spot?.user_id) {
+            setUploaderProfile(null);
+            return;
+        }
+        supabase
+            .from('profiles')
+            .select('display_name, avatar_url, avatar_id')
+            .eq('id', spot.user_id)
+            .single()
+            .then(({ data }) => setUploaderProfile(data));
+    }, [spot?.id]);
 
     const handleReviewSubmit = (review: Review) => {
         setReviews(prev => {
@@ -152,8 +188,43 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         }
     };
 
+    const handleSaveEdit = async () => {
+        if (!editForm) return;
+        setIsSaving(true);
+        try {
+            // 1. Upload new photos to Supabase Storage
+            const newUrls: string[] = [];
+            for (const file of newPhotoFiles) {
+                const ext = file.name.split('.').pop();
+                const path = `public/${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
+                const { error: uploadError } = await supabase.storage.from('spots').upload(path, file);
+                if (!uploadError) {
+                    const { data: { publicUrl } } = supabase.storage.from('spots').getPublicUrl(path);
+                    newUrls.push(publicUrl);
+                }
+            }
+
+            // 2. Compute final image_urls: existing minus deleted, plus new
+            const existingUrls = (editForm.image_urls || []).filter(url => !photosToDelete.includes(url));
+            const finalUrls = [...existingUrls, ...newUrls];
+
+            // 3. Update spot via context
+            await updateSpot({ ...editForm, image_urls: finalUrls.length > 0 ? finalUrls : undefined });
+
+            // 4. Close overlay and reset
+            setIsEditing(false);
+            setEditForm(null);
+            setNewPhotoFiles([]);
+            setPhotosToDelete([]);
+        } catch (error) {
+            console.error('Error saving spot edit:', error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const content = (
-        <div className="flex flex-col h-full bg-white md:rounded-[24px]">
+        <div className="flex flex-col h-full bg-white md:rounded-[24px] relative">
             {/* Header Area */}
             <div className="w-full pt-6 pb-4 px-6 shrink-0">
                 <div className="flex items-start justify-between mb-4">
@@ -176,6 +247,34 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             <MapPin size={14} />
                             <span>{spot.position[0].toFixed(4)}, {spot.position[1].toFixed(4)}</span>
                         </div>
+                        {spot?.user_id && uploaderProfile && (
+                            <div className="flex items-center gap-1.5 text-sm text-slate-400 mt-1">
+                                <span>{t('spot.added_by')}</span>
+                                <img
+                                    src={uploaderProfile.avatar_url || AVATARS.find(a => a.id === (uploaderProfile.avatar_id || 1))?.src || AVATARS[0].src}
+                                    className="w-5 h-5 rounded-full object-cover"
+                                    alt=""
+                                />
+                                <span className="text-slate-500">{uploaderProfile.display_name || t('review.anonymous')}</span>
+                                {(user?.id === spot.user_id || user?.email === 'updock.app@gmail.com') && (
+                                    <>
+                                        <span className="text-slate-300">·</span>
+                                        <button
+                                            onClick={() => {
+                                                setEditForm(spot ? { ...spot } : null);
+                                                setNewPhotoFiles([]);
+                                                setPhotosToDelete([]);
+                                                setIsEditing(true);
+                                            }}
+                                            className="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1"
+                                        >
+                                            <Pencil size={12} />
+                                            {t('spot.edit')}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex gap-2">
@@ -411,6 +510,147 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     </div>
                 )}
             </div>
+
+            {/* Edit Overlay */}
+            <AnimatePresence>
+                {isEditing && editForm && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        className="absolute inset-0 bg-white z-50 p-6 flex flex-col overflow-hidden rounded-[24px]"
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-xl font-bold text-slate-800">{t('spot.edit_title')}</h3>
+                            <button onClick={() => { setIsEditing(false); setEditForm(null); }} className="p-2 bg-slate-100 rounded-full">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto space-y-5">
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_name')}</label>
+                                <input
+                                    type="text"
+                                    value={editForm.name}
+                                    onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                                    className="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none"
+                                />
+                            </div>
+
+                            {/* Type multi-select */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_type')}</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {(['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart'] as StartType[]).map(tp => (
+                                        <button
+                                            key={tp}
+                                            onClick={() => {
+                                                const newTypes = editForm.type.includes(tp)
+                                                    ? editForm.type.filter(x => x !== tp)
+                                                    : [...editForm.type, tp];
+                                                if (newTypes.length > 0) setEditForm({ ...editForm, type: newTypes });
+                                            }}
+                                            className={`py-2 px-3 rounded-lg text-xs font-bold border-2 transition-all flex-grow
+                                                ${editForm.type.includes(tp)
+                                                    ? 'border-sky-500 bg-sky-50 text-sky-600'
+                                                    : 'border-slate-100 bg-white text-slate-400'}`}
+                                        >
+                                            {tp}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_description')}</label>
+                                <textarea
+                                    value={editForm.description}
+                                    onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                                    className="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none min-h-[80px]"
+                                />
+                            </div>
+
+                            {/* Difficulty */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_difficulty')}</label>
+                                <div className="flex gap-1">
+                                    {(['Easy', 'Medium', 'Hard', 'Extreme'] as const).map(d => (
+                                        <button
+                                            key={d}
+                                            onClick={() => setEditForm({ ...editForm, difficulty: d })}
+                                            className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 ${editForm.difficulty === d ? 'border-sky-500 bg-sky-50 text-sky-600' : 'border-slate-100 text-slate-400'}`}
+                                        >
+                                            {d}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Photos */}
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_photos')}</label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {/* Existing photos (minus those marked for deletion) */}
+                                    {(editForm.image_urls || []).filter(url => !photosToDelete.includes(url)).map((url, i) => (
+                                        <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
+                                            <img src={url} className="w-full h-full object-cover" alt="" />
+                                            <button
+                                                onClick={() => setPhotosToDelete(prev => [...prev, url])}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full"
+                                            >
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {/* New photo previews */}
+                                    {newPhotoFiles.map((file, i) => (
+                                        <div key={`new-${i}`} className="relative aspect-square rounded-lg overflow-hidden">
+                                            <img src={URL.createObjectURL(file)} className="w-full h-full object-cover" alt="" />
+                                            <button
+                                                onClick={() => setNewPhotoFiles(prev => prev.filter((_, idx) => idx !== i))}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full"
+                                            >
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {/* Add photo button — only show if total photos < 5 */}
+                                    {((editForm.image_urls || []).filter(url => !photosToDelete.includes(url)).length + newPhotoFiles.length) < 5 && (
+                                        <label className="aspect-square rounded-lg border-2 border-dashed border-slate-200 flex items-center justify-center cursor-pointer hover:border-sky-400 transition-colors">
+                                            <Plus size={24} className="text-slate-300" />
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={e => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) setNewPhotoFiles(prev => [...prev, file]);
+                                                    e.target.value = '';
+                                                }}
+                                            />
+                                        </label>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Save button */}
+                        <div className="pt-4 border-t border-slate-100 mt-4">
+                            <button
+                                onClick={handleSaveEdit}
+                                disabled={isSaving}
+                                className="w-full bg-sky-500 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                <Save size={18} />
+                                {isSaving ? '...' : t('spot.edit_save')}
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 
