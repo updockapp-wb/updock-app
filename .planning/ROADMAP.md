@@ -16,6 +16,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Reviews** - Spot ratings and comments with author identity (completed 2026-03-21)
 - [x] **Phase 3: Sessions** - Scheduled sessions with join/leave on spots (completed 2026-03-21)
 - [x] **Phase 4: Push Notifications** - FCM push for session activity on favorited spots (completed 2026-03-22)
+- [ ] **Phase 5: Anonymous Access** - Browse map and spot details without an account
+- [ ] **Phase 6: Spot Data Enrichment** - Scrape and import spots from Foil Mates to grow the catalogue
 
 ## Phase Details
 
@@ -82,10 +84,20 @@ Plans:
 - [ ] 04-01-PLAN.md — Client-side push setup: @capacitor-firebase/messaging, NotificationsContext, deferred permission in SessionsContext, Profile notification row, AppDelegate APNs methods (NOTIF-01)
 - [ ] 04-02-PLAN.md — Server-side dispatch: notify-session-created Edge Function for favorite-spot users, send-session-reminders Edge Function with pg_cron + idempotency (NOTIF-02, NOTIF-03)
 
+### Phase 6: Spot Data Enrichment
+**Goal:** Scrape spot locations and names from Foil Mates and import them into the Updock database to grow the spot catalogue
+**Depends on:** Phase 5
+**Requirements**: SPOTS-01, SPOTS-02, SPOTS-03
+**Success Criteria** (what must be TRUE):
+  1. A script scrapes all spot names and GPS coordinates from Foil Mates
+  2. Scraped spots are deduplicated against existing spots in the database
+  3. New spots are imported into Supabase with correct schema (name, lat, lng, source)
+**Plans:** 0 plans
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -114,3 +126,40 @@ Plans:
 - [ ] 05-01-PLAN.md — RLS anon SELECT migration, auth wall removal, LandingPage deletion, translation keys (ANON-01, ANON-02, ANON-08)
 - [ ] 05-02-PLAN.md — NavBar auth-gating (favorites, add-spot) + SpotDetail lock badges (favorite, review, session) (ANON-03, ANON-04, ANON-06, ANON-07)
 - [ ] 05-03-PLAN.md — Anonymous Profile screen with login/signup CTAs and language toggle (ANON-05)
+
+### Phase 7: Spot Ownership — afficher l'uploader et permettre la modification par le createur du spot et l'admin
+
+**Goal:** Display the spot creator's identity (avatar + name) in SpotDetail and allow the creator or admin to edit spot info and photos directly from SpotDetail.
+**Requirements**: OWN-01, OWN-02, OWN-03, OWN-04, OWN-05
+**Depends on:** Phase 6
+**Success Criteria** (what must be TRUE):
+  1. SpotDetail shows the uploader's avatar and name below the spot title (when user_id exists)
+  2. An edit button is visible only for the spot creator or admin
+  3. The edit overlay allows changing name, type, description, and difficulty
+  4. The edit overlay allows uploading new photos and deleting existing photos
+  5. RLS policy prevents non-owner non-admin from updating spots
+**Plans:** 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Spot type user_id, SpotsContext mappings, updateSpot image_urls, RLS policy, translations (OWN-01, OWN-02, OWN-03, OWN-04, OWN-05)
+- [ ] 07-02-PLAN.md — SpotDetail uploader display, edit button, edit overlay with photo management (OWN-01, OWN-02, OWN-03, OWN-04)
+
+### Phase 8: Bug Fixes — corriger les bugs de l'admin dashboard et le bouton fermer de la galerie photos
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 7
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 8 to break down)
+
+### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 8
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 9 to break down)
