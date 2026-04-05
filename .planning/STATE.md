@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-22T22:53:44.483Z"
+status: executing
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-04-05T21:03:37Z"
 progress:
-  total_phases: 5
+  total_phases: 7
   completed_phases: 5
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 05 — anonymous-access
+**Current focus:** Phase 07 — spot-ownership
 
 ## Current Position
 
-Phase: 05 (anonymous-access) — EXECUTING
-Plan: 3 of 3 (COMPLETE)
+Phase: 07 (spot-ownership) — EXECUTING
+Plan: 1 of 2 (COMPLETE)
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Plan: 3 of 3 (COMPLETE)
 | Phase 05-anonymous-access P01 | 3 | 2 tasks | 5 files |
 | Phase 05-anonymous-access P03 | 1 | 1 tasks | 1 files |
 | Phase 05-anonymous-access P02 | 5 | 2 tasks | 3 files |
+| Phase 07-spot-ownership P01 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Recent decisions affecting current work:
 - [Phase 05-anonymous-access]: Both sign-in/create-account buttons call onOpenAuth() — AuthModal handles mode toggle internally
 - [Phase 05-anonymous-access]: SpotDetail interface updated in Task 1 to unblock App.tsx prop passing (onOpenAuth)
 - [Phase 05-anonymous-access]: Re-added user to useAuth() destructure in App.tsx for NavBar/SpotDetail auth-gate props
+- [Phase 07-spot-ownership]: user_id mapped as s.user_id || null to handle static spots gracefully
+- [Phase 07-spot-ownership]: RLS policy uses email check for admin (consistent with existing admin_permissions pattern)
 
 ### Pending Todos
 
@@ -115,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T22:50:19.290Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-04-05T21:03:37Z
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None
