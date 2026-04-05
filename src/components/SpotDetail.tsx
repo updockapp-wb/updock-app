@@ -1,5 +1,5 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock } from 'lucide-react';
-import { type Spot } from '../data/spots';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil } from 'lucide-react';
+import { type Spot, type StartType } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -14,7 +14,16 @@ import SessionForm from './SessionForm';
 import SessionList from './SessionList';
 import { useAuth } from '../context/AuthContext';
 import { useSessions } from '../context/SessionsContext';
+import { useSpots } from '../context/SpotsContext';
 import { supabase } from '../lib/supabase';
+
+const AVATARS = [
+    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
+    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
+    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
+    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
+    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
+];
 
 interface SpotDetailProps {
     spot: Spot | null;
@@ -46,6 +55,12 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     const [isLoadingReviews, setIsLoadingReviews] = useState(false);
     const [avgRating, setAvgRating] = useState<number | null>(null);
     const [reviewCount, setReviewCount] = useState(0);
+    const [uploaderProfile, setUploaderProfile] = useState<{
+        display_name: string | null;
+        avatar_url: string | null;
+        avatar_id: number | null;
+    } | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -56,6 +71,8 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         if (spot) {
             setIsImageOpen(false);
             setCurrentPhotoIndex(0);
+            setIsEditing(false);
+            setUploaderProfile(null);
         }
     }, [spot]);
 
@@ -103,6 +120,20 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
 
         fetchReviews();
     }, [spot?.id, user?.id]);
+
+    // Fetch uploader profile
+    useEffect(() => {
+        if (!spot?.user_id) {
+            setUploaderProfile(null);
+            return;
+        }
+        supabase
+            .from('profiles')
+            .select('display_name, avatar_url, avatar_id')
+            .eq('id', spot.user_id)
+            .single()
+            .then(({ data }) => setUploaderProfile(data));
+    }, [spot?.id]);
 
     const handleReviewSubmit = (review: Review) => {
         setReviews(prev => {
@@ -176,6 +207,29 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             <MapPin size={14} />
                             <span>{spot.position[0].toFixed(4)}, {spot.position[1].toFixed(4)}</span>
                         </div>
+                        {spot?.user_id && uploaderProfile && (
+                            <div className="flex items-center gap-1.5 text-sm text-slate-400 mt-1">
+                                <span>{t('spot.added_by')}</span>
+                                <img
+                                    src={uploaderProfile.avatar_url || AVATARS.find(a => a.id === (uploaderProfile.avatar_id || 1))?.src || AVATARS[0].src}
+                                    className="w-5 h-5 rounded-full object-cover"
+                                    alt=""
+                                />
+                                <span className="text-slate-500">{uploaderProfile.display_name || t('review.anonymous')}</span>
+                                {(user?.id === spot.user_id || user?.email === 'updock.app@gmail.com') && (
+                                    <>
+                                        <span className="text-slate-300">·</span>
+                                        <button
+                                            onClick={() => setIsEditing(true)}
+                                            className="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1"
+                                        >
+                                            <Pencil size={12} />
+                                            {t('spot.edit')}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex gap-2">
