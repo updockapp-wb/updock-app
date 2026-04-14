@@ -701,10 +701,12 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             exit={{ opacity: 0 }}
                             className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl"
                             onClick={() => setIsImageOpen(false)}
+                            onTouchEnd={(e) => { if (e.target === e.currentTarget) { e.preventDefault(); setIsImageOpen(false); } }}
                         >
                             <button
-                                onClick={() => setIsImageOpen(false)}
-                                className="absolute top-6 right-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+                                onClick={(e) => { e.stopPropagation(); setIsImageOpen(false); }}
+                                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setIsImageOpen(false); }}
+                                className="absolute top-6 right-6 p-4 min-w-[44px] min-h-[44px] bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
                             >
                                 <X size={24} className="text-white" />
                             </button>
@@ -720,6 +722,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                             e.stopPropagation();
                                             setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1);
                                         }}
+                                        onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1); }}
                                         className="absolute left-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
                                     >
                                         <ChevronLeft size={32} className="text-white" />
@@ -729,6 +732,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                             e.stopPropagation();
                                             setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0);
                                         }}
+                                        onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0); }}
                                         className="absolute right-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
                                     >
                                         <ChevronRight size={32} className="text-white" />
