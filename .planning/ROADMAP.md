@@ -146,13 +146,24 @@ Plans:
 
 ### Phase 8: Bug Fixes — corriger les bugs de l'admin dashboard et le bouton fermer de la galerie photos
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Fix confirmed bugs in AdminDashboard (close button, preview photos, UX), SpotDetail lightbox (close button on mobile), and Profile (version, badge, spots count, default avatar).
+**Requirements**: BUG-01, BUG-02, BUG-03, BUG-04, BUG-05, BUG-06, BUG-07, BUG-08, BUG-09
 **Depends on:** Phase 7
-**Plans:** 0 plans
+**Success Criteria** (what must be TRUE):
+  1. AdminDashboard X button closes the dashboard on mobile and desktop
+  2. Admin preview modal shows spot photos when image_urls exist
+  3. Storage policies are applied in production (manual step)
+  4. Admin approve/delete buttons show loading feedback
+  5. Lightbox X button closes on iOS Capacitor mobile
+  6. Profile shows version v1.1.3
+  7. No gamification badge (Rookie/Pro/Expert) in profile
+  8. Spots Added count fetched from Supabase
+  9. Default avatar is Lucide User icon everywhere
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 8 to break down)
+- [ ] 08-01-PLAN.md — Profile fixes: version, badge removal, spots count, preset avatar removal (BUG-06, BUG-07, BUG-08, BUG-09)
+- [ ] 08-02-PLAN.md — AdminDashboard close + UX fixes, SpotDetail lightbox fix, Storage policies checkpoint (BUG-01, BUG-02, BUG-03, BUG-04, BUG-05)
 
 ### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil
 

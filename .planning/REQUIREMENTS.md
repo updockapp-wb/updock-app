@@ -55,6 +55,18 @@
 - **OWN-04**: L'overlay d'edition permet d'ajouter de nouvelles photos et de supprimer des photos existantes
 - **OWN-05**: Une politique RLS empeche les non-createurs non-admin de modifier les spots
 
+### Bug Fixes
+
+- **BUG-01**: Le bouton X du AdminDashboard ferme le dashboard sur mobile et desktop
+- **BUG-02**: La preview d'un spot en attente dans le AdminDashboard affiche les photos du spot
+- **BUG-03**: Les policies Supabase Storage sont appliquees sur l'instance de production
+- **BUG-04**: L'UX du AdminDashboard est amelioree (feedback visuel sur actions, etats vides, lisibilite)
+- **BUG-05**: Le bouton X de la lightbox photos fonctionne sur mobile (iOS Capacitor)
+- **BUG-06**: Le numero de version affiche dans le profil correspond a la version du package.json (v1.1.3)
+- **BUG-07**: Le badge de gamification (Rookie/Pro/Expert) est supprime du profil
+- **BUG-08**: Le compteur "Spots Added" affiche le nombre reel de spots crees par l'utilisateur
+- **BUG-09**: L'avatar par defaut est une icone Lucide User neutre (plus de SVG predefinis)
+
 ## v2 Requirements
 
 ### Donnees spots
@@ -103,25 +115,34 @@
 | NOTIF-01 | Phase 4 — Push Notifications | Complete |
 | NOTIF-02 | Phase 4 — Push Notifications | Complete |
 | NOTIF-03 | Phase 4 — Push Notifications | Complete |
-| ANON-01 | Phase 5 — Anonymous Access | Planned |
-| ANON-02 | Phase 5 — Anonymous Access | Planned |
-| ANON-03 | Phase 5 — Anonymous Access | Planned |
-| ANON-04 | Phase 5 — Anonymous Access | Planned |
-| ANON-05 | Phase 5 — Anonymous Access | Planned |
-| ANON-06 | Phase 5 — Anonymous Access | Planned |
-| ANON-07 | Phase 5 — Anonymous Access | Planned |
-| ANON-08 | Phase 5 — Anonymous Access | Planned |
+| ANON-01 | Phase 5 — Anonymous Access | Complete |
+| ANON-02 | Phase 5 — Anonymous Access | Complete |
+| ANON-03 | Phase 5 — Anonymous Access | Complete |
+| ANON-04 | Phase 5 — Anonymous Access | Complete |
+| ANON-05 | Phase 5 — Anonymous Access | Complete |
+| ANON-06 | Phase 5 — Anonymous Access | Complete |
+| ANON-07 | Phase 5 — Anonymous Access | Complete |
+| ANON-08 | Phase 5 — Anonymous Access | Complete |
 | OWN-01 | Phase 7 — Spot Ownership | Planned |
 | OWN-02 | Phase 7 — Spot Ownership | Planned |
 | OWN-03 | Phase 7 — Spot Ownership | Planned |
 | OWN-04 | Phase 7 — Spot Ownership | Planned |
 | OWN-05 | Phase 7 — Spot Ownership | Planned |
+| BUG-01 | Phase 8 — Bug Fixes | Planned |
+| BUG-02 | Phase 8 — Bug Fixes | Planned |
+| BUG-03 | Phase 8 — Bug Fixes | Planned |
+| BUG-04 | Phase 8 — Bug Fixes | Planned |
+| BUG-05 | Phase 8 — Bug Fixes | Planned |
+| BUG-06 | Phase 8 — Bug Fixes | Planned |
+| BUG-07 | Phase 8 — Bug Fixes | Planned |
+| BUG-08 | Phase 8 — Bug Fixes | Planned |
+| BUG-09 | Phase 8 — Bug Fixes | Planned |
 
 **Coverage:**
-- v1 requirements: 29 total
-- Mapped to phases: 29
+- v1 requirements: 38 total
+- Mapped to phases: 38
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-04-05 — Phase 7 spot ownership requirements added*
+*Last updated: 2026-04-14 — Phase 8 bug fix requirements added*
