@@ -1,4 +1,4 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Edit2, X, Camera, Calendar, Users, Bell, MapPin } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Camera, Calendar, Users, Bell, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -8,15 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSessions } from '../context/SessionsContext';
 import { useNotifications } from '../context/NotificationsContext';
 import PremiumModal from './PremiumModal';
-
-// Avatar assets mapping
-const AVATARS = [
-    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
-    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
-    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
-    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
-    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
-];
+import { supabase } from '../lib/supabase';
 
 interface ProfileProps {
     onOpenAuth?: () => void;
@@ -28,18 +20,25 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     const { t, language, setLanguage } = useLanguage();
     const { favorites } = useFavorites();
     const { user, signOut } = useAuth();
-    const { profile, updateDisplayName, uploadAvatar, selectPresetAvatar } = useProfile();
-    const spotsCount = favorites.length;
+    const { profile, updateDisplayName, uploadAvatar } = useProfile();
+    const [spotsCount, setSpotsCount] = useState(0);
 
     const [isPremiumOpen, setIsPremiumOpen] = useState(false);
-    const [isAvatarPickerOpen, setIsAvatarPickerOpen] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
     const [editingName, setEditingName] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { userUpcomingSessions, fetchUserSessions } = useSessions();
     const { permissionStatus, checkPermission } = useNotifications();
+
+    useEffect(() => {
+        if (!user) { setSpotsCount(0); return; }
+        supabase
+            .from('spots')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .then(({ count }) => setSpotsCount(count ?? 0));
+    }, [user]);
 
     useEffect(() => {
         if (user) {
@@ -117,23 +116,12 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 </div>
 
                 {/* Version */}
-                <p className="text-xs text-slate-300 mt-8">Updock v1.1.0 (Beta)</p>
+                <p className="text-xs text-slate-300 mt-8">Updock v1.1.3 (Beta)</p>
             </motion.div>
         );
     }
 
     const isAdmin = user?.email === 'updock.app@gmail.com';
-
-    const currentAvatar = AVATARS.find(a => a.id === (profile?.avatar_id || 1)) || AVATARS[0];
-
-    // Simple gamification logic
-    const getLevel = (count: number) => {
-        if (count >= 10) return { name: 'Expert', color: 'text-amber-500', bg: 'bg-amber-100' };
-        if (count >= 5) return { name: 'Pro', color: 'text-sky-500', bg: 'bg-sky-100' };
-        return { name: 'Rookie', color: 'text-teal-500', bg: 'bg-teal-100' };
-    };
-
-    const level = getLevel(spotsCount);
 
     return (
         <div className="w-full h-full flex flex-col p-6 overflow-y-auto bg-slate-50">
@@ -142,32 +130,39 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 <div className="relative group">
                     <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-sky-400 to-blue-600 p-1 shadow-lg shadow-sky-200">
                         <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-                            {user ? (
-                                profile?.avatar_url ? (
-                                    <img
-                                        src={profile.avatar_url}
-                                        className="w-full h-full object-cover"
-                                        alt="Avatar"
-                                    />
-                                ) : (
-                                    <img
-                                        src={currentAvatar.src}
-                                        className="w-full h-full object-cover"
-                                        alt="Avatar"
-                                    />
-                                )
+                            {profile?.avatar_url ? (
+                                <img
+                                    src={profile.avatar_url}
+                                    className="w-full h-full object-cover"
+                                    alt="Avatar"
+                                />
                             ) : (
                                 <User size={40} className="text-slate-300" />
                             )}
                         </div>
                     </div>
                     {user && (
-                        <button
-                            onClick={() => setIsAvatarPickerOpen(!isAvatarPickerOpen)}
-                            className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-100 text-sky-500 hover:text-sky-600 transition-transform active:scale-90"
-                        >
-                            <Edit2 size={14} />
-                        </button>
+                        <>
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-100 text-sky-500 hover:text-sky-600 transition-transform active:scale-90"
+                            >
+                                <Camera size={14} />
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={async (e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        await uploadAvatar(file);
+                                    }
+                                    e.target.value = '';
+                                }}
+                            />
+                        </>
                     )}
                 </div>
                 <div>
@@ -176,9 +171,6 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                     </h2>
                     {user ? (
                         <>
-                            <span className={`text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md ${level.bg} ${level.color}`}>
-                                {level.name}
-                            </span>
                             <p className="text-slate-400 text-sm mt-1 truncate max-w-[200px]">
                                 {user.email}
                             </p>
@@ -196,71 +188,6 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                     )}
                 </div>
             </div>
-
-            {/* Avatar Picker Modal/Popover */}
-            {isAvatarPickerOpen && (
-                <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-xl mb-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div className="flex justify-between items-center mb-4">
-                        <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wide">Choose Avatar</h4>
-                        <button onClick={() => setIsAvatarPickerOpen(false)} className="text-slate-400 hover:text-slate-600">
-                            <X size={16} />
-                        </button>
-                    </div>
-
-                    {/* Avatar Upload */}
-                    <div className="mb-4">
-                        <div className="flex items-center gap-4 mb-4">
-                            {/* Current avatar display */}
-                            <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100 border-2 border-white shadow-lg">
-                                {profile?.avatar_url ? (
-                                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                                ) : (
-                                    <img src={currentAvatar.src} alt={currentAvatar.name} className="w-full h-full" />
-                                )}
-                            </div>
-                            <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-xl font-medium hover:bg-sky-100 transition-colors"
-                            >
-                                <Camera size={18} />
-                                {t('profile.upload_photo')}
-                            </button>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        await uploadAvatar(file);
-                                    }
-                                    e.target.value = '';
-                                }}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Preset Avatar Grid */}
-                    <div className="grid grid-cols-5 gap-3">
-                        {AVATARS.map((avatar) => (
-                            <button
-                                key={avatar.id}
-                                onClick={async () => {
-                                    setIsUpdating(true);
-                                    await selectPresetAvatar(avatar.id);
-                                    setIsAvatarPickerOpen(false);
-                                    setIsUpdating(false);
-                                }}
-                                disabled={isUpdating}
-                                className={`aspect-square rounded-2xl p-1 transition-all ${profile?.avatar_id === avatar.id && !profile?.avatar_url ? 'bg-sky-50 ring-2 ring-sky-500 scale-105' : 'bg-slate-50 hover:bg-slate-100 hover:scale-105'}`}
-                            >
-                                <img src={avatar.src} alt={avatar.name} className="w-full h-full" />
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
 
             {/* Display Name Section */}
             {user && (
@@ -307,11 +234,11 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Spots Added</p>
-                    <p className="text-2xl font-black text-slate-800">0</p>
+                    <p className="text-2xl font-black text-slate-800">{spotsCount}</p>
                 </div>
                 <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Favorites</p>
-                    <p className="text-2xl font-black text-slate-800">{spotsCount}</p>
+                    <p className="text-2xl font-black text-slate-800">{favorites.length}</p>
                 </div>
             </div>
 
@@ -440,7 +367,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             )}
 
             <div className="mt-auto text-center pb-8">
-                <p className="text-xs text-slate-300">Updock v1.1.0 (Beta)</p>
+                <p className="text-xs text-slate-300">Updock v1.1.3 (Beta)</p>
             </div>
 
             <PremiumModal isOpen={isPremiumOpen} onClose={() => setIsPremiumOpen(false)} />

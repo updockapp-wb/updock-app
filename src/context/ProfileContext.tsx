@@ -5,7 +5,6 @@ import { useAuth } from './AuthContext';
 interface ProfileData {
     display_name: string | null;
     avatar_url: string | null;
-    avatar_id: number;
 }
 
 interface ProfileContextType {
@@ -13,7 +12,6 @@ interface ProfileContextType {
     isLoading: boolean;
     updateDisplayName: (name: string) => Promise<void>;
     uploadAvatar: (file: File) => Promise<void>;
-    selectPresetAvatar: (avatarId: number) => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -34,7 +32,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
             setIsLoading(true);
             const { data, error } = await supabase
                 .from('profiles')
-                .select('display_name, avatar_url, avatar_id')
+                .select('display_name, avatar_url')
                 .eq('id', user.id)
                 .single();
 
@@ -42,7 +40,6 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
                 setProfile({
                     display_name: data.display_name ?? null,
                     avatar_url: data.avatar_url ?? null,
-                    avatar_id: data.avatar_id ?? 1,
                 });
             }
             setIsLoading(false);
@@ -99,24 +96,8 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : prev);
     };
 
-    const selectPresetAvatar = async (avatarId: number) => {
-        if (!user) return;
-
-        const { error } = await supabase
-            .from('profiles')
-            .upsert({ id: user.id, avatar_id: avatarId, avatar_url: null });
-
-        if (error) {
-            console.error('Error selecting preset avatar:', error);
-            throw error;
-        }
-
-        // Clear avatar_url when switching to preset
-        setProfile(prev => prev ? { ...prev, avatar_id: avatarId, avatar_url: null } : prev);
-    };
-
     return (
-        <ProfileContext.Provider value={{ profile, isLoading, updateDisplayName, uploadAvatar, selectPresetAvatar }}>
+        <ProfileContext.Provider value={{ profile, isLoading, updateDisplayName, uploadAvatar }}>
             {children}
         </ProfileContext.Provider>
     );
