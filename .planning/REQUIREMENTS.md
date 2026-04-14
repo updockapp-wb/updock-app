@@ -67,6 +67,14 @@
 - **BUG-08**: Le compteur "Spots Added" affiche le nombre reel de spots crees par l'utilisateur
 - **BUG-09**: L'avatar par defaut est une icone Lucide User neutre (plus de SVG predefinis)
 
+### Community Stats
+
+- **STATS-01**: L'onglet Profil affiche une ligne de navigation "Statistiques communaute" entre les stats personnelles et les reglages
+- **STATS-02**: La page CommunityStatsScreen affiche 3 KPIs : total spots publies, total utilisateurs inscrits, spots par pays avec drapeaux emoji
+- **STATS-03**: L'ecran anonyme affiche le total spots et total utilisateurs sous le bouton "Creer un compte"
+- **STATS-04**: Les compteurs de spots incluent les spots statiques et les spots en base de donnees
+- **STATS-05**: La repartition par pays totalise le meme nombre que le total spots affiche
+
 ## v2 Requirements
 
 ### Donnees spots
@@ -137,12 +145,17 @@
 | BUG-07 | Phase 8 — Bug Fixes | Planned |
 | BUG-08 | Phase 8 — Bug Fixes | Planned |
 | BUG-09 | Phase 8 — Bug Fixes | Planned |
+| STATS-01 | Phase 9 — Community Stats | Planned |
+| STATS-02 | Phase 9 — Community Stats | Planned |
+| STATS-03 | Phase 9 — Community Stats | Planned |
+| STATS-04 | Phase 9 — Community Stats | Planned |
+| STATS-05 | Phase 9 — Community Stats | Planned |
 
 **Coverage:**
-- v1 requirements: 38 total
-- Mapped to phases: 38
+- v1 requirements: 43 total
+- Mapped to phases: 43
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-04-14 — Phase 8 bug fix requirements added*
+*Last updated: 2026-04-15 — Phase 9 community stats requirements added*

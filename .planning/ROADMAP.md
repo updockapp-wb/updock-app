@@ -167,10 +167,16 @@ Plans:
 
 ### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Display community-wide statistics (total spots, total users, spots by country) in the Profile tab for authenticated users, with a minimal preview for anonymous users.
+**Requirements**: STATS-01, STATS-02, STATS-03, STATS-04, STATS-05
 **Depends on:** Phase 8
-**Plans:** 0 plans
+**Success Criteria** (what must be TRUE):
+  1. Authenticated users see a "Statistiques communaute" nav row between personal stats and settings
+  2. CommunityStatsScreen shows total published spots, total registered users, and spots-by-country with flag emojis
+  3. Anonymous users see total spots and total users below the signup CTA
+  4. Spots counts include both static and DB spots
+  5. Country breakdown sums to total spots count
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 9 to break down)
+- [ ] 09-01-PLAN.md — CommunityStatsScreen component, country utility, Profile.tsx nav row + anonymous preview, translations (STATS-01, STATS-02, STATS-03, STATS-04, STATS-05)
