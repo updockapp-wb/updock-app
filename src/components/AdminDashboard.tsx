@@ -18,6 +18,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
     const [editingSpot, setEditingSpot] = useState<Spot | null>(null);
     const [previewSpot, setPreviewSpot] = useState<Spot | null>(null);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+    const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
     const pendingSpots = spots.filter(s => s.is_approved === false);
     // Sort all spots by date created or just name? Default probably fine for now.
@@ -49,7 +50,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                         <h2 className="text-2xl font-bold">{t('admin.title')}</h2>
                                         <p className="text-slate-400 text-sm">{t('admin.subtitle')}</p>
                                     </div>
-                                    <button onClick={onClose} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+                                    <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors active:bg-white/30" aria-label="Close">
                                         <X size={20} />
                                     </button>
                                 </div>
@@ -62,6 +63,9 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                     >
                                         <CircleAlert size={16} />
                                         Pending ({pendingSpots.length})
+                                        {pendingSpots.length > 0 && (
+                                            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                                        )}
                                         {view === 'pending' && <motion.div layoutId="underline" className="absolute bottom-0 left-0 right-0 h-1 bg-sky-500 rounded-t-full" />}
                                     </button>
                                     <button
@@ -118,15 +122,25 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
 
                                                     <div className="flex gap-3 pt-4 border-t border-slate-50" onClick={(e) => e.stopPropagation()}>
                                                         <button
-                                                            onClick={() => approveSpot(spot.id)}
-                                                            className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                                            onClick={async () => {
+                                                                setActionLoadingId(spot.id);
+                                                                await approveSpot(spot.id);
+                                                                setActionLoadingId(null);
+                                                            }}
+                                                            disabled={actionLoadingId === spot.id}
+                                                            className={`flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Check size={18} />
-                                                            {t('admin.approve')}
+                                                            {actionLoadingId === spot.id ? '...' : t('admin.approve')}
                                                         </button>
                                                         <button
-                                                            onClick={() => deleteSpot(spot.id)}
-                                                            className="px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold rounded-xl flex items-center justify-center transition-colors"
+                                                            onClick={async () => {
+                                                                setActionLoadingId(spot.id);
+                                                                await deleteSpot(spot.id);
+                                                                setActionLoadingId(null);
+                                                            }}
+                                                            disabled={actionLoadingId === spot.id}
+                                                            className={`px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold rounded-xl flex items-center justify-center transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Trash2 size={18} />
                                                         </button>
@@ -137,33 +151,43 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                     )
                                 ) : (
                                     // All Spots List
-                                    <div className="space-y-4">
-                                        {allSpots.map(spot => (
-                                            <div key={spot.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                                                <div>
-                                                    <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                                                        {spot.name}
-                                                        {!spot.is_approved && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded uppercase font-bold">Pending</span>}
-                                                    </h3>
-                                                    <p className="text-xs text-slate-400 uppercase font-bold">{spot.type.join(', ')}</p>
+                                    allSpots.length === 0 ? (
+                                        <div className="h-full flex flex-col items-center justify-center text-slate-400">
+                                            <LayoutList size={48} className="mb-4 opacity-50" />
+                                            <p className="font-medium">No spots yet</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            {allSpots.map(spot => (
+                                                <div key={spot.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                                                    <div className="flex-1 min-w-0 mr-3">
+                                                        <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                                                            {spot.name}
+                                                            {!spot.is_approved && <span className="text-[10px] bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded uppercase font-bold">Pending</span>}
+                                                        </h3>
+                                                        <p className="text-xs text-slate-400 uppercase font-bold">{spot.type.join(', ')}</p>
+                                                        {spot.description && (
+                                                            <p className="text-xs text-slate-400 mt-0.5 truncate max-w-[250px]">{spot.description}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => setEditingSpot(spot)}
+                                                            className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                                        >
+                                                            <Edit size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => deleteSpot(spot.id)}
+                                                            className="p-2 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex gap-2">
-                                                    <button
-                                                        onClick={() => setEditingSpot(spot)}
-                                                        className="p-2 bg-slate-50 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                                                    >
-                                                        <Edit size={16} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => deleteSpot(spot.id)}
-                                                        className="p-2 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    )
                                 )}
 
                                 {/* Edit Overlay */}
@@ -360,10 +384,6 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                     <div className="bg-slate-50 rounded-xl p-4">
                                         <p className="text-xs text-slate-500 mb-1">Difficulté</p>
                                         <p className="font-bold text-slate-900">{previewSpot.difficulty}</p>
-                                    </div>
-                                    <div className="bg-slate-50 rounded-xl p-4">
-                                        <p className="text-xs text-slate-500 mb-1">Hauteur</p>
-                                        <p className="font-bold text-slate-900">{previewSpot.height || '-'} m</p>
                                     </div>
                                     <div className="bg-slate-50 rounded-xl p-4 col-span-2">
                                         <p className="text-xs text-slate-500 mb-1">Coordonnées</p>
