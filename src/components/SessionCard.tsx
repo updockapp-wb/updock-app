@@ -1,18 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Users, Bell } from 'lucide-react';
+import { Calendar, Users, Bell, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSessions, type Session } from '../context/SessionsContext';
 import { useNotifications } from '../context/NotificationsContext';
-
-const AVATARS = [
-  { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
-  { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
-  { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
-  { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
-  { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
-];
 
 interface SessionCardProps {
   session: Session;
@@ -34,10 +26,7 @@ export default function SessionCard({ session, index }: SessionCardProps) {
   const canJoin = !!user && !session.user_is_attending && !isCreator;
   const canLeave = !!user && session.user_is_attending && !isCreator;
 
-  const avatarSrc =
-    session.creator_profile?.avatar_url ||
-    AVATARS.find((a) => a.id === (session.creator_profile?.avatar_id ?? 1))?.src ||
-    AVATARS[0].src;
+  const hasCreatorAvatar = !!session.creator_profile?.avatar_url;
 
   const date = new Date(session.starts_at);
   const dateStr = date.toLocaleDateString();
@@ -92,11 +81,17 @@ export default function SessionCard({ session, index }: SessionCardProps) {
     >
       {/* Author row */}
       <div className="flex items-center gap-2 mb-2">
-        <img
-          src={avatarSrc}
-          alt={session.creator_profile?.display_name || t('review.anonymous')}
-          className="w-8 h-8 rounded-full object-cover"
-        />
+        {hasCreatorAvatar ? (
+          <img
+            src={session.creator_profile!.avatar_url!}
+            alt=""
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+            <User size={16} className="text-slate-400" />
+          </div>
+        )}
         <span className="text-sm font-bold text-slate-800 truncate">
           {session.creator_profile?.display_name || t('review.anonymous')}
         </span>

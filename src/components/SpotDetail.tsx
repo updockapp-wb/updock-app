@@ -1,4 +1,4 @@
-import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil, Save, Plus, Trash2 } from 'lucide-react';
+import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil, Save, Plus, Trash2, User as UserIcon } from 'lucide-react';
 import { type Spot, type StartType } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFavorites } from '../context/FavoritesContext';
@@ -16,14 +16,6 @@ import { useAuth } from '../context/AuthContext';
 import { useSessions } from '../context/SessionsContext';
 import { useSpots } from '../context/SpotsContext';
 import { supabase } from '../lib/supabase';
-
-const AVATARS = [
-    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
-    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
-    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
-    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
-    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
-];
 
 interface SpotDetailProps {
     spot: Spot | null;
@@ -58,7 +50,6 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     const [uploaderProfile, setUploaderProfile] = useState<{
         display_name: string | null;
         avatar_url: string | null;
-        avatar_id: number | null;
     } | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState<Spot | null>(null);
@@ -106,7 +97,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                 // Fetch profiles separately — no FK required
                 const userIds = [...new Set(data.map(r => r.user_id))];
                 const { data: profilesData } = userIds.length > 0
-                    ? await supabase.from('profiles').select('id, display_name, avatar_url, avatar_id').in('id', userIds)
+                    ? await supabase.from('profiles').select('id, display_name, avatar_url').in('id', userIds)
                     : { data: [] };
                 const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p]));
                 const reviewsWithProfiles = data.map(r => ({ ...r, profiles: profilesMap[r.user_id] || null }));
@@ -134,7 +125,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         }
         supabase
             .from('profiles')
-            .select('display_name, avatar_url, avatar_id')
+            .select('display_name, avatar_url')
             .eq('id', spot.user_id)
             .single()
             .then(({ data }) => setUploaderProfile(data));
@@ -250,11 +241,13 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         {spot?.user_id && uploaderProfile && (
                             <div className="flex items-center gap-1.5 text-sm text-slate-400 mt-1">
                                 <span>{t('spot.added_by')}</span>
-                                <img
-                                    src={uploaderProfile.avatar_url || AVATARS.find(a => a.id === (uploaderProfile.avatar_id || 1))?.src || AVATARS[0].src}
-                                    className="w-5 h-5 rounded-full object-cover"
-                                    alt=""
-                                />
+                                {uploaderProfile.avatar_url ? (
+                                    <img src={uploaderProfile.avatar_url} className="w-5 h-5 rounded-full object-cover" alt="" />
+                                ) : (
+                                    <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
+                                        <UserIcon size={10} className="text-slate-400" />
+                                    </div>
+                                )}
                                 <span className="text-slate-500">{uploaderProfile.display_name || t('review.anonymous')}</span>
                                 {(user?.id === spot.user_id || user?.email === 'updock.app@gmail.com') && (
                                     <>

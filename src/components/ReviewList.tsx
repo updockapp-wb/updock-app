@@ -1,15 +1,7 @@
 import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
+import { Star, User } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { type Review } from './ReviewForm';
-
-const AVATARS = [
-    { id: 1, src: '/src/assets/avatars/avatar1.svg', name: 'Wave Rider' },
-    { id: 2, src: '/src/assets/avatars/avatar2.svg', name: 'Wind Sail' },
-    { id: 3, src: '/src/assets/avatars/avatar3.svg', name: 'Sea Sun' },
-    { id: 4, src: '/src/assets/avatars/avatar4.svg', name: 'Deep Fin' },
-    { id: 5, src: '/src/assets/avatars/avatar5.svg', name: 'Anchor Point' },
-];
 
 interface ReviewListProps {
   reviews: Review[];
@@ -37,10 +29,7 @@ export default function ReviewList({ reviews, isLoading, currentUserId: _current
   return (
     <div className="flex flex-col gap-3">
       {reviews.map((review, index) => {
-        const avatarSrc =
-          review.profiles?.avatar_url ||
-          AVATARS.find((a) => a.id === (review.profiles?.avatar_id || 1))?.src ||
-          AVATARS[0].src;
+        const hasAvatar = !!review.profiles?.avatar_url;
 
         const displayName = review.profiles?.display_name || t('review.anonymous');
 
@@ -54,11 +43,17 @@ export default function ReviewList({ reviews, isLoading, currentUserId: _current
           >
             {/* Author row */}
             <div className="flex items-center gap-2 mb-2">
-              <img
-                src={avatarSrc}
-                alt={displayName}
-                className="w-8 h-8 rounded-full object-cover"
-              />
+              {hasAvatar ? (
+                <img
+                  src={review.profiles!.avatar_url!}
+                  alt={displayName}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+                  <User size={16} className="text-slate-400" />
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-slate-800 truncate">{displayName}</p>
                 <p className="text-xs text-slate-400">
