@@ -62,4 +62,4 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 | Ne pas refactoriser le type de spot (JSON string) maintenant | Hors scope des correctifs prioritaires | — Pending |
 
 ---
-*Last updated: 2026-04-05 after Phase 07 (spot-ownership) completion*
+*Last updated: 2026-04-14 after Phase 08 (bug-fixes) completion*
