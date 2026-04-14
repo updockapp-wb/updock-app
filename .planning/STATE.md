@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
+milestone: v1.1.3
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-04-05T21:20:17.498Z"
+status: Ready to execute
+stopped_at: "Checkpoint: 08-02 Task 3 requires human action — Supabase Storage policies"
+last_updated: "2026-04-14T21:09:07.352Z"
 progress:
   total_phases: 9
   completed_phases: 6
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 16
+  completed_plans: 15
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 07 — spot-ownership
+**Current focus:** Phase 08 — bug-fixes-corriger-les-bugs-de-l-admin-dashboard-et-le-bouton-fermer-de-la-galerie-photos
 
 ## Current Position
 
-Phase: 08
-Plan: Not started
+Phase: 08 (bug-fixes-corriger-les-bugs-de-l-admin-dashboard-et-le-bouton-fermer-de-la-galerie-photos) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Plan: Not started
 | Phase 05-anonymous-access P02 | 5 | 2 tasks | 3 files |
 | Phase 07-spot-ownership P01 | 3 | 2 tasks | 5 files |
 | Phase 07-spot-ownership P02 | 4 | 2 tasks | 1 files |
+| Phase 08-bug-fixes P02 | 15 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,8 @@ Recent decisions affecting current work:
 - [Phase 07-spot-ownership]: RLS policy uses email check for admin (consistent with existing admin_permissions pattern)
 - [Phase 07-spot-ownership]: AVATARS constant duplicated in SpotDetail for uploader avatar resolution (same pattern as ReviewList)
 - [Phase 07-spot-ownership]: Edit overlay uses absolute inset-0 over content div, photo deletion only removes URLs (no Storage delete per Pitfall 4)
+- [Phase 08-bug-fixes]: onTouchEnd added alongside onClick for all lightbox interactive elements — iOS Capacitor portalled overlays may not fire onClick reliably
+- [Phase 08-bug-fixes]: actionLoadingId pattern in AdminDashboard: single string state tracks which spot action is in-flight
 
 ### Pending Todos
 
@@ -124,6 +127,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T21:13:56.502Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-04-14T21:09:07.343Z
+Stopped at: Checkpoint: 08-02 Task 3 requires human action — Supabase Storage policies
 Resume file: None

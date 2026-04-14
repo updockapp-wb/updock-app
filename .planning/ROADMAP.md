@@ -163,7 +163,7 @@ Plans:
 
 Plans:
 - [ ] 08-01-PLAN.md — Profile fixes: version, badge removal, spots count, preset avatar removal (BUG-06, BUG-07, BUG-08, BUG-09)
-- [ ] 08-02-PLAN.md — AdminDashboard close + UX fixes, SpotDetail lightbox fix, Storage policies checkpoint (BUG-01, BUG-02, BUG-03, BUG-04, BUG-05)
+- [x] 08-02-PLAN.md — AdminDashboard close + UX fixes, SpotDetail lightbox fix, Storage policies checkpoint (BUG-01, BUG-02, BUG-03, BUG-04, BUG-05)
 
 ### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil
 
