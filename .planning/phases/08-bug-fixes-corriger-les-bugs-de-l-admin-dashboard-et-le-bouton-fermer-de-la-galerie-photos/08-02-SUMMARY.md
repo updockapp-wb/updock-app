@@ -52,7 +52,7 @@ completed: 2026-04-14
 - **Duration:** ~15 min
 - **Started:** 2026-04-14
 - **Completed:** 2026-04-14
-- **Tasks:** 2 of 3 automated (Task 3 is checkpoint:human-action)
+- **Tasks:** 3 of 3 complete (Task 3 was checkpoint:human-action — confirmed done 2026-04-14)
 - **Files modified:** 2
 
 ## Accomplishments
@@ -70,7 +70,7 @@ completed: 2026-04-14
 
 1. **Task 1: Fix AdminDashboard close button and UX improvements** - `098b9c8` (fix)
 2. **Task 2: Fix SpotDetail lightbox X button on mobile** - `05d9f35` (fix)
-3. **Task 3: Apply Supabase Storage policies** - CHECKPOINT (human-action required)
+3. **Task 3: Apply Supabase Storage policies** - CONFIRMED (manual action completed by user)
 
 ## Files Created/Modified
 
@@ -104,10 +104,19 @@ The SQL file `supabase/migrations/supabase_storage_setup.sql` is ready. The user
 
 This is required for spot photos uploaded by users to be publicly accessible via URL.
 
+## Task 3: Supabase Storage Policies (Human Action — Confirmed)
+
+The user manually applied the SQL policies in the Supabase Dashboard SQL Editor. The `spots` bucket now has:
+- Public Access (SELECT) — spot photos are publicly readable
+- Authenticated Uploads (INSERT) — only authenticated users can upload
+- User Delete Own Images (DELETE) — restricted to owner only
+
+This resolves D-03.
+
 ## Next Phase Readiness
 
 - AdminDashboard and SpotDetail bugs fixed, ready for mobile testing
-- Storage policies pending manual application by user (D-03)
+- Storage policies applied in production (D-03 resolved)
 
 ---
 *Phase: 08-bug-fixes*
