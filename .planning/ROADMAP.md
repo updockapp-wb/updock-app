@@ -159,10 +159,10 @@ Plans:
   7. No gamification badge (Rookie/Pro/Expert) in profile
   8. Spots Added count fetched from Supabase
   9. Default avatar is Lucide User icon everywhere
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 08-01-PLAN.md — Profile fixes: version, badge removal, spots count, preset avatar removal (BUG-06, BUG-07, BUG-08, BUG-09)
+- [x] 08-01-PLAN.md — Profile fixes: version, badge removal, spots count, preset avatar removal (BUG-06, BUG-07, BUG-08, BUG-09)
 - [x] 08-02-PLAN.md — AdminDashboard close + UX fixes, SpotDetail lightbox fix, Storage policies checkpoint (BUG-01, BUG-02, BUG-03, BUG-04, BUG-05)
 
 ### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil

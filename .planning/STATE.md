@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1.3
 milestone_name: milestone
-status: Ready to execute
-stopped_at: "Checkpoint: 08-02 Task 3 requires human action — Supabase Storage policies"
-last_updated: "2026-04-14T21:09:07.352Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-04-14T21:18:08.151Z"
 progress:
   total_phases: 9
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -61,6 +61,7 @@ Plan: 2 of 2
 | Phase 07-spot-ownership P01 | 3 | 2 tasks | 5 files |
 | Phase 07-spot-ownership P02 | 4 | 2 tasks | 1 files |
 | Phase 08-bug-fixes P02 | 15 | 2 tasks | 2 files |
+| Phase 08-bug-fixes P01 | 13 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,9 @@ Recent decisions affecting current work:
 - [Phase 07-spot-ownership]: Edit overlay uses absolute inset-0 over content div, photo deletion only removes URLs (no Storage delete per Pitfall 4)
 - [Phase 08-bug-fixes]: onTouchEnd added alongside onClick for all lightbox interactive elements — iOS Capacitor portalled overlays may not fire onClick reliably
 - [Phase 08-bug-fixes]: actionLoadingId pattern in AdminDashboard: single string state tracks which spot action is in-flight
+- [Phase 08-bug-fixes]: Removed selectPresetAvatar and avatar_id entirely — preset SVG system was unused and confusing
+- [Phase 08-bug-fixes]: Default avatar is Lucide User icon (not SVG file) — consistent, no broken image risk
+- [Phase 08-bug-fixes]: spotsCount fetched via Supabase count query (head:true) on mount — lightweight, no data transfer
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-14T21:09:07.343Z
-Stopped at: Checkpoint: 08-02 Task 3 requires human action — Supabase Storage policies
+Last session: 2026-04-14T21:18:08.142Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
