@@ -176,7 +176,7 @@ Plans:
   3. Anonymous users see total spots and total users below the signup CTA
   4. Spots counts include both static and DB spots
   5. Country breakdown sums to total spots count
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 09-01-PLAN.md — CommunityStatsScreen component, country utility, Profile.tsx nav row + anonymous preview, translations (STATS-01, STATS-02, STATS-03, STATS-04, STATS-05)
+- [x] 09-01-PLAN.md — CommunityStatsScreen component, country utility, Profile.tsx nav row + anonymous preview, translations (STATS-01, STATS-02, STATS-03, STATS-04, STATS-05)

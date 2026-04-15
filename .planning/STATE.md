@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1.3
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-04-14T21:37:44.092Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-04-15T21:17:55.024Z"
 progress:
   total_phases: 9
-  completed_phases: 7
-  total_plans: 16
-  completed_plans: 16
+  completed_phases: 8
+  total_plans: 17
+  completed_plans: 17
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 08 — bug-fixes-corriger-les-bugs-de-l-admin-dashboard-et-le-bouton-fermer-de-la-galerie-photos
+**Current focus:** Phase 09 — community-stats-section-statistiques-globales-de-la-communaut-dans-l-onglet-profil
 
 ## Current Position
 
-Phase: 09
-Plan: Not started
+Phase: 09 (community-stats-section-statistiques-globales-de-la-communaut-dans-l-onglet-profil) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Plan: Not started
 | Phase 07-spot-ownership P02 | 4 | 2 tasks | 1 files |
 | Phase 08-bug-fixes P02 | 15 | 2 tasks | 2 files |
 | Phase 08-bug-fixes P01 | 13 | 2 tasks | 5 files |
+| Phase 09-community-stats P01 | 25 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,9 @@ Recent decisions affecting current work:
 - [Phase 08-bug-fixes]: Removed selectPresetAvatar and avatar_id entirely — preset SVG system was unused and confusing
 - [Phase 08-bug-fixes]: Default avatar is Lucide User icon (not SVG file) — consistent, no broken image risk
 - [Phase 08-bug-fixes]: spotsCount fetched via Supabase count query (head:true) on mount — lightweight, no data transfer
+- [Phase 09-community-stats]: Country derived client-side from lat/lng bounding boxes (not GROUP BY country DB column) — no country column exists in spots table
+- [Phase 09-community-stats]: Switzerland bounds checked before France in COUNTRY_BOUNDS because CH is a geographic subset of FR bounding box
+- [Phase 09-community-stats]: CommunityStatsScreen rendered as fixed inset-0 z-50 overlay matching AdminDashboard pattern
 
 ### Pending Todos
 
@@ -131,6 +135,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-14T21:31:57.119Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-04-15T21:17:55.015Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None
