@@ -147,5 +147,11 @@
     "spot.edit_name": "Nom",
     "spot.edit_description": "Description",
     "spot.edit_type": "Type",
-    "spot.edit_difficulty": "Difficulte"
+    "spot.edit_difficulty": "Difficulte",
+    "community_stats.title": "La communaute",
+    "community_stats.total_spots": "Spots publies",
+    "community_stats.total_users": "Riders inscrits",
+    "community_stats.spots_by_country": "Spots par pays",
+    "community_stats.spots_count": "spots",
+    "community_stats.nav_label": "Statistiques communaute"
 }
