@@ -1,4 +1,4 @@
-import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Camera, Calendar, Users, Bell, MapPin } from 'lucide-react';
+import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Camera, Calendar, Users, Bell, MapPin, BarChart2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -8,6 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSessions } from '../context/SessionsContext';
 import { useNotifications } from '../context/NotificationsContext';
 import PremiumModal from './PremiumModal';
+import CommunityStatsScreen from './CommunityStatsScreen';
 import { supabase } from '../lib/supabase';
 
 interface ProfileProps {
@@ -27,6 +28,9 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     const [editingName, setEditingName] = useState(false);
     const [nameInput, setNameInput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isCommunityStatsOpen, setIsCommunityStatsOpen] = useState(false);
+    const [anonTotalSpots, setAnonTotalSpots] = useState<number | null>(null);
+    const [anonTotalUsers, setAnonTotalUsers] = useState<number | null>(null);
 
     const { userUpcomingSessions, fetchUserSessions } = useSessions();
     const { permissionStatus, checkPermission } = useNotifications();
@@ -49,6 +53,19 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     useEffect(() => {
         checkPermission();
     }, []);
+
+    useEffect(() => {
+        if (user) return;
+        supabase
+            .from('spots')
+            .select('id', { count: 'exact', head: true })
+            .eq('is_approved', true)
+            .then(({ count }) => setAnonTotalSpots((count ?? 0) + 10)); // +10 for static spots
+        supabase
+            .from('profiles')
+            .select('id', { count: 'exact', head: true })
+            .then(({ count }) => setAnonTotalUsers(count ?? 0));
+    }, [user]);
 
     // Anonymous Profile Screen
     if (!user) {
@@ -88,6 +105,19 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 >
                     {t('anon_profile.btn_signup')}
                 </button>
+
+                {/* Community stats preview */}
+                {anonTotalSpots !== null && anonTotalUsers !== null && (
+                    <div className="flex items-center justify-center gap-4 mt-6">
+                        <span className="text-sm text-slate-400">
+                            {anonTotalSpots} spots
+                        </span>
+                        <span className="text-slate-300">|</span>
+                        <span className="text-sm text-slate-400">
+                            {anonTotalUsers} riders
+                        </span>
+                    </div>
+                )}
 
                 {/* Language toggle (settings accessible for anonymous) */}
                 <div className="mt-12 w-full max-w-[320px]">
@@ -275,6 +305,20 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 </div>
             )}
 
+            {/* Community Stats Nav Row */}
+            <div
+                onClick={() => setIsCommunityStatsOpen(true)}
+                className="bg-white rounded-3xl border border-slate-100 overflow-hidden mb-6 cursor-pointer hover:bg-slate-50 transition-colors"
+            >
+                <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3 text-slate-700">
+                        <BarChart2 size={20} className="text-sky-500" />
+                        <span className="font-medium">{t('community_stats.nav_label')}</span>
+                    </div>
+                    <ChevronRight size={20} className="text-slate-300" />
+                </div>
+            </div>
+
             {/* Settings Sections */}
             <h3 className="text-slate-400 text-xs font-bold uppercase mb-4 ml-2">{t('profile.settings')}</h3>
 
@@ -371,6 +415,11 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             </div>
 
             <PremiumModal isOpen={isPremiumOpen} onClose={() => setIsPremiumOpen(false)} />
+
+            <CommunityStatsScreen
+                isOpen={isCommunityStatsOpen}
+                onClose={() => setIsCommunityStatsOpen(false)}
+            />
         </div>
     );
 }
