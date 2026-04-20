@@ -393,6 +393,10 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             <div
                                 className="aspect-video w-full rounded-2xl overflow-hidden bg-slate-100 relative cursor-pointer hover:opacity-90 transition-opacity border border-slate-100"
                                 onClick={() => {
+                                    if (!user) {
+                                        onOpenAuth?.();
+                                        return;
+                                    }
                                     if (spot.image_urls && spot.image_urls.length > 0) {
                                         setCurrentPhotoIndex(0);
                                         setIsImageOpen(true);
@@ -401,8 +405,24 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             >
                                 {spot.image_urls && spot.image_urls.length > 0 ? (
                                     <>
-                                        <img src={spot.image_urls[0]} alt={spot.name} className="w-full h-full object-cover" />
-                                        {spot.image_urls.length > 1 && (
+                                        <img
+                                            src={spot.image_urls[0]}
+                                            alt={spot.name}
+                                            className={`w-full h-full object-cover transition-all duration-300 ${!user ? 'blur-md scale-105' : ''}`}
+                                        />
+                                        {/* Overlay cadenas — seulement si non connecté */}
+                                        {!user && (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/20">
+                                                <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-5 py-4 flex flex-col items-center gap-2 shadow-lg">
+                                                    <Lock size={22} className="text-slate-700" />
+                                                    <span className="text-xs font-bold text-slate-700 text-center leading-tight">
+                                                        {t('spot.photos_login_required')}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* Badge "N photos" — seulement si connecté ET plusieurs photos */}
+                                        {user && spot.image_urls.length > 1 && (
                                             <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full border border-white/10 uppercase tracking-widest">
                                                 View {spot.image_urls.length} Photos
                                             </div>
@@ -647,6 +667,72 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         </div>
     );
 
+    // Lightbox JSX — rendered inside Drawer.Portal on mobile (so it is part of the
+    // Radix Dialog portal tree and not marked aria-hidden by hideOthers()), and via
+    // createPortal to document.body on desktop (no Drawer active, no aria-hiding issue).
+    const lightbox = (
+        <AnimatePresence>
+            {isImageOpen && spot?.image_urls && spot.image_urls.length > 0 && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl"
+                    onClick={() => setIsImageOpen(false)}
+                    onTouchEnd={(e) => { if (e.target === e.currentTarget) { e.preventDefault(); setIsImageOpen(false); } }}
+                >
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsImageOpen(false); }}
+                        onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setIsImageOpen(false); }}
+                        className="absolute top-6 right-6 p-4 min-w-[44px] min-h-[44px] bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+                    >
+                        <X size={24} className="text-white" />
+                    </button>
+
+                    <div className="absolute top-6 left-6 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase border border-white/10">
+                        {currentPhotoIndex + 1} / {spot.image_urls.length}
+                    </div>
+
+                    {spot.image_urls.length > 1 && (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1);
+                                }}
+                                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1); }}
+                                className="absolute left-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+                            >
+                                <ChevronLeft size={32} className="text-white" />
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0);
+                                }}
+                                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0); }}
+                                className="absolute right-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+                            >
+                                <ChevronRight size={32} className="text-white" />
+                            </button>
+                        </>
+                    )}
+
+                    <motion.img
+                        key={currentPhotoIndex}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        src={spot.image_urls[currentPhotoIndex]}
+                        alt={`${spot.name} - Photo ${currentPhotoIndex + 1}`}
+                        className="max-w-full max-h-full object-contain shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+
     return (
         <>
             {/* DESKTOP SIDEBAR */}
@@ -671,9 +757,16 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     activeSnapPoint={snap}
                     setActiveSnapPoint={setSnap}
                     shouldScaleBackground
+                    modal={false}
                 >
                     <Drawer.Portal>
-                        <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2000] md:hidden" />
+                        {/* Overlay manuel — Drawer.Overlay est désactivé par modal=false mais
+                            modal=false est nécessaire pour que hideOthers() ne marque pas
+                            la lightbox (portée vers body) comme inert. */}
+                        <div
+                            className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2000] md:hidden"
+                            onClick={onClose}
+                        />
                         <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-slate-300 mt-3 mb-2" />
                             <div className="flex-1 overflow-hidden">
@@ -684,70 +777,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                 </Drawer.Root>
             </div>
 
-            {/* Image Gallery Lightbox - Portalled to body to stay on top of everything */}
-            {mounted && createPortal(
-                <AnimatePresence>
-                    {isImageOpen && spot?.image_urls && spot.image_urls.length > 0 && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl"
-                            onClick={() => setIsImageOpen(false)}
-                            onTouchEnd={(e) => { if (e.target === e.currentTarget) { e.preventDefault(); setIsImageOpen(false); } }}
-                        >
-                            <button
-                                onClick={(e) => { e.stopPropagation(); setIsImageOpen(false); }}
-                                onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setIsImageOpen(false); }}
-                                className="absolute top-6 right-6 p-4 min-w-[44px] min-h-[44px] bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
-                            >
-                                <X size={24} className="text-white" />
-                            </button>
-
-                            <div className="absolute top-6 left-6 bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full text-xs font-bold tracking-widest uppercase border border-white/10">
-                                {currentPhotoIndex + 1} / {spot.image_urls.length}
-                            </div>
-
-                            {spot.image_urls.length > 1 && (
-                                <>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1);
-                                        }}
-                                        onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev > 0 ? prev - 1 : spot.image_urls!.length - 1); }}
-                                        className="absolute left-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
-                                    >
-                                        <ChevronLeft size={32} className="text-white" />
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0);
-                                        }}
-                                        onTouchEnd={(e) => { e.stopPropagation(); e.preventDefault(); setCurrentPhotoIndex(prev => prev < spot.image_urls!.length - 1 ? prev + 1 : 0); }}
-                                        className="absolute right-6 p-4 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
-                                    >
-                                        <ChevronRight size={32} className="text-white" />
-                                    </button>
-                                </>
-                            )}
-
-                            <motion.img
-                                key={currentPhotoIndex}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                src={spot.image_urls[currentPhotoIndex]}
-                                alt={`${spot.name} - Photo ${currentPhotoIndex + 1}`}
-                                className="max-w-full max-h-full object-contain shadow-2xl"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </motion.div>
-                    )}
-                </AnimatePresence>,
-                document.body
-            )}
+            {mounted && createPortal(lightbox, document.body)}
         </>
     );
 }
