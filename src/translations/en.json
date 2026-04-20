@@ -138,6 +138,7 @@
     "anon_profile.btn_login": "Sign in",
     "anon_profile.btn_signup": "Create an account",
     "spot.added_by": "Added by",
+    "spot.photos_login_required": "Sign in to view photos",
     "spot.edit": "Edit",
     "spot.edit_title": "Edit Spot",
     "spot.edit_save": "Save Changes",
