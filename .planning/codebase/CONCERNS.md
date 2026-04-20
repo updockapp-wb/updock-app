@@ -216,11 +216,6 @@
 - Blocks: Data-driven decisions impossible; cannot improve UX based on usage patterns
 - Solution: Implement anonymous analytics with Plausible or Fathom; add spot view counts to database
 
-**No Push Notifications:**
-- Problem: No way to notify users of new spots near them or favorite spot updates
-- Blocks: User retention features impossible; engagement limited
-- Solution: Integrate Capacitor Push; implement backend notification service; add notification preferences in Profile
-
 ## Test Coverage Gaps
 
 **No Unit Tests for Context Logic:**
