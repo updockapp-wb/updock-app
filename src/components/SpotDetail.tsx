@@ -761,7 +761,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             modal=false est nécessaire pour que hideOthers() ne marque pas
                             la lightbox (portée vers body) comme inert. */}
                         <div
-                            className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[2000] md:hidden"
+                            className="fixed inset-0 bg-black/40 z-[2000] md:hidden"
                             onClick={onClose}
                         />
                         <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
