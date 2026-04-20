@@ -126,6 +126,12 @@ Recent decisions affecting current work:
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260420-001 | Filtre flou + cadenas sur les images si non connecté (SpotDetail) | 2026-04-20 | 35ae090 | [260420-001-filtre-flou-images-non-connecte](./quick/260420-001-filtre-flou-images-non-connecte/) |
+
 ### Blockers/Concerns
 
 - **TECH-01 (RESOLVED - package.json):** @capacitor/cli upgraded to ^8.2.0. Remaining: cap doctor/sync require Node >=22; current env is v20.19.2. Upgrade Node before any native plugin work.
@@ -135,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-15T21:17:55.015Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-04-20
+Stopped at: Completed quick task 260420-001 — filtre flou + cadenas images non connecté
 Resume file: None
