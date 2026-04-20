@@ -408,16 +408,13 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                         <img
                                             src={spot.image_urls[0]}
                                             alt={spot.name}
-                                            className={`w-full h-full object-cover transition-all duration-300 ${!user ? 'blur-md scale-105' : ''}`}
+                                            className={`w-full h-full object-cover transition-all duration-300 ${!user ? 'blur-sm scale-105' : ''}`}
                                         />
                                         {/* Overlay cadenas — seulement si non connecté */}
                                         {!user && (
-                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/20">
-                                                <div className="bg-white/90 backdrop-blur-sm rounded-2xl px-5 py-4 flex flex-col items-center gap-2 shadow-lg">
-                                                    <Lock size={22} className="text-slate-700" />
-                                                    <span className="text-xs font-bold text-slate-700 text-center leading-tight">
-                                                        {t('spot.photos_login_required')}
-                                                    </span>
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                                                <div className="bg-white/70 backdrop-blur-sm rounded-full p-2.5 shadow">
+                                                    <Lock size={16} className="text-slate-600" />
                                                 </div>
                                             </div>
                                         )}
