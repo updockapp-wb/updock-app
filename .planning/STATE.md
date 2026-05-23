@@ -133,6 +133,7 @@ None yet.
 | 260420-001 | Filtre flou + cadenas sur les images si non connecté (SpotDetail) | 2026-04-20 | 35ae090 | [260420-001-filtre-flou-images-non-connecte](./quick/260420-001-filtre-flou-images-non-connecte/) |
 | 260523-tjv | Affichage du prénom comme pseudo par défaut | 2026-05-23 | 30f89d2 | [260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f](./quick/260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f/) |
 | 260523-u5i | Rajouter le filtre beach start (nouveau type de départ) | 2026-05-23 | f5cb638 | [260523-u5i-j-aimerais-rajouter-le-filtre-beach-star](./quick/260523-u5i-j-aimerais-rajouter-le-filtre-beach-star/) |
+| 260524-0c7 | Notifications session — push aux favoris + préférences + conflit même jour | 2026-05-24 | f936def | [260524-0c7-notifications-session-envoyer-une-push-n](./quick/260524-0c7-notifications-session-envoyer-une-push-n/) |
 
 ### Blockers/Concerns
 
@@ -143,6 +144,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-23
-Stopped at: Completed quick task 260523-u5i — Rajouter le filtre beach start (nouveau type de départ)
+Last session: 2026-05-24
+Stopped at: Completed quick task 260524-0c7 — Notifications session push aux favoris + préférences + conflit même jour
 Resume file: None
