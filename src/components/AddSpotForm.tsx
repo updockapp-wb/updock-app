@@ -145,7 +145,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">{t('add.type')}</label>
                                 <div className="flex flex-wrap gap-2">
-                                    {['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart'].map((t) => (
+                                    {['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart', 'Beachstart'].map((t) => (
                                         <button
                                             key={t}
                                             type="button"

@@ -1,4 +1,4 @@
-export type StartType = 'Dockstart' | 'Rockstart' | 'Dropstart' | 'Deadstart' | 'Rampstart';
+export type StartType = 'Dockstart' | 'Rockstart' | 'Dropstart' | 'Deadstart' | 'Rampstart' | 'Beachstart';
 
 export interface Spot {
     id: string;

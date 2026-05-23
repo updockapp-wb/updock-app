@@ -229,6 +229,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             </motion.h2>
                             <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${spot.type.includes('Dockstart') ? 'bg-sky-100 text-sky-700' :
                                 spot.type.includes('Rockstart') ? 'bg-pink-100 text-pink-700' :
+                                    spot.type.includes('Beachstart') ? 'bg-amber-100 text-amber-700' :
                                     'bg-teal-100 text-teal-700'
                                 }`}>
                                 {spot.type.join(' • ')}
@@ -553,7 +554,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_type')}</label>
                                 <div className="flex flex-wrap gap-2">
-                                    {(['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart'] as StartType[]).map(tp => (
+                                    {(['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart', 'Beachstart'] as StartType[]).map(tp => (
                                         <button
                                             key={tp}
                                             onClick={() => {
