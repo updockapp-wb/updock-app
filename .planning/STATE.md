@@ -4,7 +4,7 @@ milestone: v1.1.3
 milestone_name: milestone
 status: Milestone complete
 stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-04-15T21:21:26.981Z"
+last_updated: "2026-05-23T19:16:38.449Z"
 progress:
   total_phases: 9
   completed_phases: 8
@@ -131,6 +131,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260420-001 | Filtre flou + cadenas sur les images si non connecté (SpotDetail) | 2026-04-20 | 35ae090 | [260420-001-filtre-flou-images-non-connecte](./quick/260420-001-filtre-flou-images-non-connecte/) |
+| 260523-tjv | Affichage du prénom comme pseudo par défaut | 2026-05-23 | 30f89d2 | [260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f](./quick/260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f/) |
 
 ### Blockers/Concerns
 
