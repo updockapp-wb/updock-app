@@ -85,6 +85,7 @@ const unclusteredPointLayer: LayerProps = {
                 'Dropstart', '#2dd4bf',
                 'Deadstart', '#818cf8',
                 'Rampstart', '#fbbf24',
+                'Beachstart', '#f59e0b',
                 '#38bdf8' // default
             ]
         ],

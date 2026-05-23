@@ -1,4 +1,4 @@
-import { X, Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle } from 'lucide-react';
+import { X, Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle, Umbrella } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { type StartType } from '../data/spots';
 import { useLanguage } from '../context/LanguageContext';
@@ -20,6 +20,7 @@ export default function FiltersModal({ isOpen, onClose, selectedFilter, onFilter
         { id: 'Dropstart', label: 'Dropstart', icon: <ArrowDown size={20} /> },
         { id: 'Deadstart', label: 'Deadstart', icon: <Activity size={20} /> },
         { id: 'Rampstart', label: 'Rampstart', icon: <Triangle size={20} /> },
+        { id: 'Beachstart', label: 'Beachstart', icon: <Umbrella size={20} /> },
     ];
 
     return (
