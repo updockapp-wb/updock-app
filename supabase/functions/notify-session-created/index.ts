@@ -49,7 +49,8 @@ async function sendFcmMessage(
 Deno.serve(async (req) => {
   try {
     const payload = await req.json();
-    const session = payload.record;
+    // Support both webhook format (row_to_json(NEW) directly) and manual invocation ({ record: ... })
+    const session = payload.record ?? payload;
     if (!session?.spot_id || !session?.creator_id) {
       return new Response('invalid payload', { status: 400 });
     }
@@ -81,11 +82,22 @@ Deno.serve(async (req) => {
 
     const userIds = favUsers.map((f: { user_id: string }) => f.user_id);
 
+    // 3b. Filter out users who opted out of session notifications
+    const { data: optedInUsers } = await supabase
+      .from('profiles')
+      .select('id')
+      .in('id', userIds)
+      .eq('notif_session_enabled', true);
+
+    if (!optedInUsers?.length) return new Response('no recipients (all opted out)', { status: 200 });
+
+    const filteredUserIds = optedInUsers.map((u: { id: string }) => u.id);
+
     // 4. Get push tokens
     const { data: tokens } = await supabase
       .from('push_tokens')
       .select('token')
-      .in('user_id', userIds);
+      .in('user_id', filteredUserIds);
 
     if (!tokens?.length) return new Response('no tokens', { status: 200 });
 
