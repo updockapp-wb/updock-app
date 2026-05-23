@@ -41,7 +41,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 if (error) throw error;
                 onClose();
             } else {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
@@ -54,6 +54,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     }
                 });
                 if (error) throw error;
+                if (data.user) {
+                    await supabase.from('profiles').upsert({
+                        id: data.user.id,
+                        display_name: username,
+                    });
+                }
                 alert(t('auth.alert_signup'));
                 onClose();
             }
