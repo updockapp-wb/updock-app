@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 interface ProfileData {
     display_name: string | null;
     avatar_url: string | null;
+    notif_session_enabled: boolean;
 }
 
 interface ProfileContextType {
@@ -12,6 +13,7 @@ interface ProfileContextType {
     isLoading: boolean;
     updateDisplayName: (name: string) => Promise<void>;
     uploadAvatar: (file: File) => Promise<void>;
+    toggleNotifSession: () => Promise<void>;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -32,7 +34,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
             setIsLoading(true);
             const { data, error } = await supabase
                 .from('profiles')
-                .select('display_name, avatar_url')
+                .select('display_name, avatar_url, notif_session_enabled')
                 .eq('id', user.id)
                 .single();
 
@@ -40,6 +42,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
                 setProfile({
                     display_name: data.display_name ?? null,
                     avatar_url: data.avatar_url ?? null,
+                    notif_session_enabled: data.notif_session_enabled ?? true,
                 });
             }
             setIsLoading(false);
@@ -96,8 +99,28 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : prev);
     };
 
+    const toggleNotifSession = async () => {
+        if (!user) return;
+
+        const newValue = !(profile?.notif_session_enabled ?? true);
+
+        // Optimistic update
+        setProfile(prev => prev ? { ...prev, notif_session_enabled: newValue } : prev);
+
+        const { error } = await supabase
+            .from('profiles')
+            .upsert({ id: user.id, notif_session_enabled: newValue });
+
+        if (error) {
+            console.error('Error toggling notif_session_enabled:', error);
+            // Rollback
+            setProfile(prev => prev ? { ...prev, notif_session_enabled: !newValue } : prev);
+            throw error;
+        }
+    };
+
     return (
-        <ProfileContext.Provider value={{ profile, isLoading, updateDisplayName, uploadAvatar }}>
+        <ProfileContext.Provider value={{ profile, isLoading, updateDisplayName, uploadAvatar, toggleNotifSession }}>
             {children}
         </ProfileContext.Provider>
     );
