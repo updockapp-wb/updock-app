@@ -665,8 +665,8 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     );
 
     // Lightbox JSX — rendered inside Drawer.Portal on mobile (so it is part of the
-    // Radix Dialog portal tree and not marked aria-hidden by hideOthers()), and via
-    // createPortal to document.body on desktop (no Drawer active, no aria-hiding issue).
+    // Vaul portal tree and pointer events from the lightbox don't bubble to the Drawer
+    // gesture handler), and via createPortal to document.body on desktop.
     const lightbox = (
         <AnimatePresence>
             {isImageOpen && spot?.image_urls && spot.image_urls.length > 0 && (
@@ -676,6 +676,8 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl"
                     onClick={() => setIsImageOpen(false)}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                     onTouchEnd={(e) => { if (e.target === e.currentTarget) { e.preventDefault(); setIsImageOpen(false); } }}
                 >
                     <button
@@ -763,11 +765,15 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                 {content}
                             </div>
                         </Drawer.Content>
+                        {/* Lightbox rendered inside Drawer.Portal on mobile so Vaul's gesture
+                            handler never sees touch events originating from the lightbox overlay. */}
+                        {mounted && lightbox}
                     </Drawer.Portal>
                 </Drawer.Root>
             </div>
 
-            {mounted && createPortal(lightbox, document.body)}
+            {/* Desktop: lightbox portalled to document.body (no Drawer active) */}
+            {mounted && !isMobile && createPortal(lightbox, document.body)}
         </>
     );
 }
