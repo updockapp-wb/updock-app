@@ -21,7 +21,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     const { t, language, setLanguage } = useLanguage();
     const { favorites } = useFavorites();
     const { user, signOut } = useAuth();
-    const { profile, updateDisplayName, uploadAvatar } = useProfile();
+    const { profile, updateDisplayName, uploadAvatar, toggleNotifSession } = useProfile();
     const [spotsCount, setSpotsCount] = useState(0);
 
     const [isPremiumOpen, setIsPremiumOpen] = useState(false);
@@ -374,6 +374,31 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         <div className="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
                     )}
                 </div>
+
+                {/* Session Notification Toggle — only when push permission is granted */}
+                {permissionStatus === 'granted' && (
+                    <div className="flex items-center justify-between p-4 border-b border-slate-50">
+                        <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-3 text-slate-700">
+                                <Bell size={20} className="text-sky-500" />
+                                <span className="font-medium">{t('profile.notif_session_toggle')}</span>
+                            </div>
+                            <p className="text-xs text-slate-400 ml-8">{t('profile.notif_session_desc')}</p>
+                        </div>
+                        <button
+                            onClick={() => toggleNotifSession()}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${
+                                (profile?.notif_session_enabled ?? true) ? 'bg-sky-500' : 'bg-slate-200'
+                            }`}
+                        >
+                            <div
+                                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                                    (profile?.notif_session_enabled ?? true) ? 'translate-x-5' : 'translate-x-0'
+                                }`}
+                            />
+                        </button>
+                    </div>
+                )}
 
                 <div
                     onClick={() => setIsPremiumOpen(true)}

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useSessions } from '../context/SessionsContext';
+import { useSessions, type Session } from '../context/SessionsContext';
 import { useNotifications } from '../context/NotificationsContext';
 
 interface SessionFormProps {
@@ -14,7 +14,7 @@ interface SessionFormProps {
 export default function SessionForm({ spotId, onSessionCreated }: SessionFormProps) {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const { createSession } = useSessions();
+  const { createSession, checkSessionConflict, joinSession } = useSessions();
 
   const { hasToken, permissionStatus } = useNotifications();
   const showPermissionBanner = !hasToken && permissionStatus !== 'granted';
@@ -23,6 +23,7 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
   const [note, setNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [conflictSession, setConflictSession] = useState<Session | null>(null);
 
   if (!user) return null;
 
@@ -39,6 +40,15 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
 
     try {
       const isoDate = new Date(startsAt).toISOString();
+
+      // Check for same-day conflict
+      const conflict = await checkSessionConflict(spotId, isoDate);
+      if (conflict) {
+        setConflictSession(conflict);
+        setIsSubmitting(false);
+        return;
+      }
+
       await createSession(spotId, isoDate, note);
       setStartsAt('');
       setNote('');
@@ -62,7 +72,7 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
       <input
         type="datetime-local"
         value={startsAt}
-        onChange={(e) => setStartsAt(e.target.value)}
+        onChange={(e) => { setStartsAt(e.target.value); setConflictSession(null); }}
         min={new Date().toISOString().slice(0, 16)}
         required
         className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"
@@ -88,6 +98,57 @@ export default function SessionForm({ spotId, onSessionCreated }: SessionFormPro
           t('session.submit')
         )}
       </button>
+
+      {conflictSession && (
+        <motion.div
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+          className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-3"
+        >
+          <div className="flex items-start gap-2 mb-3">
+            <Calendar size={16} className="text-amber-600 mt-0.5 shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-amber-800">{t('session.conflict_message')}</p>
+              <p className="text-xs text-amber-600 mt-1">
+                {conflictSession.creator_profile?.display_name ?? '?'} — {new Date(conflictSession.starts_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={async () => {
+                await joinSession(conflictSession.id);
+                setConflictSession(null);
+                onSessionCreated();
+              }}
+              className="flex-1 py-2.5 rounded-xl bg-sky-500 text-white text-sm font-bold hover:bg-sky-600 transition-colors"
+            >
+              {t('session.conflict_join')}
+            </button>
+            <button
+              onClick={async () => {
+                setConflictSession(null);
+                const isoDate = new Date(startsAt).toISOString();
+                setIsSubmitting(true);
+                try {
+                  await createSession(spotId, isoDate, note);
+                  setStartsAt('');
+                  setNote('');
+                  onSessionCreated();
+                } catch {
+                  setError(t('session.create_error'));
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+              className="flex-1 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors"
+            >
+              {t('session.conflict_create_anyway')}
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       {showPermissionBanner && (
         <motion.div

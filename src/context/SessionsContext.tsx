@@ -28,6 +28,7 @@ interface SessionsContextType {
   joinSession: (sessionId: string) => Promise<void>;
   leaveSession: (sessionId: string) => Promise<void>;
   cancelSession: (sessionId: string) => Promise<void>;
+  checkSessionConflict: (spotId: string, startsAt: string) => Promise<Session | null>;
   userUpcomingSessions: (Session & { spot_name: string })[];
   fetchUserSessions: () => Promise<void>;
   isLoadingUserSessions: boolean;
@@ -232,6 +233,56 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const checkSessionConflict = async (spotId: string, startsAt: string): Promise<Session | null> => {
+    const targetDay = new Date(startsAt).toISOString().slice(0, 10);
+    const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await supabase
+      .from('sessions')
+      .select('*, session_attendees(user_id)')
+      .eq('spot_id', spotId)
+      .eq('is_cancelled', false)
+      .gte('starts_at', cutoff)
+      .order('starts_at', { ascending: true });
+
+    if (error || !data?.length) return null;
+
+    // Filter for same calendar day (UTC)
+    const match = data.find((row) =>
+      new Date(row.starts_at).toISOString().slice(0, 10) === targetDay
+    );
+
+    if (!match) return null;
+
+    // Fetch creator profile
+    const { data: creatorProfile } = await supabase
+      .from('profiles')
+      .select('display_name, avatar_url, avatar_id')
+      .eq('id', match.creator_id)
+      .single();
+
+    return {
+      id: match.id,
+      spot_id: match.spot_id,
+      creator_id: match.creator_id,
+      starts_at: match.starts_at,
+      note: match.note ?? null,
+      is_cancelled: match.is_cancelled,
+      created_at: match.created_at,
+      creator_profile: creatorProfile
+        ? {
+            display_name: creatorProfile.display_name ?? null,
+            avatar_url: creatorProfile.avatar_url ?? null,
+            avatar_id: creatorProfile.avatar_id ?? null,
+          }
+        : null,
+      attendee_count: Array.isArray(match.session_attendees) ? match.session_attendees.length : 0,
+      user_is_attending: Array.isArray(match.session_attendees)
+        ? match.session_attendees.some((a: { user_id: string }) => a.user_id === user?.id)
+        : false,
+    };
+  };
+
   const fetchUserSessions = async () => {
     if (!user) return;
 
@@ -304,6 +355,7 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
         joinSession,
         leaveSession,
         cancelSession,
+        checkSessionConflict,
         userUpcomingSessions,
         fetchUserSessions,
         isLoadingUserSessions,

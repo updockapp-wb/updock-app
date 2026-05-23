@@ -154,5 +154,10 @@
     "community_stats.total_users": "Registered Riders",
     "community_stats.spots_by_country": "Spots by Country",
     "community_stats.spots_count": "spots",
-    "community_stats.nav_label": "Community Stats"
+    "community_stats.nav_label": "Community Stats",
+    "session.conflict_message": "A session already exists at this spot on this day",
+    "session.conflict_join": "Join this session",
+    "session.conflict_create_anyway": "Create anyway",
+    "profile.notif_session_toggle": "Session notifications",
+    "profile.notif_session_desc": "Get notified when a session is created on a favorite spot"
 }
