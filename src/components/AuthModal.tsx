@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, Loader2, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -16,7 +16,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [username, setUsername] = useState('');
+    const [displayName, setDisplayName] = useState('');
+    const displayNameTouched = useRef(false);
+
+    useEffect(() => {
+        if (!displayNameTouched.current) {
+            setDisplayName(firstName);
+        }
+    }, [firstName]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +56,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         data: {
                             first_name: firstName,
                             last_name: lastName,
-                            username: username,
+                            display_name: displayName,
                         }
                     }
                 });
@@ -57,7 +64,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 if (data.user) {
                     await supabase.from('profiles').upsert({
                         id: data.user.id,
-                        display_name: username,
+                        display_name: displayName,
                     });
                 }
                 alert(t('auth.alert_signup'));
@@ -130,16 +137,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.username')}</label>
+                                            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.display_name')}</label>
                                             <div className="relative">
                                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
                                                 <input
                                                     type="text"
                                                     required
-                                                    value={username}
-                                                    onChange={(e) => setUsername(e.target.value)}
+                                                    value={displayName}
+                                                    onChange={(e) => {
+                                                        displayNameTouched.current = true;
+                                                        setDisplayName(e.target.value);
+                                                    }}
                                                     className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                    placeholder={t('auth.placeholder_username')}
+                                                    placeholder={t('auth.placeholder_display_name')}
                                                 />
                                             </div>
                                         </div>
@@ -196,7 +206,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
                         <div className="mt-6 text-center">
                             <button
-                                onClick={() => setIsLogin(!isLogin)}
+                                onClick={() => {
+                                    setIsLogin(!isLogin);
+                                    displayNameTouched.current = false;
+                                }}
                                 className="text-white/50 hover:text-white text-sm transition-colors"
                             >
                                 {isLogin ? t('auth.no_account') + ' ' + t('auth.link_signup') : t('auth.have_account') + ' ' + t('auth.link_login')}
