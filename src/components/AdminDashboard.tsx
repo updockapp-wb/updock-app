@@ -43,14 +43,19 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="w-full h-full flex flex-col"
                         >
-                            {/* Header */}
-                            <div className="bg-slate-900 text-white p-6 pb-0">
+                            {/* Header — pt uses safe-area-inset-top to clear Dynamic Island / status bar */}
+                            <div className="bg-slate-900 text-white px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-0">
                                 <div className="flex justify-between items-start mb-6">
                                     <div>
                                         <h2 className="text-2xl font-bold">{t('admin.title')}</h2>
                                         <p className="text-slate-400 text-sm">{t('admin.subtitle')}</p>
                                     </div>
-                                    <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-3 bg-white/10 rounded-full hover:bg-white/20 transition-colors active:bg-white/30" aria-label="Close">
+                                    {/* Close button — enlarged hitbox (p-4, min 44×44 pt), inset from corner */}
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); onClose(); }}
+                                        className="p-4 -mr-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors active:bg-white/30 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                        aria-label="Close"
+                                    >
                                         <X size={20} />
                                     </button>
                                 </div>
