@@ -1,10 +1,11 @@
 ---
 phase: 1
 slug: audit-design-system
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-07-28
+reviewed_at: 2026-07-28
 ---
 
 # Phase 1 — UI Design Contract
