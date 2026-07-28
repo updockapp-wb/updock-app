@@ -14,3 +14,7 @@ audit inventory and future phases.
 Total: 33 problems (28 errors, 5 warnings) across `src/` app source. All pre-existing;
 none introduced by plan 01-02 (which only touched `vite.config.ts` + dev deps).
 Full report: `audit/lint-report.txt`.
+
+Plan 01-03 (Task 1) re-confirmed the same 33 problems unchanged — it touched only
+`src/index.css` (a CSS file ESLint does not process), so it introduced no new lint
+debt. Production build (`tsc -b && vite build`) is green.

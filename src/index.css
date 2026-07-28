@@ -1,32 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* Deep Ocean Theme Palette */
-  --color-background: #0f172a;
-  /* Slate 900 - Deep Blue/Grey */
-  --color-surface: #1e293b;
-  /* Slate 800 */
-  --color-surface-transparent: rgba(30, 41, 59, 0.85);
+  /* Typography — the actually-rendered system stack (the previous webfont targets were declared but never loaded, A1) */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  --color-primary: #38bdf8;
-  /* Sky 400 - Fresh water blue */
-  --color-secondary: #2dd4bf;
-  /* Teal 400 */
+  /* Canonical semantic colors — every value equals what the app already renders (light theme) */
+  --color-primary: #0ea5e9;    /* Sky 500 — accent / primary CTA */
+  --color-secondary: #0f172a;  /* Slate 900 */
+  --color-accent: #f43f5e;     /* Rose 500 — destructive / highlight */
+  --color-text: #1e293b;       /* Slate 800 — body text */
+  --color-muted: #64748b;      /* Slate 500 — muted text */
+  --color-background: #f8fafc; /* Slate 50 — page background */
 
-  --color-accent: #f472b6;
-  /* Pink 400 - Contrast for Rockstart/Danger */
-
-  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Off-scale radius reconciling rounded-[32px] (6×). Tailwind v4 defaults cover 8/12/16/24. */
+  --radius-4xl: 2rem;          /* renders 32px */
 }
 
 :root {
-  font-family: 'DM Sans', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-tap-highlight-color: transparent;
   line-height: 1.5;
   font-weight: 400;
-
-  /* Handle Safe Areas for App Store/iOS */
-  /* Handle Safe Areas via Components */
 
   color-scheme: light;
   color: #1e293b;
@@ -39,15 +33,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Ocean Theme Colors */
-  --color-primary: #0ea5e9;
-  /* Sky 500 */
-  --color-secondary: #0f172a;
-  /* Slate 900 */
-  --color-accent: #f43f5e;
-  /* Rose 500 (Highlights) */
-  --bg-dark: #f8fafc;
-  /* Replaced with Light */
+  /* Glassmorphism token source (D-05) — consumed by DS-02 components */
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.5);
 }
@@ -57,7 +43,6 @@ input, textarea, select {
   font-size: 16px;
 }
 
-/* Base Styles */
 /* Base Styles - Mobile Standard */
 html {
   height: 100%;
@@ -73,7 +58,6 @@ body {
   height: 100%;
   overflow: hidden; /* Lock body */
   background-color: #f8fafc;
-  
 }
 
 #root {
@@ -82,13 +66,4 @@ body {
   display: flex;
   flex-direction: column;
   isolation: isolate;
-}
-
-/* Glassmorphism utility */
-.glass {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
