@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { LucideIcon } from 'lucide-react';
 
 interface InputProps {
@@ -21,12 +22,14 @@ export default function Input({
     required,
     minLength,
 }: InputProps) {
+    const inputId = useId();
     return (
         <div className="space-y-2">
-            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{label}</label>
+            <label htmlFor={inputId} className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{label}</label>
             <div className="relative">
                 {Icon && <Icon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />}
                 <input
+                    id={inputId}
                     type={type}
                     value={value}
                     onChange={onChange}
