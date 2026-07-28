@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, Loader2, User } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../context/LanguageContext';
+import Modal from '../ui/Modal';
+import Header from '../ui/Header';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -78,146 +81,99 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     };
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-white/10 backdrop-blur-xl border border-white/20 w-full max-w-sm rounded-[32px] p-8 shadow-2xl relative overflow-hidden"
-                    >
-                        {/* Close Button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
-                        >
-                            <X size={20} className="text-white/70" />
-                        </button>
+        <Modal isOpen={isOpen} onClose={onClose}>
+            <Header
+                surface="glass"
+                title={isLogin ? t('auth.title_login') : t('auth.title_signup')}
+                subtitle={isLogin ? t('auth.subtitle_login') : t('auth.subtitle_signup')}
+            />
 
-                        <h2 className="text-2xl font-bold text-white mb-2">
-                            {isLogin ? t('auth.title_login') : t('auth.title_signup')}
-                        </h2>
-                        <p className="text-white/50 text-sm mb-8">
-                            {isLogin ? t('auth.subtitle_login') : t('auth.subtitle_signup')}
-                        </p>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-4">
-                                {!isLogin && (
-                                    <>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.first_name')}</label>
-                                                <div className="relative">
-                                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
-                                                    <input
-                                                        type="text"
-                                                        required
-                                                        value={firstName}
-                                                        onChange={(e) => setFirstName(e.target.value)}
-                                                        className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                        placeholder={t('auth.placeholder_first_name')}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.last_name')}</label>
-                                                <div className="relative">
-                                                    <input
-                                                        type="text"
-                                                        required
-                                                        value={lastName}
-                                                        onChange={(e) => setLastName(e.target.value)}
-                                                        className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-4 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                        placeholder={t('auth.placeholder_last_name')}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.display_name')}</label>
-                                            <div className="relative">
-                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    value={displayName}
-                                                    onChange={(e) => {
-                                                        displayNameTouched.current = true;
-                                                        setDisplayName(e.target.value);
-                                                    }}
-                                                    className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                                    placeholder={t('auth.placeholder_display_name')}
-                                                />
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.email')}</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
-                                        <input
-                                            type="email"
-                                            required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                            placeholder={t('auth.placeholder_email')}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-white/70 uppercase tracking-wider ml-1">{t('auth.password')}</label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
-                                        <input
-                                            type="password"
-                                            required
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all"
-                                            placeholder={t('auth.placeholder_password')}
-                                            minLength={6}
-                                        />
-                                    </div>
-                                </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
+                    {!isLogin && (
+                        <>
+                            <div className="grid grid-cols-2 gap-2">
+                                <Input
+                                    label={t('auth.first_name')}
+                                    icon={User}
+                                    required
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    placeholder={t('auth.placeholder_first_name')}
+                                />
+                                <Input
+                                    label={t('auth.last_name')}
+                                    required
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    placeholder={t('auth.placeholder_last_name')}
+                                />
                             </div>
 
-                            {error && (
-                                <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-sm">
-                                    {error}
-                                </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-sky-500/20 transition-all active:scale-[0.98] mt-4 flex items-center justify-center gap-2"
-                            >
-                                {loading && <Loader2 size={18} className="animate-spin" />}
-                                {isLogin ? t('auth.btn_login') : t('auth.btn_signup')}
-                            </button>
-                        </form>
-
-                        <div className="mt-6 text-center">
-                            <button
-                                onClick={() => {
-                                    setIsLogin(!isLogin);
-                                    displayNameTouched.current = false;
+                            <Input
+                                label={t('auth.display_name')}
+                                icon={User}
+                                required
+                                value={displayName}
+                                onChange={(e) => {
+                                    displayNameTouched.current = true;
+                                    setDisplayName(e.target.value);
                                 }}
-                                className="text-white/50 hover:text-white text-sm transition-colors"
-                            >
-                                {isLogin ? t('auth.no_account') + ' ' + t('auth.link_signup') : t('auth.have_account') + ' ' + t('auth.link_login')}
-                            </button>
-                        </div>
-                    </motion.div>
+                                placeholder={t('auth.placeholder_display_name')}
+                            />
+                        </>
+                    )}
+
+                    <Input
+                        label={t('auth.email')}
+                        icon={Mail}
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder={t('auth.placeholder_email')}
+                    />
+
+                    <Input
+                        label={t('auth.password')}
+                        icon={Lock}
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder={t('auth.placeholder_password')}
+                        minLength={6}
+                    />
                 </div>
-            )}
-        </AnimatePresence>
+
+                {error && (
+                    <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-sm">
+                        {error}
+                    </div>
+                )}
+
+                <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    loading={loading}
+                    className="w-full mt-4"
+                >
+                    {isLogin ? t('auth.btn_login') : t('auth.btn_signup')}
+                </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+                <button
+                    onClick={() => {
+                        setIsLogin(!isLogin);
+                        displayNameTouched.current = false;
+                    }}
+                    className="text-white/50 hover:text-white text-sm transition-colors"
+                >
+                    {isLogin ? t('auth.no_account') + ' ' + t('auth.link_signup') : t('auth.have_account') + ' ' + t('auth.link_login')}
+                </button>
+            </div>
+        </Modal>
     );
 }
