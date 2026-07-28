@@ -29,7 +29,14 @@ Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.p
   2. Un fichier de tokens unique centralise couleurs, typographie, espacements, rayons et ombres.
   3. Les composants maîtres réutilisables Button, Card, Input, Modal et Header existent avec leurs variantes et consomment les tokens (aucune valeur de design en dur dans ces composants).
   4. Les tokens sont extraits des valeurs de design réellement présentes dans l'app existante — l'apparence des écrans reste inchangée (harmonisation de l'existant, pas de rebranding).
-**Plans**: TBD
+**Plans**: 6 plans (3 waves)
+Plans:
+- [ ] 01-01-PLAN.md — Baseline oracle & audit env gate (audit dir, Chrome preflight, before-screenshots) [Wave 1]
+- [ ] 01-02-PLAN.md — Architecture audit DS-03 (bundle/deps/perf baseline + 01-AUDIT.md) [Wave 1]
+- [ ] 01-03-PLAN.md — Token canonicalization DS-01 (src/index.css) [Wave 2]
+- [ ] 01-04-PLAN.md — Master components: Modal + Input + Button [Wave 2]
+- [ ] 01-05-PLAN.md — Master components: Card + Header [Wave 2]
+- [ ] 01-06-PLAN.md — AuthModal proof migration D-09 [Wave 3]
 **UI hint**: yes
 
 ### Phase 2: Navigation & Vue Carte / Spots
@@ -87,7 +94,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Audit & Design System | 0/TBD | Not started | - |
+| 1. Audit & Design System | 0/6 | Planned | - |
 | 2. Navigation & Vue Carte / Spots | 0/TBD | Not started | - |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
