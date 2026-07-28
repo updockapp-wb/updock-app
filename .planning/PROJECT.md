@@ -24,6 +24,8 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 
 Requirements détaillés : voir `.planning/REQUIREMENTS.md`. Roadmap : voir `.planning/ROADMAP.md`.
 
+**Phase 1 (Audit & Design System) — Complete (2026-07-29).** DS-01/DS-02/DS-03 validés : audit chiffré (`01-AUDIT.md`, baseline gzip JS ≈504 kB), tokens centralisés dans `src/index.css` (couleurs aliasées aux variables Tailwind natives — zéro dérive de couleur), 5 composants maîtres (`src/ui/{Button,Card,Header,Input,Modal}`) extraits verbatim de l'app existante et prouvés sur l'AuthModal (migration D-09, parité pixel confirmée, logique auth byte-identique). Phase 2 (Navigation & Vue Carte) peut démarrer.
+
 ## Requirements
 
 ### Validated
@@ -97,4 +99,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-28 — Milestone v2.0 (Refactor UI/UX & Performance) started*
+*Last updated: 2026-07-29 — Phase 1 (Audit & Design System) complete*

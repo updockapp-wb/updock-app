@@ -10,9 +10,9 @@
 
 ### Design System (DS)
 
-- [ ] **DS-01**: Un fichier de tokens unique centralise couleurs, typographie, espacements, rayons et ombres ; aucune valeur de design en dur dispersée dans les composants migrés
-- [ ] **DS-02**: Des composants maîtres réutilisables existent avec leurs variantes : Button, Card, Input, Modal, Header
-- [ ] **DS-03**: Un document d'audit d'architecture décrit l'état actuel (structure, dépendances, dette, incohérences UI) et fixe des cibles de performance/bundle chiffrées
+- [x] **DS-01**: Un fichier de tokens unique centralise couleurs, typographie, espacements, rayons et ombres ; aucune valeur de design en dur dispersée dans les composants migrés
+- [x] **DS-02**: Des composants maîtres réutilisables existent avec leurs variantes : Button, Card, Input, Modal, Header
+- [x] **DS-03**: Un document d'audit d'architecture décrit l'état actuel (structure, dépendances, dette, incohérences UI) et fixe des cibles de performance/bundle chiffrées
 
 ### Navigation & Vue Carte (NAV / MAP)
 
@@ -67,9 +67,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DS-01 | Phase 1 | Pending |
-| DS-02 | Phase 1 | Pending |
-| DS-03 | Phase 1 | Pending |
+| DS-01 | Phase 1 | Validated (2026-07-29, override on literal "no hardcoded value" wording — see 01-VERIFICATION.md) |
+| DS-02 | Phase 1 | Validated (2026-07-29) |
+| DS-03 | Phase 1 | Validated (2026-07-29) |
 | NAV-01 | Phase 2 | Pending |
 | MAP-01 | Phase 2 | Pending |
 | MAP-02 | Phase 2 | Pending |

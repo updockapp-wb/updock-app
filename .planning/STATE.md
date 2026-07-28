@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: executing
-stopped_at: Phase 1 UI-SPEC approved
-last_updated: "2026-07-28T15:26:42.649Z"
+status: ready_to_plan
+stopped_at: Phase 01 complete (6/6) — ready to discuss Phase 2
+last_updated: 2026-07-28T22:19:16.793Z
 last_activity: 2026-07-28 -- Phase 01 execution started
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 6
-  completed_plans: 0
+  completed_plans: 6
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 01 — audit-design-system
+**Current focus:** Phase 2 — navigation & vue carte / spots
 
 ## Current Position
 
-Phase: 01 (audit-design-system) — EXECUTING
-Plan: 1 of 6
-Status: Executing Phase 01
-Last activity: 2026-07-28 -- Phase 01 execution started
+Phase: 2
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-07-28
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -45,6 +45,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Audit & Design System | 0/TBD | — | — |
+| 01 | 6 | - | - |
 
 **Recent Trend:**
 
