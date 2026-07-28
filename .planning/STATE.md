@@ -1,12 +1,12 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2.0
+milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: planning
-last_updated: "2026-07-28T13:38:49.724Z"
+status: roadmap_ready
+last_updated: "2026-07-28T00:00:00.000Z"
 last_activity: 2026-07-28
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,136 +17,80 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-18)
+See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 09 — community-stats-section-statistiques-globales-de-la-communaut-dans-l-onglet-profil
+**Current focus:** Phase 1 — Audit & Design System
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-07-28 — Milestone v1.2.0 started
+Phase: 1 of 5 (Audit & Design System)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-07-28 — Roadmap v2.0 créé (5 phases, 17 requirements mappés à 100%)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: ~3 min
-- Total execution time: ~3 min
+- Total plans completed (v2.0): 0
+- Average duration: —
+- Total execution time: —
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 1/3 | 3 min | 3 min |
+| 1. Audit & Design System | 0/TBD | — | — |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-01 (3 min)
+- Last 5 plans: —
 - Trend: —
 
 *Updated after each plan completion*
-| Phase 01-foundation P02 | 3 | 2 tasks | 4 files |
-| Phase 01-foundation P03 | 4 min | 2 tasks | 5 files |
-| Phase 02-reviews P01 | 5 | 2 tasks | 4 files |
-| Phase 02-reviews P02 | 4 | 1 tasks | 1 files |
-| Phase 02-reviews P02 | 45 | 2 tasks | 1 files |
-| Phase 03-sessions P01 | 3 | 2 tasks | 6 files |
-| Phase 03-sessions P02 | 8 | 2 tasks | 3 files |
-| Phase 04-push-notifications P01 | 8 | 2 tasks | 10 files |
-| Phase 04-push-notifications P02 | 2 | 2 tasks | 3 files |
-| Phase 05-anonymous-access P01 | 3 | 2 tasks | 5 files |
-| Phase 05-anonymous-access P03 | 1 | 1 tasks | 1 files |
-| Phase 05-anonymous-access P02 | 5 | 2 tasks | 3 files |
-| Phase 07-spot-ownership P01 | 3 | 2 tasks | 5 files |
-| Phase 07-spot-ownership P02 | 4 | 2 tasks | 1 files |
-| Phase 08-bug-fixes P02 | 15 | 2 tasks | 2 files |
-| Phase 08-bug-fixes P01 | 13 | 2 tasks | 5 files |
-| Phase 09-community-stats P01 | 25 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
-### Roadmap Evolution
+### Roadmap (v2.0 — 5 phases)
 
-- Phase 5 added: Anonymous access — map, spot details and navigation without account; all other features require auth
-- Phase 7 added: Spot Ownership — afficher l'uploader et permettre la modification par le créateur du spot et l'admin
-- Phase 8 added: Bug Fixes — corriger les bugs de l'admin dashboard et le bouton fermer de la galerie photos
-- Phase 9 added: Community Stats — section statistiques globales de la communauté dans l'onglet Profil
+- Phase 1 — Audit & Design System : DS-01, DS-02, DS-03
+- Phase 2 — Navigation & Vue Carte / Spots : NAV-01, MAP-01, MAP-02, PERF-01
+- Phase 3 — Fiches Détaillées & Profils : UI-01, UI-02, PERF-02
+- Phase 4 — Formulaires & Interactions : UI-03, ROBUST-01, ROBUST-02
+- Phase 5 — Recette globale & nettoyage final : CODE-01, CODE-02, PERF-03, QA-01
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+Décisions complètes dans PROJECT.md (Key Decisions). Récentes affectant le travail courant :
 
-- Pre-roadmap: Profiles before reviews/sessions — profiles are a foreign key dependency for both
-- Pre-roadmap: Capacitor CLI/core mismatch (v7 CLI vs v8 core) must be fixed before any native work
-- Pre-roadmap: Sessions before push notifications — push is isolatable; sessions ship as pull-only if push blocks
-- Pre-roadmap: Use @capacitor-firebase/messaging (not @capacitor/push-notifications) — unified FCM token on iOS
-- 01-01: Upgraded @capacitor/cli to ^8.2.0 (package.json) but CLI execution deferred — requires Node >=22 (env has v20)
-- 01-01: Combined all 5 community tables into single migration file for atomic apply
-- 01-01: Recreated handle_new_user trigger with ON CONFLICT DO NOTHING to prevent duplicate profile creation
-- [Phase 01-foundation]: useEffect cleanup for imagePreviews depends on array so revocation fires on shrink as well as unmount
-- [Phase 01-foundation]: Pre-existing lint errors (no-explicit-any, set-state-in-effect) are out-of-scope; build passes cleanly
-- [Phase 01-foundation]: ProfileProvider placed inside FavoritesProvider for consistent future cross-context access
-- [Phase 01-foundation]: selectPresetAvatar clears avatar_url to null as explicit fallback signal for preset display
-- [Phase 02-reviews]: Review interface exported from ReviewForm.tsx so ReviewList.tsx can import type without circular dependency
-- [Phase 02-reviews]: Edit/delete controls live in ReviewForm (own-review display) not ReviewList, keeping list read-only
-- [Phase 02-reviews]: Average rating computed client-side from reviews array for zero-latency update on review changes
-- [Phase 02-reviews]: ReviewList filters out user own review to avoid duplication with ReviewForm display
-- [Phase 02-reviews]: Average rating computed client-side from reviews array for zero-latency update on review changes
-- [Phase 02-reviews]: Vaul drawer onOpenChange decoupled from desktop panel to prevent sidebar collapse on mobile drawer events
-- [Phase 03-sessions]: SessionsContext: creator auto-inserted as session_attendee on createSession per CONTEXT.md
-- [Phase 03-sessions]: cancelSession captures spot_id before optimistic filter-out for rollback refetch capability
-- [Phase 03-sessions]: Sessions tab button uses rounded-full pill style matching Info/Reviews tabs (not border-b underline from spec) for visual consistency
-- [Phase 03-sessions]: isLoadingUserSessions removed from Profile destructure — no loading skeleton in profile sessions section, unused var causes build error
-- [Phase 04-push-notifications]: App.openUrl not in @capacitor/app v8 — use window.location.href='app-settings:' for iOS settings navigation on permission denied
-- [Phase 04-push-notifications]: NotificationsProvider placed between ProfileProvider and SessionsProvider so SessionsContext can call useNotifications
-- [Phase 04-push-notifications]: Service role key used in Edge Functions to bypass RLS — webhooks have no user JWT
-- [Phase 04-push-notifications]: Reminder window is 55-65 minutes (+/- 5 min) to ensure 5-min cron catches each session exactly once
-- [Phase 04-push-notifications]: pg_cron schedule commented in migration — requires Vault secrets before running; user executes SQL manually after setup
-- [Phase 05-anonymous-access]: Removed `user` from useAuth() destructure — unused after auth wall removal, avoids TS6133 build error
-- [Phase 05-anonymous-access]: AuthModal moved inside vaul-drawer-wrapper div, always available regardless of auth state
-- [Phase 05-anonymous-access]: Both sign-in/create-account buttons call onOpenAuth() — AuthModal handles mode toggle internally
-- [Phase 05-anonymous-access]: SpotDetail interface updated in Task 1 to unblock App.tsx prop passing (onOpenAuth)
-- [Phase 05-anonymous-access]: Re-added user to useAuth() destructure in App.tsx for NavBar/SpotDetail auth-gate props
-- [Phase 07-spot-ownership]: user_id mapped as s.user_id || null to handle static spots gracefully
-- [Phase 07-spot-ownership]: RLS policy uses email check for admin (consistent with existing admin_permissions pattern)
-- [Phase 07-spot-ownership]: AVATARS constant duplicated in SpotDetail for uploader avatar resolution (same pattern as ReviewList)
-- [Phase 07-spot-ownership]: Edit overlay uses absolute inset-0 over content div, photo deletion only removes URLs (no Storage delete per Pitfall 4)
-- [Phase 08-bug-fixes]: onTouchEnd added alongside onClick for all lightbox interactive elements — iOS Capacitor portalled overlays may not fire onClick reliably
-- [Phase 08-bug-fixes]: actionLoadingId pattern in AdminDashboard: single string state tracks which spot action is in-flight
-- [Phase 08-bug-fixes]: Removed selectPresetAvatar and avatar_id entirely — preset SVG system was unused and confusing
-- [Phase 08-bug-fixes]: Default avatar is Lucide User icon (not SVG file) — consistent, no broken image risk
-- [Phase 08-bug-fixes]: spotsCount fetched via Supabase count query (head:true) on mount — lightweight, no data transfer
-- [Phase 09-community-stats]: Country derived client-side from lat/lng bounding boxes (not GROUP BY country DB column) — no country column exists in spots table
-- [Phase 09-community-stats]: Switzerland bounds checked before France in COUNTRY_BOUNDS because CH is a geographic subset of FR bounding box
-- [Phase 09-community-stats]: CommunityStatsScreen rendered as fixed inset-0 z-50 overlay matching AdminDashboard pattern
+- Milestone v2.0 = refactor sans nouvelle feature user — consolider la dette avant d'ajouter des features
+- Numérotation remise à 1 ; phases v1.1.3 (01→09) archivées dans `.planning/archive/v1.1.3-community-features/`
+- Design system construit en Phase 1, adopté écran par écran (Phases 2-4) — tokens extraits de l'existant, pas de rebranding
+- Approche incrémentale imposée : un module/composant à la fois, jamais de balayage global
+- Pas d'infra de test : validation par checklist de recette manuelle mobile (QA-01) après chaque phase
 
 ### Pending Todos
 
-None yet.
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260420-001 | Filtre flou + cadenas sur les images si non connecté (SpotDetail) | 2026-04-20 | 35ae090 | [260420-001-filtre-flou-images-non-connecte](./quick/260420-001-filtre-flou-images-non-connecte/) |
-| 260523-tjv | Affichage du prénom comme pseudo par défaut | 2026-05-23 | 30f89d2 | [260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f](./quick/260523-tjv-affichage-du-pr-nom-comme-pseudo-par-d-f/) |
-| 260523-u5i | Rajouter le filtre beach start (nouveau type de départ) | 2026-05-23 | f5cb638 | [260523-u5i-j-aimerais-rajouter-le-filtre-beach-star](./quick/260523-u5i-j-aimerais-rajouter-le-filtre-beach-star/) |
-| 260524-0c7 | Notifications session — push aux favoris + préférences + conflit même jour | 2026-05-24 | f936def | [260524-0c7-notifications-session-envoyer-une-push-n](./quick/260524-0c7-notifications-session-envoyer-une-push-n/) |
+Voir `.planning/todos/pending/`.
 
 ### Blockers/Concerns
 
-- **TECH-01 (RESOLVED - package.json):** @capacitor/cli upgraded to ^8.2.0. Remaining: cap doctor/sync require Node >=22; current env is v20.19.2. Upgrade Node before any native plugin work.
-- **NOTIF (Phase 4):** Push notifications require physical iOS device (APNs does not work in Simulator). Confirm device availability before committing Phase 4 scope. This is a go/no-go gate.
-- **NOTIF (Phase 4):** Firebase project setup (Xcode entitlements, google-services.json, APNs .p8 key upload) needs research during Phase 4 planning — flag for `/gsd:research-phase`.
-- **SESS (Phase 3):** No native date/time picker in codebase. Evaluate options during Phase 3 planning (HTML `<input type="datetime-local">` vs Capacitor date picker plugin).
+- **Zéro régression** : 100% des fonctionnalités existantes doivent rester intactes ; la checklist QA-01 est le filet de sécurité de chaque phase.
+- **Baseline chiffrée (DS-03)** : PERF-03 dépend d'une baseline bundle/perf établie en Phase 1 — sans elle, la cible de réduction n'est pas mesurable.
+- **Types de spot en JSON string** : fragile ; hors scope mais à surveiller lors des modifications de formulaires (Phase 4).
+
+## Deferred Items
+
+| Category | Item | Status | Deferred At |
+|----------|------|--------|-------------|
+| Bug | Notifications push session non reçues sur iPhone (webhook OK, tokens manquants) | Reporté (hors milestone) | Clôture v1.1.3 |
+| Env | cap doctor/sync requièrent Node >=22 (env actuel v20) | En attente | v1.1.3 |
 
 ## Session Continuity
 
-Last session: 2026-05-24
-Stopped at: Completed quick task 260524-0c7 — Notifications session push aux favoris + préférences + conflit même jour
+Last session: 2026-07-28
+Stopped at: Roadmap v2.0 créé — ROADMAP.md, STATE.md, REQUIREMENTS.md (traceability) écrits
 Resume file: None

@@ -1,8 +1,8 @@
-# Roadmap: Updock — Community Features Milestone
+# Roadmap: Updock — v2.0 Refactor UI/UX & Performance
 
 ## Overview
 
-Updock already delivers core spot discovery (map, auth, favorites, admin). This milestone layers three community features on top: user profiles, spot reviews, and scheduled sessions — capped by push notifications. The work proceeds in strict dependency order: fix the technical foundation first (Capacitor mismatch, broken list tab, form cleanup), establish identity (profiles), build community interaction (reviews, then sessions), and finally add push notifications as an isolatable layer that can be deferred without blocking sessions.
+Ce milestone est un refactor interne : aucune nouvelle fonctionnalité utilisateur, zéro régression fonctionnelle. On part d'un audit chiffré et de la construction d'un design system centralisé (tokens + composants maîtres), puis on adopte ce design system écran par écran de façon incrémentale — navigation et carte, fiches détaillées et profils, formulaires et interactions — en optimisant la performance à chaque étape. Le milestone se clôt par un nettoyage global (code mort, dépendances, gestion d'état), une réduction mesurée du bundle et une recette manuelle de non-régression. Chaque phase valide un périmètre cohérent, un module à la fois, avec la checklist de flux critiques comme filet de sécurité permanent.
 
 ## Phases
 
@@ -10,173 +10,85 @@ Updock already delivers core spot discovery (map, auth, favorites, admin). This 
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-Decimal phases appear between their surrounding integers in numeric order.
+Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.planning/archive/v1.1.3-community-features/`.
 
-- [x] **Phase 1: Foundation** - Fix technical debt, database schema, and user profiles (completed 2026-03-18)
-- [x] **Phase 2: Reviews** - Spot ratings and comments with author identity (completed 2026-03-21)
-- [x] **Phase 3: Sessions** - Scheduled sessions with join/leave on spots (completed 2026-03-21)
-- [x] **Phase 4: Push Notifications** - FCM push for session activity on favorited spots (completed 2026-03-22)
-- [ ] **Phase 5: Anonymous Access** - Browse map and spot details without an account
-- [ ] **Phase 6: Spot Data Enrichment** - Scrape and import spots from Foil Mates to grow the catalogue
+- [ ] **Phase 1: Audit & Design System** - Audit d'architecture chiffré + tokens centralisés + composants maîtres réutilisables
+- [ ] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte
+- [ ] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias
+- [ ] **Phase 4: Formulaires & Interactions** - Harmonisation UI des formulaires/favoris + validation et gestion d'erreurs robustes
+- [ ] **Phase 5: Recette globale & nettoyage final** - Suppression code mort/deps, homogénéisation d'état, réduction bundle, non-régression
 
 ## Phase Details
 
-### Phase 1: Foundation
-**Goal**: The app works correctly and users have an identity before any community feature is built
-**Depends on**: Nothing (brownfield — existing app is the baseline)
-**Requirements**: TECH-01, FIX-01, FIX-02, PROF-01, PROF-02
+### Phase 1: Audit & Design System
+**Goal**: Établir la fondation du refactor : une photographie chiffrée de l'existant et un design system centralisé (tokens + composants maîtres) prêt à être adopté par les phases suivantes.
+**Depends on**: Nothing (first phase)
+**Requirements**: DS-01, DS-02, DS-03
 **Success Criteria** (what must be TRUE):
-  1. The spot list tab displays spots sorted by distance from the user's GPS position
-  2. The add-spot form no longer shows the "hauteur" field and the submission flow is visually clean
-  3. All Capacitor native builds succeed without CLI/core version warnings
-  4. A logged-in user can set a display name and upload an avatar visible on their profile
-  5. All 5 new database tables (profiles, reviews, sessions, session_attendees, push_tokens) exist with correct RLS policies
-**Plans**: 3 plans
+  1. Un document d'audit d'architecture existe et décrit l'état actuel (structure, dépendances, dette, incohérences UI) avec des cibles de performance et de bundle chiffrées servant de baseline.
+  2. Un fichier de tokens unique centralise couleurs, typographie, espacements, rayons et ombres.
+  3. Les composants maîtres réutilisables Button, Card, Input, Modal et Header existent avec leurs variantes et consomment les tokens (aucune valeur de design en dur dans ces composants).
+  4. Les tokens sont extraits des valeurs de design réellement présentes dans l'app existante — l'apparence des écrans reste inchangée (harmonisation de l'existant, pas de rebranding).
+**Plans**: TBD
+**UI hint**: yes
 
-Plans:
-- [ ] 01-01-PLAN.md — Capacitor fix + database schema (TECH-01, all tables + RLS + triggers + spot_ratings view)
-- [ ] 01-02-PLAN.md — Bug fixes: spot list proximity sort + add-spot form simplification (FIX-01, FIX-02)
-- [ ] 01-03-PLAN.md — User profiles: display name, avatar upload, profile screen (PROF-01, PROF-02)
-
-### Phase 2: Reviews
-**Goal**: Users can rate and comment on spots, and anyone can see the community's verdict on a spot
+### Phase 2: Navigation & Vue Carte / Spots
+**Goal**: Migrer la navigation globale et la vue Carte vers le design system, et éliminer les re-renders et fuites mémoire de l'écran le plus critique de l'app.
 **Depends on**: Phase 1
-**Requirements**: AVIS-01, AVIS-02, AVIS-03, AVIS-04
+**Requirements**: NAV-01, MAP-01, MAP-02, PERF-01
 **Success Criteria** (what must be TRUE):
-  1. A logged-in user can submit a 1-5 star rating with a written comment on any spot
-  2. The spot detail sheet shows a Reviews tab with all reviews, author avatars, and average rating
-  3. A user can edit or delete their own review; they cannot modify another user's review
-  4. The average rating on a spot updates immediately after a review is submitted or changed
-**Plans**: 2 plans
+  1. La navigation globale et la bottom bar utilisent les composants et tokens du design system, sans changement de comportement pour l'utilisateur.
+  2. Au React Profiler, les markers de la carte ne se re-render plus quand leurs données n'ont pas changé (mémoïsation vérifiée avant/après).
+  3. Le cache/médias de la vue Carte est optimisé (chargement conditionnel) et ne présente plus de fuite mémoire sur les aperçus.
+  4. Les re-renders inutiles des écrans de navigation et de la vue Carte sont éliminés, mesure avant/après à l'appui.
+  5. La checklist de recette manuelle sur carte et navigation passe à 100% — aucune régression fonctionnelle.
+**Plans**: TBD
+**UI hint**: yes
 
-Plans:
-- [ ] 02-01-PLAN.md — ReviewForm + ReviewList components, translation keys (AVIS-01, AVIS-02, AVIS-04)
-- [ ] 02-02-PLAN.md — SpotDetail tab integration, reviews fetch/display, avg rating wiring (AVIS-01, AVIS-02, AVIS-03, AVIS-04)
-
-### Phase 3: Sessions
-**Goal**: Users can announce they will be at a spot at a specific time and others can join them
+### Phase 3: Fiches Détaillées & Profils
+**Goal**: Harmoniser visuellement la fiche détail spot et l'écran Profil via le design system, et charger leurs médias en lazy loading.
 **Depends on**: Phase 2
-**Requirements**: SESS-01, SESS-02, SESS-03, SESS-04
+**Requirements**: UI-01, UI-02, PERF-02
 **Success Criteria** (what must be TRUE):
-  1. A logged-in user can create a session on a spot with a date, time, and optional message
-  2. The spot detail sheet shows a Sessions tab listing upcoming sessions with participant count and creator avatar
-  3. A user can join an existing session and leave it; the participant count updates immediately
-  4. A user can cancel their own session; session creator and participants see it removed from upcoming sessions
-  5. A user's own upcoming sessions are visible on their profile screen
-**Plans**: 2 plans
+  1. La fiche détail spot utilise exclusivement les composants du design system (Card, Header, Button, Modal).
+  2. L'écran Profil utilise exclusivement les composants du design system.
+  3. Les images et médias des fiches détaillées et des profils sont chargés en lazy loading.
+  4. La checklist de recette manuelle sur fiche spot et profil passe à 100% — comportement utilisateur inchangé.
+**Plans**: TBD
+**UI hint**: yes
 
-Plans:
-- [ ] 03-01-PLAN.md — SessionsContext, SessionForm, SessionCard, SessionList, translations (SESS-01, SESS-02, SESS-03, SESS-04)
-- [ ] 03-02-PLAN.md — SpotDetail sessions tab, Profile upcoming sessions, App.tsx provider wiring (SESS-01, SESS-02, SESS-03, SESS-04)
-
-### Phase 4: Push Notifications
-**Goal**: Users are notified of session activity on spots they care about, without being asked for permission at launch
+### Phase 4: Formulaires & Interactions
+**Goal**: Migrer les formulaires d'ajout/édition de spot et le système de favoris vers le design system, et fiabiliser la validation des données et la gestion des erreurs API.
 **Depends on**: Phase 3
-**Requirements**: NOTIF-01, NOTIF-02, NOTIF-03
+**Requirements**: UI-03, ROBUST-01, ROBUST-02
 **Success Criteria** (what must be TRUE):
-  1. Push permission is requested only when a user first creates or joins a session — never at app launch
-  2. A user who has favorited a spot receives a push notification when a new session is created on that spot
-  3. Session participants receive a push reminder before the session start time
-  4. The FCM token is stored per device in push_tokens (not overwritten if user has multiple devices)
-**Plans**: 2 plans
+  1. Les formulaires d'ajout/édition de spot et le système de favoris utilisent les composants du design system (Input, Button, Modal).
+  2. Les formulaires valident les données saisies et affichent des messages d'erreur clairs et cohérents.
+  3. Les appels API en échec sont gérés avec un feedback utilisateur cohérent (loading / erreur / retry), sans crash ni état bloqué.
+  4. La checklist de recette manuelle sur ajout/édition de spot et favoris passe à 100% — aucune régression fonctionnelle.
+**Plans**: TBD
+**UI hint**: yes
 
-Plans:
-- [ ] 04-01-PLAN.md — Client-side push setup: @capacitor-firebase/messaging, NotificationsContext, deferred permission in SessionsContext, Profile notification row, AppDelegate APNs methods (NOTIF-01)
-- [ ] 04-02-PLAN.md — Server-side dispatch: notify-session-created Edge Function for favorite-spot users, send-session-reminders Edge Function with pg_cron + idempotency (NOTIF-02, NOTIF-03)
-
-### Phase 6: Spot Data Enrichment
-**Goal:** Scrape spot locations and names from Foil Mates and import them into the Updock database to grow the spot catalogue
-**Depends on:** Phase 5
-**Requirements**: SPOTS-01, SPOTS-02, SPOTS-03
+### Phase 5: Recette globale & nettoyage final
+**Goal**: Clôturer le refactor : supprimer le code mort et les dépendances obsolètes, homogénéiser la gestion d'état, réduire le bundle sous la cible baseline, et valider la non-régression globale.
+**Depends on**: Phase 4
+**Requirements**: CODE-01, CODE-02, PERF-03, QA-01
 **Success Criteria** (what must be TRUE):
-  1. A script scrapes all spot names and GPS coordinates from Foil Mates
-  2. Scraped spots are deduplicated against existing spots in the database
-  3. New spots are imported into Supabase with correct schema (name, lat, lng, source)
-**Plans:** 0 plans
+  1. Le code mort et les dépendances obsolètes/inutilisées sont identifiés puis supprimés du projet.
+  2. La gestion d'état est homogénéisée — les contexts/providers suivent des patterns cohérents.
+  3. La taille des bundles est réduite par rapport à la baseline de DS-03 et atteint la cible chiffrée.
+  4. La checklist des flux critiques (carte, fiche spot, favoris, avis, session, ajout/édition spot, profil, auth) passe à 100% en test manuel mobile — zéro régression fonctionnelle sur l'ensemble du milestone.
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/3 | Complete   | 2026-03-18 |
-| 2. Reviews | 2/2 | Complete   | 2026-03-21 |
-| 3. Sessions | 2/2 | Complete   | 2026-03-21 |
-| 4. Push Notifications | 2/2 | Complete   | 2026-03-22 |
-
-### Phase 5: Anonymous Access
-
-**Goal:** Allow users to browse the map, view spot details and navigate to spots without creating an account. All other features (sessions, reviews, favorites, profile) require authentication.
-**Requirements**: ANON-01, ANON-02, ANON-03, ANON-04, ANON-05, ANON-06, ANON-07, ANON-08
-**Depends on:** Phase 4
-**Success Criteria** (what must be TRUE):
-  1. Anonymous users see the full app (map + tabs) instead of a login wall
-  2. LandingPage is deleted and no references remain
-  3. SpotDetail shows reviews and sessions in read-only for anonymous users
-  4. Protected actions (favorite, review, session, add spot) show lock icons and trigger AuthModal
-  5. Profile tab shows a dedicated login screen for anonymous users with language toggle
-  6. GPS navigation works without account
-  7. Favorites tab triggers AuthModal for anonymous users
-  8. Supabase anon role can read reviews, sessions, and session_attendees
-**Plans:** 3/3 plans complete
-
-Plans:
-- [ ] 05-01-PLAN.md — RLS anon SELECT migration, auth wall removal, LandingPage deletion, translation keys (ANON-01, ANON-02, ANON-08)
-- [ ] 05-02-PLAN.md — NavBar auth-gating (favorites, add-spot) + SpotDetail lock badges (favorite, review, session) (ANON-03, ANON-04, ANON-06, ANON-07)
-- [ ] 05-03-PLAN.md — Anonymous Profile screen with login/signup CTAs and language toggle (ANON-05)
-
-### Phase 7: Spot Ownership — afficher l'uploader et permettre la modification par le createur du spot et l'admin
-
-**Goal:** Display the spot creator's identity (avatar + name) in SpotDetail and allow the creator or admin to edit spot info and photos directly from SpotDetail.
-**Requirements**: OWN-01, OWN-02, OWN-03, OWN-04, OWN-05
-**Depends on:** Phase 6
-**Success Criteria** (what must be TRUE):
-  1. SpotDetail shows the uploader's avatar and name below the spot title (when user_id exists)
-  2. An edit button is visible only for the spot creator or admin
-  3. The edit overlay allows changing name, type, description, and difficulty
-  4. The edit overlay allows uploading new photos and deleting existing photos
-  5. RLS policy prevents non-owner non-admin from updating spots
-**Plans:** 2 plans
-
-Plans:
-- [ ] 07-01-PLAN.md — Spot type user_id, SpotsContext mappings, updateSpot image_urls, RLS policy, translations (OWN-01, OWN-02, OWN-03, OWN-04, OWN-05)
-- [ ] 07-02-PLAN.md — SpotDetail uploader display, edit button, edit overlay with photo management (OWN-01, OWN-02, OWN-03, OWN-04)
-
-### Phase 8: Bug Fixes — corriger les bugs de l'admin dashboard et le bouton fermer de la galerie photos
-
-**Goal:** Fix confirmed bugs in AdminDashboard (close button, preview photos, UX), SpotDetail lightbox (close button on mobile), and Profile (version, badge, spots count, default avatar).
-**Requirements**: BUG-01, BUG-02, BUG-03, BUG-04, BUG-05, BUG-06, BUG-07, BUG-08, BUG-09
-**Depends on:** Phase 7
-**Success Criteria** (what must be TRUE):
-  1. AdminDashboard X button closes the dashboard on mobile and desktop
-  2. Admin preview modal shows spot photos when image_urls exist
-  3. Storage policies are applied in production (manual step)
-  4. Admin approve/delete buttons show loading feedback
-  5. Lightbox X button closes on iOS Capacitor mobile
-  6. Profile shows version v1.1.3
-  7. No gamification badge (Rookie/Pro/Expert) in profile
-  8. Spots Added count fetched from Supabase
-  9. Default avatar is Lucide User icon everywhere
-**Plans:** 2/2 plans complete
-
-Plans:
-- [x] 08-01-PLAN.md — Profile fixes: version, badge removal, spots count, preset avatar removal (BUG-06, BUG-07, BUG-08, BUG-09)
-- [x] 08-02-PLAN.md — AdminDashboard close + UX fixes, SpotDetail lightbox fix, Storage policies checkpoint (BUG-01, BUG-02, BUG-03, BUG-04, BUG-05)
-
-### Phase 9: Community Stats — section statistiques globales de la communaute dans l'onglet Profil
-
-**Goal:** Display community-wide statistics (total spots, total users, spots by country) in the Profile tab for authenticated users, with a minimal preview for anonymous users.
-**Requirements**: STATS-01, STATS-02, STATS-03, STATS-04, STATS-05
-**Depends on:** Phase 8
-**Success Criteria** (what must be TRUE):
-  1. Authenticated users see a "Statistiques communaute" nav row between personal stats and settings
-  2. CommunityStatsScreen shows total published spots, total registered users, and spots-by-country with flag emojis
-  3. Anonymous users see total spots and total users below the signup CTA
-  4. Spots counts include both static and DB spots
-  5. Country breakdown sums to total spots count
-**Plans:** 1/1 plans complete
-
-Plans:
-- [x] 09-01-PLAN.md — CommunityStatsScreen component, country utility, Profile.tsx nav row + anonymous preview, translations (STATS-01, STATS-02, STATS-03, STATS-04, STATS-05)
+| 1. Audit & Design System | 0/TBD | Not started | - |
+| 2. Navigation & Vue Carte / Spots | 0/TBD | Not started | - |
+| 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
+| 4. Formulaires & Interactions | 0/TBD | Not started | - |
+| 5. Recette globale & nettoyage final | 0/TBD | Not started | - |

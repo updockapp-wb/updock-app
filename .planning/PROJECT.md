@@ -8,7 +8,7 @@ Updock est une carte interactive communautaire qui référence tous les spots de
 
 Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans le monde — tout le reste est secondaire.
 
-## Current Milestone: v1.2.0 Refactor UI/UX & Performance
+## Current Milestone: v2.0 Refactor UI/UX & Performance
 
 **Goal:** Résorber la dette technique et l'incohérence visuelle accumulées au fil des mises à jour — rendre l'app plus rapide, plus légère, plus maintenable et visuellement homogène, sans altérer aucune fonctionnalité existante.
 
@@ -76,8 +76,8 @@ Requirements détaillés : voir `.planning/REQUIREMENTS.md`. Roadmap : voir `.pl
 | Profils simples avant fonctionnalités communautaires | Base nécessaire pour avis + sessions sans alourdir l'UX | — Pending |
 | Sessions programmées avec notifications push | Fonctionnalité communautaire différenciante, naturelle pour les riders | Sessions livrées (Phase 03) — Notifications push en Phase 04 |
 | Ne pas refactoriser le type de spot (JSON string) maintenant | Hors scope des correctifs prioritaires | — Pending |
-| Milestone v1.2.0 = refactor sans nouvelle feature user | Dette technique + incohérence visuelle bloquent la maintenabilité ; consolider avant d'ajouter des features | — Pending |
-| Numérotation des phases remise à 1 pour v1.2.0 | Phases v1.1.3 (01→09) archivées ; nouveau cycle repart proprement à Phase 1 | Archivé dans .planning/archive/v1.1.3-community-features/ |
+| Milestone v2.0 = refactor sans nouvelle feature user | Dette technique + incohérence visuelle bloquent la maintenabilité ; consolider avant d'ajouter des features | — Pending |
+| Numérotation des phases remise à 1 pour v2.0 | Phases v1.1.3 (01→09) archivées ; nouveau cycle repart proprement à Phase 1 | Archivé dans .planning/archive/v1.1.3-community-features/ |
 
 ## Evolution
 
@@ -97,4 +97,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-28 — Milestone v1.2.0 (Refactor UI/UX & Performance) started*
+*Last updated: 2026-07-28 — Milestone v2.0 (Refactor UI/UX & Performance) started*
