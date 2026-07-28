@@ -331,23 +331,23 @@ const primary = root.getPropertyValue('--color-primary').trim() // '#0ea5e9'
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | DM Sans / Inter are not loaded, so the pixel-identical font token is the **system sans-serif** stack — canonicalize to that, not to DM Sans | Summary, Pitfall 6 | If the user intended DM Sans and it was meant to load, canonicalizing to system stack "locks in a bug." Needs user confirmation before writing the font token. |
+| A1 | DM Sans / Inter are not loaded, so the pixel-identical font token is the **system sans-serif** stack — canonicalize to that, not to DM Sans | Summary, Pitfall 6 | **CONFIRMED by user 2026-07-28** (plan-phase session): system stack chosen; DM Sans/Inter removed as dead values. See Open Question 3. |
 | A2 | All audit tools tagged `[ASSUMED]` (slopcheck unavailable) despite verified registry+repo | Package Legitimacy Audit | Low — all are long-standing OSS; planner gate mitigates |
 | A3 | The Capacitor CLI/core version mismatch is already resolved (cli 8.2.0) | State of the Art | Low — audit re-verifies with `npm ls`; if wrong, mismatch is simply re-reported |
 | A4 | `rounded-[32px]` (6×) should be reconciled into the radius scale as a new named token (`--radius-4xl: 2rem`) rather than left arbitrary | Architecture Patterns | Low — cosmetic naming choice; either way renders 32px. Planner/executor discretion (D-06). |
 
 ## Open Questions
 
-1. **Firm vs directional PERF-03 baseline unit**
+1. **Firm vs directional PERF-03 baseline unit** — **RESOLVED** (plan 01-02 Task 3 freezes **gzip total JS** as the firm baseline).
    - What we know: Bundle ko (raw+gzip) is the firm number (D-08); Lighthouse is a directional proxy.
    - What's unclear: whether the −15% target is against raw JS, gzip total, or largest chunk.
-   - Recommendation: Freeze **gzip total JS** as the headline firm baseline; set −15% directional against it; refine in Phase 5.
+   - Resolution: Freeze **gzip total JS** as the headline firm baseline; set −15% directional against it; refine in Phase 5.
 
-2. **Does Lighthouse have a Chrome binary available on this machine?**
+2. **Does Lighthouse have a Chrome binary available on this machine?** — **RESOLVED** (plan 01-01 Task 1 implements the Chrome preflight + documented fallback; no Chrome on PATH confirmed at plan time, so the perf slice takes the Vite compressed-size + React Profiler fallback).
    - What we know: no global `lighthouse`; `npx lighthouse` needs a Chromium/Chrome install.
-   - Recommendation: Planner adds a preflight (`Environment Availability`); if no Chrome, fall back to Vite build report + React Profiler for the (directional) perf slice and note Lighthouse as deferred/manual.
+   - Resolution: Planner added a preflight (`Environment Availability`); with no Chrome, fall back to Vite build report + React Profiler for the (directional) perf slice and note Lighthouse as deferred/manual.
 
-3. **Font canonicalization (ties to A1)** — confirm with user before locking `--font-sans`.
+3. **Font canonicalization (ties to A1)** — **RESOLVED**. The user explicitly confirmed **canonicalizing `--font-sans` to the system stack** during the plan-phase session on 2026-07-28 (AskUserQuestion "Police" → "Stack système (Recommandé)"). DM Sans / Inter are declared-but-unloaded dead values and are removed. This is consistent with D-02's "canonicalize on rendered values" principle and the phase's pixel-identity cardinal constraint. Loading a webfont would be rebranding (out of scope v2.0).
 
 ## Environment Availability
 

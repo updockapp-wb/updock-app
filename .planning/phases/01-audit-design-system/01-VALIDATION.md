@@ -1,8 +1,8 @@
 ---
 phase: 01
 slug: audit-design-system
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-07-28
 ---
@@ -76,11 +76,11 @@ created: 2026-07-28
 
 ## Validation Sign-Off
 
-- [ ] Every task has a build/lint gate, an audit-artifact existence check, or a Wave 0 dependency
-- [ ] Sampling continuity: no 3 consecutive tasks without a build/lint or artifact gate
-- [ ] Wave 0 covers all MISSING references (`audit/` dir, "before" screenshots, Chrome preflight)
-- [ ] No watch-mode flags; no test-framework introduced
-- [ ] Feedback latency < 60 s for the build/lint gate
-- [ ] `nyquist_compliant: true` set in frontmatter once the above hold
+- [x] Every task has a build/lint gate, an audit-artifact existence check, or a Wave 0 dependency
+- [x] Sampling continuity: no 3 consecutive tasks without a build/lint or artifact gate
+- [x] Wave 0 covers all MISSING references (`audit/` dir, "before" screenshots, Chrome preflight)
+- [x] No watch-mode flags; no test-framework introduced
+- [x] Feedback latency < 60 s for the build/lint gate
+- [x] `nyquist_compliant: true` set in frontmatter (plan-level checks pass; `wave_0_complete` flips true at execution)
 
-**Approval:** pending
+**Approval:** approved 2026-07-28 (plan-level; plan-checker Dimension 8 passed)
