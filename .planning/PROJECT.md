@@ -8,6 +8,22 @@ Updock est une carte interactive communautaire qui référence tous les spots de
 
 Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans le monde — tout le reste est secondaire.
 
+## Current Milestone: v1.2.0 Refactor UI/UX & Performance
+
+**Goal:** Résorber la dette technique et l'incohérence visuelle accumulées au fil des mises à jour — rendre l'app plus rapide, plus légère, plus maintenable et visuellement homogène, sans altérer aucune fonctionnalité existante.
+
+**Target features:**
+- Design System : thème centralisé (couleurs, typographie, espacements) + composants maîtres réutilisables (Boutons, Cards, Inputs, Modales, Headers)
+- Performance & code : réduction des re-renders inutiles, optimisation cache/médias (vue Carte), nettoyage code mort / dépendances obsolètes, homogénéisation de la gestion d'état
+- Robustesse : sécurisation de la gestion des erreurs et de la validation des données (formulaires + appels API)
+
+**Contraintes du milestone :**
+- **Zéro régression fonctionnelle** — 100% des fonctionnalités existantes conservées, comportement utilisateur inchangé
+- **Approche incrémentale** — un module/composant à la fois, jamais un balayage global de la codebase
+- **Recette manuelle** — pas d'infra de test ; chaque phase se valide via une checklist de flux critiques testée sur mobile
+
+Requirements détaillés : voir `.planning/REQUIREMENTS.md`. Roadmap : voir `.planning/ROADMAP.md`.
+
 ## Requirements
 
 ### Validated
@@ -60,6 +76,25 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 | Profils simples avant fonctionnalités communautaires | Base nécessaire pour avis + sessions sans alourdir l'UX | — Pending |
 | Sessions programmées avec notifications push | Fonctionnalité communautaire différenciante, naturelle pour les riders | Sessions livrées (Phase 03) — Notifications push en Phase 04 |
 | Ne pas refactoriser le type de spot (JSON string) maintenant | Hors scope des correctifs prioritaires | — Pending |
+| Milestone v1.2.0 = refactor sans nouvelle feature user | Dette technique + incohérence visuelle bloquent la maintenabilité ; consolider avant d'ajouter des features | — Pending |
+| Numérotation des phases remise à 1 pour v1.2.0 | Phases v1.1.3 (01→09) archivées ; nouveau cycle repart proprement à Phase 1 | Archivé dans .planning/archive/v1.1.3-community-features/ |
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
 
 ---
-*Last updated: 2026-04-14 after Phase 08 (bug-fixes) completion*
+*Last updated: 2026-07-28 — Milestone v1.2.0 (Refactor UI/UX & Performance) started*
