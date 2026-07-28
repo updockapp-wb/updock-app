@@ -19,8 +19,11 @@ export default function Header({
     onClose,
     surface = 'glass',
 }: HeaderProps) {
-    const titleColor = surface === 'glass' ? 'text-white' : 'text-slate-800';
-    const subtitleColor = surface === 'glass' ? 'text-white/50' : 'text-slate-500';
+    // text-text/text-muted alias var(--color-slate-800)/var(--color-slate-500) —
+    // byte-identical render to the original text-slate-800/text-slate-500 literals
+    // (glass surface's text-white/text-white/50 have no matching token slot).
+    const titleColor = surface === 'glass' ? 'text-white' : 'text-text';
+    const subtitleColor = surface === 'glass' ? 'text-white/50' : 'text-muted';
 
     if (onClose) {
         // Row-with-close shape (FiltersModal:38-43)
