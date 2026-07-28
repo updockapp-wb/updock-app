@@ -1,0 +1,179 @@
+
+> dockstart-app@1.1.5 lint
+> eslint .
+
+
+/Users/wandrillebasse/updock-app/src/App.tsx
+  47:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/App.tsx:47:7
+  45 |     const hash = window.location.hash;
+  46 |     if (hash && (hash.includes('access_token=') || hash.includes('type=signup'))) {
+> 47 |       setShowWelcome(true);
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  48 |       window.history.replaceState(null, '', window.location.pathname);
+  49 |     }
+  50 |   }, []);  react-hooks/set-state-in-effect
+
+/Users/wandrillebasse/updock-app/src/components/AddSpotForm.tsx
+   11:22  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+   39:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/components/AddSpotForm.tsx:39:13
+  37 |     useEffect(() => {
+  38 |         if (isOpen) {
+> 39 |             resetForm();
+     |             ^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |         }
+  41 |     }, [isOpen]);
+  42 |  react-hooks/set-state-in-effect
+  102:23  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+  169:86  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-explicit-any
+
+/Users/wandrillebasse/updock-app/src/components/AdminDashboard.tsx
+  261:130  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/wandrillebasse/updock-app/src/components/AuthModal.tsx
+  73:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/wandrillebasse/updock-app/src/components/CommunityStatsScreen.tsx
+  29:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/components/CommunityStatsScreen.tsx:29:9
+  27 |         if (!isOpen) return;
+  28 |
+> 29 |         setLoading(true);
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |
+  31 |         const fetchStats = async () => {
+  32 |             // 1. Fetch total approved DB spots count  react-hooks/set-state-in-effect
+
+/Users/wandrillebasse/updock-app/src/components/FiltersModal.tsx
+  51:75  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/wandrillebasse/updock-app/src/components/Map.tsx
+  172:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/wandrillebasse/updock-app/src/components/Profile.tsx
+  39:22  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/components/Profile.tsx:39:22
+  37 |
+  38 |     useEffect(() => {
+> 39 |         if (!user) { setSpotsCount(0); return; }
+     |                      ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |         supabase
+  41 |             .from('spots')
+  42 |             .select('id', { count: 'exact', head: true })  react-hooks/set-state-in-effect
+  51:8   warning  React Hook useEffect has a missing dependency: 'fetchUserSessions'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+  55:8   warning  React Hook useEffect has a missing dependency: 'checkPermission'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+
+/Users/wandrillebasse/updock-app/src/components/ReviewList.tsx
+  12:73  error  '_currentUserId' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/wandrillebasse/updock-app/src/components/SpotDetail.tsx
+  118:8  warning  React Hook useEffect has missing dependencies: 'fetchSessionsForSpot' and 'spot'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  132:8  warning  React Hook useEffect has a missing dependency: 'spot.user_id'. Either include it or remove the dependency array                       react-hooks/exhaustive-deps
+
+/Users/wandrillebasse/updock-app/src/context/AuthContext.tsx
+  52:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/FavoritesContext.tsx
+   41:47  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+   52:8   warning  React Hook useEffect has a missing dependency: 'spots'. Either include it or remove the dependency array                        react-hooks/exhaustive-deps
+  115:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/LanguageContext.tsx
+  39:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/NotificationsContext.tsx
+   41:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/context/NotificationsContext.tsx:41:9
+  39 |     // Check permission on mount
+  40 |     useEffect(() => {
+> 41 |         checkPermission();
+     |         ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |     }, [checkPermission]);
+  43 |
+  44 |     // Register push token automatically when user logs in  react-hooks/set-state-in-effect
+   47:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/context/NotificationsContext.tsx:47:13
+  45 |     useEffect(() => {
+  46 |         if (!user) {
+> 47 |             setHasToken(false);
+     |             ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  48 |             return;
+  49 |         }
+  50 |         supabase                                               react-hooks/set-state-in-effect
+  160:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/ProfileContext.tsx
+   29:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/wandrillebasse/updock-app/src/context/ProfileContext.tsx:29:13
+  27 |     useEffect(() => {
+  28 |         if (!user) {
+> 29 |             setProfile(null);
+     |             ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  30 |             return;
+  31 |         }
+  32 |  react-hooks/set-state-in-effect
+  129:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/SessionsContext.tsx
+  369:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/wandrillebasse/updock-app/src/context/SpotsContext.tsx
+   80:54  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  105:53  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  197:56  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  210:29  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  259:25  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  305:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+✖ 33 problems (28 errors, 5 warnings)
+
