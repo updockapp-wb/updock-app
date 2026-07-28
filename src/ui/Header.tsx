@@ -24,11 +24,15 @@ export default function Header({
 
     if (onClose) {
         // Row-with-close shape (FiltersModal:38-43)
+        if (subtitle && import.meta.env.DEV) {
+            console.warn('Header: `subtitle` is ignored when `onClose` is provided.');
+        }
         return (
             <div className="flex justify-between items-center mb-6">
                 <h2 className={`text-2xl font-bold ${titleColor}`}>{title}</h2>
                 <button
                     onClick={onClose}
+                    aria-label="Close"
                     className="p-2 bg-slate-100 rounded-full hover:bg-slate-200"
                 >
                     <X size={20} className="text-slate-600" />
