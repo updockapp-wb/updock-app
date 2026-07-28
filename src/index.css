@@ -4,13 +4,18 @@
   /* Typography — the actually-rendered system stack (the previous webfont targets were declared but never loaded, A1) */
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  /* Canonical semantic colors — every value equals what the app already renders (light theme) */
-  --color-primary: #0ea5e9;    /* Sky 500 — accent / primary CTA */
-  --color-secondary: #0f172a;  /* Slate 900 */
-  --color-accent: #f43f5e;     /* Rose 500 — destructive / highlight */
-  --color-text: #1e293b;       /* Slate 800 — body text */
-  --color-muted: #64748b;      /* Slate 500 — muted text */
-  --color-background: #f8fafc; /* Slate 50 — page background */
+  /* Canonical semantic colors — aliased to Tailwind's own palette vars (not
+     hardcoded hex) so they are GUARANTEED byte-identical to what components
+     already render via bg-sky-500/bg-rose-500/etc. Hardcoding hex here would
+     silently drift from Tailwind v4's OKLCH-derived palette (verified: v4's
+     sky-500 renders ~#00a6f4, not the v3-era #0ea5e9) — aliasing eliminates
+     that risk entirely. */
+  --color-primary: var(--color-sky-500);    /* primary CTA */
+  --color-secondary: var(--color-slate-900);
+  --color-accent: var(--color-rose-500);    /* destructive / highlight */
+  --color-text: var(--color-slate-800);     /* body text */
+  --color-muted: var(--color-slate-500);    /* muted text */
+  --color-background: var(--color-slate-50); /* page background */
 
   /* Off-scale radius reconciling rounded-[32px] (6×). Tailwind v4 defaults cover 8/12/16/24. */
   --radius-4xl: 2rem;          /* renders 32px */

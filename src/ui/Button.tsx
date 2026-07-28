@@ -16,14 +16,17 @@ interface ButtonProps {
 // Verbatim variant signatures extracted from existing app usage (D-06):
 // variants widen the API, never the appearance. No styles invented here.
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-    // AuthModal:200 — the sole visual anchor (sky-500 accent + glow)
-    primary: 'bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all active:scale-[0.98]',
-    // Profile:431
+    // AuthModal:200 — the sole visual anchor. bg-primary aliases var(--color-sky-500)
+    // (src/index.css) — byte-identical render to the original bg-sky-500 literal.
+    // No --color-primary-hover/shadow token exists yet, so those stay literal.
+    primary: 'bg-primary hover:bg-sky-400 text-white font-bold rounded-xl shadow-lg shadow-sky-500/20 transition-all active:scale-[0.98]',
+    // Profile:431 — no semantic token covers this neutral slate-200/300/600 triad.
     secondary: 'bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold rounded-2xl transition-all',
-    // AuthModal:93 (icon-only close button)
+    // AuthModal:93 (icon-only close button) — opacity-modified white, no token slot for this.
     ghost: 'bg-white/5 hover:bg-white/10 rounded-full transition-colors',
-    // AdminDashboard:439
-    danger: 'bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition-colors',
+    // AdminDashboard:439. bg-accent aliases var(--color-rose-500) — byte-identical
+    // render to the original bg-rose-500 literal. No accent-hover token yet.
+    danger: 'bg-accent hover:bg-rose-600 text-white rounded-xl font-bold transition-colors',
 };
 
 // Size rung = vertical padding, from existing usage.
