@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import Button from './Button';
 
 interface ModalProps {
     isOpen: boolean;
@@ -19,12 +20,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
                         className="bg-white/10 backdrop-blur-xl border border-white/20 w-full max-w-sm rounded-4xl p-8 shadow-2xl relative overflow-hidden"
                     >
                         {/* Close Button */}
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors"
-                        >
+                        <Button variant="ghost" iconOnly aria-label="Close" onClick={onClose} className="absolute top-4 right-4 !p-2">
                             <X size={20} className="text-white/70" />
-                        </button>
+                        </Button>
 
                         {children}
                     </motion.div>
