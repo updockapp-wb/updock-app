@@ -93,6 +93,11 @@ None - no external service configuration required.
 - `src/ui/Header.tsx` stacked title+subtitle shape is ready for the plan 01-06 AuthModal migration/proof.
 - `npm run build` clean for both components; grep gates pass.
 
+## Self-Check: PASSED
+
+- Files: src/ui/Card.tsx, src/ui/Header.tsx, 01-05-SUMMARY.md all present
+- Commits: cb65a3d, 17f73c9 verified in git log
+
 ---
 *Phase: 01-audit-design-system*
 *Completed: 2026-07-28*
