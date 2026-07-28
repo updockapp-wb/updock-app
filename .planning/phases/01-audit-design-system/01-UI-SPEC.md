@@ -33,21 +33,21 @@ created: 2026-07-28
 
 ## Spacing Scale
 
-Extracted from real usage (all multiples of 4). Dominant classes: `p-4` (48×), `gap-2` (43×), `gap-3` (27×), `p-6` (20×), `p-8`, `py-3`.
+First-class tokens are the standard 4-point set (4, 8, 16, 24, 32, 48) — all extracted from real usage. Dominant classes: `p-4` (48×), `gap-2` (43×), `p-6` (20×), `p-8`, plus the off-scale `gap-3`/`p-3`/`py-3` (27×) captured as an exception below.
 
 | Token | Value | Usage (extracted) |
 |-------|-------|-------------------|
 | xs | 4px | Icon gaps, tight inline (`p-1`, `gap-1`) |
 | sm | 8px | Compact spacing, field label gap (`gap-2`, `p-2`, `space-y-2`) |
-| md | 12px | Form-field gaps, input/button vertical padding (`gap-3`, `p-3`, `py-3`) |
-| lg | 16px | Default element / container padding (`p-4`) |
-| xl | 24px | Card / section padding (`p-6`) |
-| 2xl | 32px | Modal padding, major section breaks (`p-8`) |
-| 3xl | 48px | Page-level vertical rhythm (`py-12`) |
+| md | 16px | Default element / container padding (`p-4`) |
+| lg | 24px | Card / section padding (`p-6`) |
+| xl | 32px | Modal padding, major section breaks (`p-8`) |
+| 2xl | 48px | Page-level vertical rhythm (`py-12`) |
 
 Exceptions:
+- **12px (`gap-3` / `p-3` / `py-3`) — declared exception, NOT a first-class scale token.** It is a multiple of 4 but is **not** a member of the standard spacing set (4, 8, 16, 24, 32, 48, 64), so it is intentionally excluded from the scale table above. It is extracted from the dominant existing usage (**27× `gap-3`/`p-3`**): form-field gaps and input/button vertical padding. It is retained **verbatim** solely to preserve pixel-identical rendering per the phase's cardinal constraint (CONTEXT D-02/D-05: harmonisation, not rebranding). **Do NOT normalise it to 8px or 16px** — doing so would change rendered spacing and violate the pixel-identical mandate. The Input and Button master components consume this value at its existing size; it is not offered as a general-purpose spacing choice for new layout.
 - **Input font-size locked at 16px** globally (`input, textarea, select`) to prevent iOS focus-zoom — do not override in the Input master component.
-- **AuthModal outer radius `rounded-[32px]`** is a hard-coded non-token value — reconcile into the radius scale as `2xl = 32px` during token extraction.
+- **AuthModal outer radius `rounded-[32px]`** is a hard-coded non-token value — reconcile into the **radius** scale as `2xl = 32px` during token extraction (radius, not spacing).
 
 ---
 
@@ -74,6 +74,14 @@ Part of DS-01 token scope (radius + shadows). Extracted from real usage — `rou
 - Modal surface: `bg-white/10 backdrop-blur-xl border border-white/20`
 - Modal backdrop: `bg-black/60 backdrop-blur-md`
 - Light glass card: `rgba(255,255,255,0.7)` bg, `rgba(255,255,255,0.5)` border (`--glass-bg` / `--glass-border`)
+
+---
+
+## Visual Hierarchy & Accessibility
+
+**Primary visual anchor — AuthModal proof screen (D-09).** The single dominant focal point is the **primary CTA submit Button** (`primary` variant: `bg-sky-500` accent fill, `shadow-lg` with `shadow-sky-500/20` glow). It is the only accent-coloured, elevated, full-width element on the screen; the reading/interaction hierarchy flows **modal heading → input fields → primary CTA**. The dark-glass modal surface is the containing frame, not the anchor. During migration the executor must preserve this hierarchy exactly: the sky-500 primary Button stays the sole visual anchor — do not flatten it to match secondary/ghost buttons and do not introduce a second accent-coloured competing element.
+
+**Icon-only button accessibility.** Icon-only buttons (`rounded-full`, referenced in the Radius section) carry no visible text label and therefore **require an `aria-label` (or `sr-only` text) per the Button master component contract**. The Button component must accept and forward an accessible-label prop, and must not render an icon-only variant without one. This applies to every icon-only control migrated in this phase and to future consumers of the master Button.
 
 ---
 
