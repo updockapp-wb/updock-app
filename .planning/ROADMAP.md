@@ -38,7 +38,7 @@ Plans:
 **Wave 1**
 
 - [ ] 01-01-PLAN.md — Baseline oracle & audit env gate (audit dir, Chrome preflight, before-screenshots) [Wave 1]
-- [ ] 01-02-PLAN.md — Architecture audit DS-03 (bundle/deps/perf baseline + 01-AUDIT.md) [Wave 1]
+- [x] 01-02-PLAN.md — Architecture audit DS-03 (bundle/deps/perf baseline + 01-AUDIT.md) [Wave 1]
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -122,7 +122,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Audit & Design System | 0/6 | Planned | - |
+| 1. Audit & Design System | 1/6 | In Progress|  |
 | 2. Navigation & Vue Carte / Spots | 0/TBD | Not started | - |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
