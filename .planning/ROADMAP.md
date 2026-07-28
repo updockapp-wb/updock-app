@@ -13,7 +13,7 @@ Ce milestone est un refactor interne : aucune nouvelle fonctionnalité utilisate
 
 Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.planning/archive/v1.1.3-community-features/`.
 
-- [ ] **Phase 1: Audit & Design System** - Audit d'architecture chiffré + tokens centralisés + composants maîtres réutilisables
+- [x] **Phase 1: Audit & Design System** - Audit d'architecture chiffré + tokens centralisés + composants maîtres réutilisables (completed 2026-07-28)
 - [ ] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte
 - [ ] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias
 - [ ] **Phase 4: Formulaires & Interactions** - Harmonisation UI des formulaires/favoris + validation et gestion d'erreurs robustes
@@ -51,7 +51,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-06-PLAN.md — AuthModal proof migration D-09 [Wave 4]
+- [x] 01-06-PLAN.md — AuthModal proof migration D-09 [Wave 4]
 
 **UI hint**: yes
 
@@ -122,7 +122,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Audit & Design System | 5/6 | In Progress|  |
+| 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 0/TBD | Not started | - |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
