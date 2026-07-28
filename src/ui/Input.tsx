@@ -36,7 +36,7 @@ export default function Input({
                     placeholder={placeholder}
                     required={required}
                     minLength={minLength}
-                    className={`w-full bg-black/20 border border-white/10 rounded-xl py-3 ${Icon ? 'pl-12' : 'pl-4'} pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all`}
+                    className={`w-full bg-black/20 border border-white/10 rounded-xl py-3 ${Icon ? 'pl-12' : 'pl-4'} pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary transition-all`}
                 />
             </div>
         </div>
