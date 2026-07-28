@@ -6,11 +6,15 @@ import { visualizer } from 'rollup-plugin-visualizer'
 export default defineConfig({
   plugins: [
     react(),
-    visualizer({
-      filename: '.planning/phases/01-audit-design-system/audit/stats.html',
-      template: 'treemap',
-      gzipSize: true,
-      brotliSize: true,
-    }) as PluginOption,
+    ...(process.env.ANALYZE
+      ? [
+          visualizer({
+            filename: '.planning/phases/01-audit-design-system/audit/stats.html',
+            template: 'treemap',
+            gzipSize: true,
+            brotliSize: true,
+          }) as PluginOption,
+        ]
+      : []),
   ],
 })
