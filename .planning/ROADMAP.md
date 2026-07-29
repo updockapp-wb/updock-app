@@ -72,7 +72,7 @@ Plans:
 Plans:
 **Wave 0** *(baseline gate — doit précéder tout refactor)*
 
-- [ ] 02-01-PLAN.md — Baseline Profiler/mémoire + audit consommateurs Modal [Wave 0]
+- [x] 02-01-PLAN.md — Baseline Profiler/mémoire + audit consommateurs Modal [Wave 0]
 
 **Wave 1** *(parallèle, fichiers disjoints — bloqué sur Wave 0)*
 
@@ -133,7 +133,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
-| 2. Navigation & Vue Carte / Spots | 0/3 | Planned | - |
+| 2. Navigation & Vue Carte / Spots | 1/3 | In Progress|  |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |

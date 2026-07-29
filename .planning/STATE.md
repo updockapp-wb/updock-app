@@ -4,8 +4,8 @@ milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
 status: executing
 stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-07-29T11:13:22.060Z"
-last_activity: 2026-07-29 -- Phase 02 planning complete
+last_updated: "2026-07-29T11:15:43.690Z"
+last_activity: 2026-07-29 -- Phase 02 execution started
 progress:
   total_phases: 5
   completed_phases: 1
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 2 — navigation & vue carte / spots
+**Current focus:** Phase 02 — navigation-vue-carte-spots
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-07-29 -- Phase 02 planning complete
+Phase: 02 (navigation-vue-carte-spots) — EXECUTING
+Plan: 1 of 3
+Status: Executing Phase 02
+Last activity: 2026-07-29 -- Phase 02 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
