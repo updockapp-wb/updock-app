@@ -154,7 +154,12 @@ Aucune — aucun service externe, aucune dépendance ajoutée (`npm install` : n
 - Le plan 02-02 (carte : `MAP_COLORS`, split-memoization, fuite blob) est disjoint en fichiers — aucun conflit attendu au merge.
 - La confirmation chiffrée de PERF-01 côté nav (protocole 02-BASELINE.md §5 rejoué) reste à faire par la recette de phase.
 
-## Self-Check
+## Self-Check: PASSED
+
+- Fichiers modifiés présents : `src/ui/Modal.tsx`, `src/components/FiltersModal.tsx`, `src/components/NavBar.tsx`, `src/App.tsx` ✓
+- Fichiers créés présents : `02-03-SUMMARY.md`, `deferred-items.md` ✓
+- Commits présents : `74d8b09`, `5b35538`, `650a070`, `80eb986` ✓
+- `STATE.md` / `ROADMAP.md` non modifiés (mode worktree — l'orchestrateur les met à jour après le merge de la wave) ✓
 
 ## Threat Flags
 
