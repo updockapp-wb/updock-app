@@ -68,7 +68,17 @@ Plans:
   4. Les re-renders inutiles des écrans de navigation et de la vue Carte sont éliminés, mesure avant/après à l'appui.
   5. La checklist de recette manuelle sur carte et navigation passe à 100% — aucune régression fonctionnelle.
 
-**Plans**: TBD
+**Plans**: 3 plans (2 waves)
+Plans:
+**Wave 0** *(baseline gate — doit précéder tout refactor)*
+
+- [ ] 02-01-PLAN.md — Baseline Profiler/mémoire + audit consommateurs Modal [Wave 0]
+
+**Wave 1** *(parallèle, fichiers disjoints — bloqué sur Wave 0)*
+
+- [ ] 02-02-PLAN.md — Vue Carte : couleurs markers (MAP_COLORS), split-memoization, fix fuite mémoire aperçus [Wave 1]
+- [ ] 02-03-PLAN.md — Navigation & filtres : extension Modal (light/sheet), migration FiltersModal, wiring tokens NavBar [Wave 1]
+
 **UI hint**: yes
 
 ### Phase 3: Fiches Détaillées & Profils
@@ -123,7 +133,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
-| 2. Navigation & Vue Carte / Spots | 0/TBD | Not started | - |
+| 2. Navigation & Vue Carte / Spots | 0/3 | Planned | - |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
