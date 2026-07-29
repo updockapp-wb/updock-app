@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Map, Heart, User, Plus, List, Lock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -10,7 +11,11 @@ interface NavBarProps {
     onOpenAuth?: () => void;
 }
 
-export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVertical = false, user, onOpenAuth }: NavBarProps) {
+// Tab buttons stay native <button> elements (D-04): no variant of the master Button
+// (src/ui) matches a nav-tab shape (Button is flex items-center justify-center; a tab is
+// flex flex-col items-center on mobile / flex items-center gap-3 text-left on desktop).
+// Forcing a variant would widen the API into a new appearance — against the DS contract.
+function NavBar({ activeTab, onTabChange, onAddSpotClick, isVertical = false, user, onOpenAuth }: NavBarProps) {
     const { t } = useLanguage();
 
     if (isVertical) {
@@ -73,13 +78,18 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
         );
     }
 
+    // Mobile bottom bar. The active-tab color below uses the `primary` text token, which
+    // aliases var(--color-sky-500) (src/index.css) — byte-identical render to the original
+    // sky-500 literal. The desktop active state (sky-50/sky-600), the CTA gradients
+    // (sky-500→blue-600 / sky-400→blue-500) and their shadows have no matching token slot,
+    // so they stay literal.
     return (
         <div className="bg-white border-t border-slate-100 flex items-center justify-between px-2 z-[1000] relative shadow-[0_-5px_20px_rgba(0,0,0,0.03)] pt-2 pb-[env(safe-area-inset-bottom)]">
             {/* Left Side (Map, Favorites) */}
             <div className="flex items-center flex-1 justify-around">
                 <button
                     onClick={() => onTabChange('map')}
-                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'map' ? 'text-sky-500' : 'text-slate-400 hover:text-slate-500'}`}
+                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'map' ? 'text-primary' : 'text-slate-400 hover:text-slate-500'}`}
                 >
                     <Map size={24} strokeWidth={activeTab === 'map' ? 2.5 : 2} />
                     <span className="text-[10px] font-medium">{t('nav.map')}</span>
@@ -90,7 +100,7 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
                         if (!user && onOpenAuth) { onOpenAuth(); return; }
                         onTabChange('favorites');
                     }}
-                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'favorites' ? 'text-sky-500' : 'text-slate-400 hover:text-slate-500'}`}
+                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'favorites' ? 'text-primary' : 'text-slate-400 hover:text-slate-500'}`}
                 >
                     <Heart size={24} fill={activeTab === 'favorites' ? "currentColor" : "none"} strokeWidth={activeTab === 'favorites' ? 2.5 : 2} />
                     <div className="flex items-center gap-1">
@@ -122,7 +132,7 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
             <div className="flex items-center flex-1 justify-around">
                 <button
                     onClick={() => onTabChange('list')}
-                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'list' ? 'text-sky-500' : 'text-slate-400 hover:text-slate-500'}`}
+                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'list' ? 'text-primary' : 'text-slate-400 hover:text-slate-500'}`}
                 >
                     <List size={24} strokeWidth={activeTab === 'list' ? 2.5 : 2} />
                     <span className="text-[10px] font-medium">{t('nav.list')}</span>
@@ -130,7 +140,7 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
 
                 <button
                     onClick={() => onTabChange('profile')}
-                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'profile' ? 'text-sky-500' : 'text-slate-400 hover:text-slate-500'}`}
+                    className={`flex flex-col items-center gap-1 p-2 w-14 transition-colors ${activeTab === 'profile' ? 'text-primary' : 'text-slate-400 hover:text-slate-500'}`}
                 >
                     <User size={24} strokeWidth={activeTab === 'profile' ? 2.5 : 2} />
                     <span className="text-[10px] font-medium">{t('nav.profile')}</span>
@@ -139,3 +149,8 @@ export default function NavBar({ activeTab, onTabChange, onAddSpotClick, isVerti
         </div>
     );
 }
+
+// NavBar is purely presentational: memoizing it lets the nav shell skip re-renders when
+// App state unrelated to navigation changes (selectedSpot, isAuthModalOpen…). Requires the
+// callbacks passed from App.tsx to be referentially stable (useCallback) — PERF-01.
+export default memo(NavBar);
