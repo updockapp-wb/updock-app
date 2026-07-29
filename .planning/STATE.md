@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: ready_to_plan
-stopped_at: Phase 01 complete (6/6) — ready to discuss Phase 2
-last_updated: 2026-07-28T22:19:16.793Z
-last_activity: 2026-07-28 -- Phase 01 execution started
+status: planning
+stopped_at: Phase 2 context gathered
+last_updated: "2026-07-29T07:00:47.519Z"
+last_activity: 2026-07-28
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 6
   completed_plans: 6
-  percent: 0
+  percent: 20
 ---
 
 # Project State
@@ -93,6 +93,6 @@ Voir `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-07-28T14:30:19.795Z
-Stopped at: Phase 1 UI-SPEC approved
-Resume file: .planning/phases/01-audit-design-system/01-UI-SPEC.md
+Last session: 2026-07-29T07:00:47.513Z
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-navigation-vue-carte-spots/02-CONTEXT.md
