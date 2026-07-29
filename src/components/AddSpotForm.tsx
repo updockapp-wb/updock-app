@@ -1,6 +1,6 @@
 import { X, MapPin, Camera, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { type StartType } from '../data/spots';
 import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -24,7 +24,23 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     const { t } = useLanguage();
     const [isSending, setIsSending] = useState(false);
 
+    // Miroir de `imagePreviews` dans un ref — SANS cleanup. L'ancien effet révoquait les
+    // URLs à chaque changement de `imagePreviews` (son cleanup se rejoue avant chaque re-run),
+    // ce qui révoquait des aperçus ENCORE AFFICHÉS dès qu'une nouvelle image était ajoutée.
+    const previewsRef = useRef<string[]>([]);
+    useEffect(() => {
+        previewsRef.current = imagePreviews;
+    }, [imagePreviews]);
+
+    // Libère toutes les object URLs encore vivantes. Idempotent : le ref est vidé après coup,
+    // un second appel ne re-révoque rien.
+    const revokeAll = useCallback(() => {
+        previewsRef.current.forEach(url => URL.revokeObjectURL(url));
+        previewsRef.current = [];
+    }, []);
+
     const resetForm = () => {
+        revokeAll();
         setName('');
         setType(['Dockstart']);
         setDescription('');
@@ -39,6 +55,11 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
             resetForm();
         }
     }, [isOpen]);
+
+    // Filet de sécurité au démontage RÉEL. À lui seul il ne suffirait pas : `AddSpotForm` est
+    // rendu inconditionnellement par `Map.tsx`, seul son contenu interne est monté/démonté par
+    // `AnimatePresence` — le composant ne démonte donc jamais en usage normal.
+    useEffect(() => () => revokeAll(), [revokeAll]);
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -58,12 +79,6 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         setImageFiles(prev => prev.filter((_, i) => i !== index));
         setImagePreviews(prev => prev.filter((_, i) => i !== index));
     };
-
-    useEffect(() => {
-        return () => {
-            imagePreviews.forEach(url => URL.revokeObjectURL(url));
-        };
-    }, [imagePreviews]);
 
     const toggleType = (t: StartType) => {
         if (type.includes(t)) {
@@ -107,7 +122,11 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     };
 
     return (
-        <AnimatePresence>
+        // `onExitComplete` : libère les aperçus une fois l'animation de fermeture terminée,
+        // donc APRÈS que le contenu (et ses <img>) soit démonté — aucune image cassée pendant
+        // la sortie. Sans cela, les URLs de la dernière session resteraient vivantes jusqu'à la
+        // réouverture du formulaire (la fuite mesurée dans 02-BASELINE.md).
+        <AnimatePresence onExitComplete={revokeAll}>
             {isOpen && (
                 <div className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center pointer-events-none">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-auto" onClick={onClose} />

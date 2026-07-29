@@ -8,8 +8,8 @@ import FiltersModal from './FiltersModal';
 import { SlidersHorizontal, X, Search, MapPin } from 'lucide-react';
 import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
-import { mapboxConfig } from '../config/mapbox';
-import type { FeatureCollection } from 'geojson';
+import { mapboxConfig, MAP_COLORS } from '../config/mapbox';
+import type { Feature, FeatureCollection } from 'geojson';
 import SearchModal from './SearchModal';
 
 // Persists across tab remounts — fly-to runs only once per app session
@@ -25,11 +25,11 @@ const clusterLayer: LayerProps = {
         'circle-color': [
             'step',
             ['get', 'point_count'],
-            '#22d3ee', // Cyan-400 (< 5)
+            MAP_COLORS.clusterSmall, // Cyan-400 (< 5)
             5,
-            '#38bdf8', // Sky-400 (5-20)
+            MAP_COLORS.clusterMedium, // Sky-400 (5-20)
             20,
-            '#ffffff'  // White (> 20)
+            MAP_COLORS.clusterLarge  // White (> 20)
         ],
         'circle-radius': [
             'step',
@@ -41,7 +41,7 @@ const clusterLayer: LayerProps = {
             40
         ],
         'circle-stroke-width': 2,
-        'circle-stroke-color': '#fff'
+        'circle-stroke-color': MAP_COLORS.markerStroke
     }
 };
 
@@ -59,11 +59,11 @@ const clusterCountLayer: LayerProps = {
         'text-color': [
             'step',
             ['get', 'point_count'],
-            '#ffffff', // White text on Cyan
+            MAP_COLORS.clusterTextLight, // White text on Cyan
             5,
-            '#ffffff', // White text on Sky Blue
+            MAP_COLORS.clusterTextLight, // White text on Sky Blue
             20,
-            '#0f172a'  // Dark text on White circle
+            MAP_COLORS.clusterTextDark  // Dark text on White circle
         ]
     }
 };
@@ -76,22 +76,22 @@ const unclusteredPointLayer: LayerProps = {
     paint: {
         'circle-color': [
             'case',
-            ['==', ['get', 'is_approved'], false], '#f97316', // Orange for pending spots
+            ['==', ['get', 'is_approved'], false], MAP_COLORS.pending, // Orange for pending spots
             [
                 'match',
                 ['get', 'type'],
-                'Dockstart', '#38bdf8',
-                'Rockstart', '#f472b6',
-                'Dropstart', '#2dd4bf',
-                'Deadstart', '#818cf8',
-                'Rampstart', '#fbbf24',
-                'Beachstart', '#f59e0b',
-                '#38bdf8' // default
+                'Dockstart', MAP_COLORS.Dockstart,
+                'Rockstart', MAP_COLORS.Rockstart,
+                'Dropstart', MAP_COLORS.Dropstart,
+                'Deadstart', MAP_COLORS.Deadstart,
+                'Rampstart', MAP_COLORS.Rampstart,
+                'Beachstart', MAP_COLORS.Beachstart,
+                MAP_COLORS.Dockstart // default (même valeur que Dockstart dans l'original)
             ]
         ],
         'circle-radius': 10,
         'circle-stroke-width': 3,
-        'circle-stroke-color': '#fff',
+        'circle-stroke-color': MAP_COLORS.markerStroke,
         'circle-opacity': 1,
     }
 };
@@ -138,25 +138,39 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
         }
     }, [selectedSpot]);
 
-    const spotsGeoJson: FeatureCollection = useMemo(() => {
-        const filtered = filter === 'All' ? spots : spots.filter(s => s.type.includes(filter as StartType));
-        return {
-            type: 'FeatureCollection',
-            features: filtered.map(spot => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [spot.position[1], spot.position[0]]
-                },
-                properties: {
-                    id: spot.id,
-                    name: spot.name,
-                    type: spot.type[0],
-                    is_approved: spot.is_approved
-                }
-            }))
-        };
-    }, [spots, filter]);
+    // Génération des objets Feature — c'est l'allocation coûteuse : elle n'est refaite
+    // QUE lorsque `spots` change, plus à chaque changement de filtre (MAP-01 / PERF-01).
+    const allFeatures = useMemo<Feature[]>(() => spots.map(spot => ({
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [spot.position[1], spot.position[0]]
+        },
+        properties: {
+            id: spot.id,
+            name: spot.name,
+            type: spot.type[0],
+            is_approved: spot.is_approved
+        }
+    })), [spots]);
+
+    // Tableaux de types complets, indexés EN PARALLÈLE de `allFeatures` (même source `spots`,
+    // même ordre, même dépendance de mémoïsation). Indispensable car `properties.type` ne
+    // conserve que `spot.type[0]` : filtrer sur cette propriété ferait disparaître les spots
+    // multi-type et changerait l'ensemble de markers affichés. Le payload GeoJSON envoyé à
+    // Mapbox reste ainsi strictement identique à avant le refactor.
+    const allFeatureTypes = useMemo<StartType[][]>(() => spots.map(spot => spot.type), [spots]);
+
+    // Filtrage bon marché : ne ré-alloue aucun objet Feature, seulement le tableau de refs.
+    // Le chemin `setData` est conservé via <Source data={spotsGeoJson}> — surtout pas de
+    // filtrage natif au niveau layer, qui casserait les compteurs de cluster sur une
+    // source clusterisée (le clustering opère au niveau source, pas layer).
+    const spotsGeoJson: FeatureCollection = useMemo(() => ({
+        type: 'FeatureCollection',
+        features: filter === 'All'
+            ? allFeatures
+            : allFeatures.filter((_, i) => allFeatureTypes[i].includes(filter as StartType))
+    }), [allFeatures, allFeatureTypes, filter]);
 
     // Local state to track if user has seen the info modal for this session/action
     const [hasAcknowledgedInfo, setHasAcknowledgedInfo] = useState(false);
