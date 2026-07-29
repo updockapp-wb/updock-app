@@ -77,7 +77,7 @@ Plans:
 **Wave 1** *(parallèle, fichiers disjoints — bloqué sur Wave 0)*
 
 - [ ] 02-02-PLAN.md — Vue Carte : couleurs markers (MAP_COLORS), split-memoization, fix fuite mémoire aperçus [Wave 1]
-- [ ] 02-03-PLAN.md — Navigation & filtres : extension Modal (light/sheet), migration FiltersModal, wiring tokens NavBar [Wave 1]
+- [ ] 02-03-PLAN.md — Navigation & filtres : extension Modal (light/sheet), migration FiltersModal, wiring tokens + mémoïsation nav-shell NavBar/App (PERF-01) [Wave 1]
 
 **UI hint**: yes
 

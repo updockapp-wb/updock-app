@@ -310,18 +310,18 @@ Source : src/index.css lignes 8-13 (commentaire explicite : « v4's sky-500 rend
 | A4 | Aucun variant `Button` ne couvre `bg-slate-900` (« Voir les résultats ») | Code Examples D-02 | Faible — vérifié dans src/ui/Button.tsx (variants : primary/secondary/ghost/danger). |
 | A5 | Tailwind v4 sky-400 ≠ sky-500 en OKLCH ; #38bdf8 est bien sky-400 v3-era | D-01 | Faible — corroboré par le commentaire de src/index.css. À confirmer par inspection DevTools au moment de l'impl. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Comment étendre `src/ui/Modal` sans régresser ses consommateurs actuels ? — RÉSOLU**
    - Vérifié : `grep -rn "ui/Modal" src/` → **unique consommateur `AuthModal.tsx`** (surface glass).
    - Recommandation : ajouter une prop `surface`/`layout` avec **défaut = glass actuel** (rétro-compatible avec AuthModal), puis brancher `FiltersModal` sur la variante claire bottom-sheet. Risque de régression sur AuthModal : nul si le défaut est glass.
 
-2. **Le bouton « Voir les résultats » (bg-slate-900) doit-il devenir un variant `Button` ?**
+2. **Le bouton « Voir les résultats » (bg-slate-900) doit-il devenir un variant `Button` ? — RESOLVED**
    - Ce qu'on sait : aucun variant existant ne matche.
-   - Recommandation : soit le garder custom (byte-identique, zéro risque), soit ajouter un variant `dark`/`solid` extrait verbatim. Choix planner ; par défaut, garder custom pour minimiser le scope.
+   - RESOLVED: garder custom (byte-identique, zéro risque). Aucun variant `Button` ne couvre `bg-slate-900` (variants = primary/secondary/ghost/danger, cf. A4), et en inventer un violerait le principe DS D-06 (« variants widen the API, never the appearance »). Décision entérinée dans 02-03-PLAN Task 2 (CTA conservé custom).
 
-3. **La mesure PERF-01 « avant/après » se fait sur quel support ?**
-   - Recommandation : React DevTools Profiler dans le navigateur (dev build Vite `npm run dev`), pas sur le build iOS. Capturer un enregistrement Profiler en togglant les filtres avant/après le refactor.
+3. **La mesure PERF-01 « avant/après » se fait sur quel support ? — RESOLVED**
+   - RESOLVED: React DevTools Profiler dans le navigateur (dev build Vite `npm run dev`), pas sur le build iOS. Baseline capturée AVANT refactor (Wave 0, 02-01-PLAN) puis rejouée APRÈS — pour le sous-arbre carte (toggle filtres) ET le nav-shell (App.tsx/NavBar), conformément au périmètre PERF-01 « nav + carte » (ROADMAP success criterion 4).
 
 ## Environment Availability
 

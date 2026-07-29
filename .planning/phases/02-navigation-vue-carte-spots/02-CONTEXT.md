@@ -70,6 +70,32 @@ jamais forcer une valeur pour "faire joli").
   ce formulaire), ce qui justifie son inclusion dans MAP-02 malgré le
   périmètre visuel différé de `AddSpotForm` (D-02).
 
+### Composants natifs de la NavBar (D-04)
+- **D-04:** Les boutons d'onglet de la `NavBar` (bottom bar mobile ET sidebar
+  desktop `isVertical`) **restent des `<button>` natifs** — ils ne sont PAS
+  migrés vers `src/ui/Button`. Raison : aucun variant `Button`
+  (`primary`/`secondary`/`ghost`/`danger`) ne correspond à la forme d'un onglet
+  de nav (`flex flex-col items-center gap-1` en mobile, `flex items-center gap-3
+  text-left` en desktop, avec icône + label + badge `Lock` conditionnel +
+  `strokeWidth` dynamique) ; `Button` est `flex items-center justify-center
+  gap-2` par contrat. Forcer un onglet dans `Button`, ou lui inventer un variant
+  « nav-tab », violerait le principe DS établi en Phase 1 (D-06, cf.
+  `src/ui/Button.tsx` : « variants widen the API, never the appearance. No
+  styles invented here. ») et la contrainte cardinale byte-identique /
+  harmonisation-pas-rebranding. Cette décision **précise la portée de NAV-01**
+  pour la NavBar : « utilise les composants ET tokens du DS » est honoré par le
+  **wiring des tokens** (`text-sky-500` → `text-primary`, seule correspondance
+  1:1 réelle) — pas par une migration structurelle vers `Button`. Miroir exact
+  du précédent A4 / CTA « Voir les résultats » de `FiltersModal` (bg-slate-900
+  gardé custom faute de variant correspondant, D-02).
+- Le CTA central « Add Spot » et les gradients/ombres de la NavBar restent
+  également littéraux (aucun token correspondant, Pitfall 5 RESEARCH).
+- **Portée PERF-01 côté nav (non narrowing) :** l'exigence « re-renders inutiles
+  des écrans de navigation éliminés » (ROADMAP success criterion 4) EST couverte
+  — pas différée : `NavBar` est mémoïsé (`React.memo`) et ses callbacks
+  (`onTabChange`/`onAddSpotClick`/`onOpenAuth`) stabilisés via `useCallback` dans
+  `App.tsx` (02-03-PLAN Task 3), avec baseline nav-shell avant/après (02-01-PLAN).
+
 ### Claude's Discretion
 - **Stratégie technique de mémoïsation (MAP-01)** : comment éliminer les
   re-renders des markers exactement (séparer génération de features du

@@ -186,7 +186,7 @@ Aucun registre déclaré. Composants exclusivement maison (`src/ui/*`) et lucide
 
 **Migrent vers le design system cette phase :**
 - `src/components/NavBar.tsx` — wiring tokens couleur (sky-500 → `--color-primary`, etc.), même discipline byte-identique qu'en Phase 1. Duplication desktop/mobile : refactor **optionnel** (Claude's Discretion), sans changement de comportement.
-- `src/components/FiltersModal.tsx` — migration vers `src/ui/Modal` + `src/ui/Header` (forme rangée-avec-close, `surface="light"`) + `src/ui/Button`. Duplique exactement le pattern extrait en Phase 1.
+- `src/components/FiltersModal.tsx` — migration vers `src/ui/Modal` + `src/ui/Header` (forme rangée-avec-close, `surface="light"`). Duplique exactement le pattern extrait en Phase 1. **Note :** le CTA "Voir les résultats" (`bg-slate-900`) et les lignes de filtre restent custom — aucun variant `src/ui/Button` ne correspond à leur forme (cf. D-02/Open Q2 RESOLVED dans 02-RESEARCH.md).
 - `src/components/Map.tsx` — centralisation des couleurs markers (D-01) + top bar (bouton filtre).
 
 **Hors périmètre visuel (inchangés) :**
