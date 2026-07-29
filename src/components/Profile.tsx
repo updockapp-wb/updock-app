@@ -146,7 +146,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 </div>
 
                 {/* Version */}
-                <p className="text-xs text-slate-300 mt-8">Updock v1.1.3 (Beta)</p>
+                <p className="text-xs text-slate-300 mt-8">Updock v{__APP_VERSION__} (Beta)</p>
             </motion.div>
         );
     }
@@ -436,7 +436,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             )}
 
             <div className="mt-auto text-center pb-8">
-                <p className="text-xs text-slate-300">Updock v1.1.3 (Beta)</p>
+                <p className="text-xs text-slate-300">Updock v{__APP_VERSION__} (Beta)</p>
             </div>
 
             <PremiumModal isOpen={isPremiumOpen} onClose={() => setIsPremiumOpen(false)} />

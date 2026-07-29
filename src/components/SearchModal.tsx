@@ -29,7 +29,7 @@ export default function SearchModal({ isOpen, onClose, onSpotSelect }: SearchMod
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[5000] flex items-start justify-center pt-4 sm:pt-20 px-4">
+                <div className="fixed inset-0 z-[5000] flex items-start justify-center pt-[calc(1rem+env(safe-area-inset-top))] sm:pt-20 px-4">
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
 
                     <motion.div

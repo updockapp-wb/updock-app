@@ -159,5 +159,6 @@
     "session.conflict_join": "Join this session",
     "session.conflict_create_anyway": "Create anyway",
     "profile.notif_session_toggle": "Session notifications",
-    "profile.notif_session_desc": "Get notified when a session is created on a favorite spot"
+    "profile.notif_session_desc": "Get notified when a session is created on a favorite spot",
+    "search.placeholder": "Search spots..."
 }

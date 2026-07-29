@@ -122,7 +122,7 @@ function AppContent() {
 
             <div className="p-4 border-t border-slate-100">
               <button className="w-full py-2 px-4 rounded-lg hover:bg-slate-50 text-slate-600 font-medium text-sm flex items-center gap-2 transition-colors">
-                <span>v1.1.1</span>
+                <span>v{__APP_VERSION__}</span>
               </button>
             </div>
           </div>

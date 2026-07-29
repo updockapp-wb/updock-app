@@ -87,7 +87,7 @@ export default function CommunityStatsScreen({ isOpen, onClose }: CommunityStats
     return (
         <div className="fixed inset-0 z-50 bg-slate-50 overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center gap-3 p-4 border-b border-slate-100 bg-white">
+            <div className="flex items-center gap-3 px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] border-b border-slate-100 bg-white">
                 <button
                     onClick={onClose}
                     className="text-slate-600 hover:text-slate-800 transition-colors"
