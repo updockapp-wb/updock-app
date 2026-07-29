@@ -1,7 +1,8 @@
-import { X, Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle, Umbrella } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle, Umbrella } from 'lucide-react';
 import { type StartType } from '../data/spots';
 import { useLanguage } from '../context/LanguageContext';
+import Modal from '../ui/Modal';
+import Header from '../ui/Header';
 
 interface FiltersModalProps {
     isOpen: boolean;
@@ -23,65 +24,54 @@ export default function FiltersModal({ isOpen, onClose, selectedFilter, onFilter
         { id: 'Beachstart', label: 'Beachstart', icon: <Umbrella size={20} /> },
     ];
 
+    // Shell + header now come from the design system masters (DS-02). The light/sheet
+    // Modal shape and Header's row-with-close shape were both extracted verbatim from
+    // this file, so the render is byte-identical to the previous inline markup.
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center pointer-events-none">
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm pointer-events-auto" onClick={onClose} />
+        <Modal isOpen={isOpen} onClose={onClose} surface="light" layout="sheet">
+            <Header surface="light" title={t('filters.title')} onClose={onClose} />
 
-                    <motion.div
-                        initial={{ y: "100%" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
-                        className="relative z-10 bg-white w-full max-w-sm sm:rounded-3xl rounded-t-3xl p-6 shadow-2xl pointer-events-auto"
+            <p className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">{t('filters.start_type') || "Start Type"}</p>
+
+            {/* Filter rows stay custom: no src/ui/Button variant matches this shape
+                (border-2 selected state + icon chip + check pill). */}
+            <div className="space-y-3">
+                {filters.map((f) => (
+                    <button
+                        key={f.id}
+                        onClick={() => onFilterChange(f.id as any)}
+                        className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all
+                            ${selectedFilter === f.id
+                                ? 'border-sky-500 bg-sky-50'
+                                : 'border-slate-100 bg-white hover:border-slate-200'}`}
                     >
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-slate-800">{t('filters.title')}</h2>
-                            <button onClick={onClose} className="p-2 bg-slate-100 rounded-full hover:bg-slate-200">
-                                <X size={20} className="text-slate-600" />
-                            </button>
+                        <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg ${selectedFilter === f.id ? 'bg-sky-100 text-sky-600' : 'bg-slate-100 text-slate-500'}`}>
+                                {f.icon}
+                            </div>
+                            <span className={`font-bold ${selectedFilter === f.id ? 'text-sky-700' : 'text-slate-600'}`}>
+                                {f.label}
+                            </span>
                         </div>
+                        {selectedFilter === f.id && (
+                            <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center">
+                                <Check size={14} className="text-white" />
+                            </div>
+                        )}
+                    </button>
+                ))}
+            </div>
 
-                        <p className="text-sm font-medium text-slate-500 mb-3 uppercase tracking-wide">{t('filters.start_type') || "Start Type"}</p>
-
-                        <div className="space-y-3">
-                            {filters.map((f) => (
-                                <button
-                                    key={f.id}
-                                    onClick={() => onFilterChange(f.id as any)}
-                                    className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all
-                                        ${selectedFilter === f.id
-                                            ? 'border-sky-500 bg-sky-50'
-                                            : 'border-slate-100 bg-white hover:border-slate-200'}`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className={`p-2 rounded-lg ${selectedFilter === f.id ? 'bg-sky-100 text-sky-600' : 'bg-slate-100 text-slate-500'}`}>
-                                            {f.icon}
-                                        </div>
-                                        <span className={`font-bold ${selectedFilter === f.id ? 'text-sky-700' : 'text-slate-600'}`}>
-                                            {f.label}
-                                        </span>
-                                    </div>
-                                    {selectedFilter === f.id && (
-                                        <div className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center">
-                                            <Check size={14} className="text-white" />
-                                        </div>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-slate-100">
-                            <button
-                                onClick={onClose}
-                                className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl"
-                            >
-                                {t('filters.show_results')}
-                            </button>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
+            {/* CTA stays custom: Button variants are primary(sky)/secondary(slate-200)/
+                ghost/danger(rose) — none matches bg-slate-900. */}
+            <div className="mt-8 pt-6 border-t border-slate-100">
+                <button
+                    onClick={onClose}
+                    className="w-full py-4 bg-slate-900 text-white font-bold rounded-2xl"
+                >
+                    {t('filters.show_results')}
+                </button>
+            </div>
+        </Modal>
     );
 }
