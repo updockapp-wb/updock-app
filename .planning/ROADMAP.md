@@ -14,7 +14,7 @@ Ce milestone est un refactor interne : aucune nouvelle fonctionnalité utilisate
 Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.planning/archive/v1.1.3-community-features/`.
 
 - [x] **Phase 1: Audit & Design System** - Audit d'architecture chiffré + tokens centralisés + composants maîtres réutilisables (completed 2026-07-28)
-- [ ] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte
+- [x] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte (completed 2026-07-29)
 - [ ] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias
 - [ ] **Phase 4: Formulaires & Interactions** - Harmonisation UI des formulaires/favoris + validation et gestion d'erreurs robustes
 - [ ] **Phase 5: Recette globale & nettoyage final** - Suppression code mort/deps, homogénéisation d'état, réduction bundle, non-régression
@@ -76,8 +76,8 @@ Plans:
 
 **Wave 1** *(parallèle, fichiers disjoints — bloqué sur Wave 0)*
 
-- [ ] 02-02-PLAN.md — Vue Carte : couleurs markers (MAP_COLORS), split-memoization, fix fuite mémoire aperçus [Wave 1]
-- [ ] 02-03-PLAN.md — Navigation & filtres : extension Modal (light/sheet), migration FiltersModal, wiring tokens + mémoïsation nav-shell NavBar/App (PERF-01) [Wave 1]
+- [x] 02-02-PLAN.md — Vue Carte : couleurs markers (MAP_COLORS), split-memoization, fix fuite mémoire aperçus [Wave 1]
+- [x] 02-03-PLAN.md — Navigation & filtres : extension Modal (light/sheet), migration FiltersModal, wiring tokens + mémoïsation nav-shell NavBar/App (PERF-01) [Wave 1]
 
 **UI hint**: yes
 
@@ -133,7 +133,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
-| 2. Navigation & Vue Carte / Spots | 1/3 | In Progress|  |
+| 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
