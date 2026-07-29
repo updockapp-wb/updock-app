@@ -9,7 +9,7 @@ import { SlidersHorizontal, X, Search, MapPin } from 'lucide-react';
 import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { mapboxConfig, MAP_COLORS } from '../config/mapbox';
-import type { FeatureCollection } from 'geojson';
+import type { Feature, FeatureCollection } from 'geojson';
 import SearchModal from './SearchModal';
 
 // Persists across tab remounts — fly-to runs only once per app session
@@ -138,25 +138,39 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
         }
     }, [selectedSpot]);
 
-    const spotsGeoJson: FeatureCollection = useMemo(() => {
-        const filtered = filter === 'All' ? spots : spots.filter(s => s.type.includes(filter as StartType));
-        return {
-            type: 'FeatureCollection',
-            features: filtered.map(spot => ({
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [spot.position[1], spot.position[0]]
-                },
-                properties: {
-                    id: spot.id,
-                    name: spot.name,
-                    type: spot.type[0],
-                    is_approved: spot.is_approved
-                }
-            }))
-        };
-    }, [spots, filter]);
+    // Génération des objets Feature — c'est l'allocation coûteuse : elle n'est refaite
+    // QUE lorsque `spots` change, plus à chaque changement de filtre (MAP-01 / PERF-01).
+    const allFeatures = useMemo<Feature[]>(() => spots.map(spot => ({
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: [spot.position[1], spot.position[0]]
+        },
+        properties: {
+            id: spot.id,
+            name: spot.name,
+            type: spot.type[0],
+            is_approved: spot.is_approved
+        }
+    })), [spots]);
+
+    // Tableaux de types complets, indexés EN PARALLÈLE de `allFeatures` (même source `spots`,
+    // même ordre, même dépendance de mémoïsation). Indispensable car `properties.type` ne
+    // conserve que `spot.type[0]` : filtrer sur cette propriété ferait disparaître les spots
+    // multi-type et changerait l'ensemble de markers affichés. Le payload GeoJSON envoyé à
+    // Mapbox reste ainsi strictement identique à avant le refactor.
+    const allFeatureTypes = useMemo<StartType[][]>(() => spots.map(spot => spot.type), [spots]);
+
+    // Filtrage bon marché : ne ré-alloue aucun objet Feature, seulement le tableau de refs.
+    // Le chemin `setData` est conservé via <Source data={spotsGeoJson}> — surtout pas de
+    // filtrage natif au niveau layer, qui casserait les compteurs de cluster sur une
+    // source clusterisée (le clustering opère au niveau source, pas layer).
+    const spotsGeoJson: FeatureCollection = useMemo(() => ({
+        type: 'FeatureCollection',
+        features: filter === 'All'
+            ? allFeatures
+            : allFeatures.filter((_, i) => allFeatureTypes[i].includes(filter as StartType))
+    }), [allFeatures, allFeatureTypes, filter]);
 
     // Local state to track if user has seen the info modal for this session/action
     const [hasAcknowledgedInfo, setHasAcknowledgedInfo] = useState(false);
