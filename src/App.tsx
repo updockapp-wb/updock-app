@@ -1,4 +1,4 @@
-import { useState, useEffect as useLayoutEffect } from 'react';
+import { useState, useCallback, useEffect as useLayoutEffect } from 'react';
 import { App as CapApp } from '@capacitor/app';
 import { supabase } from './lib/supabase';
 import { Heart } from 'lucide-react';
@@ -67,6 +67,18 @@ function AppContent() {
 
 
 
+  // NavBar props must stay referentially stable so that memo(NavBar) can skip re-renders
+  // triggered by non-nav state changes (selectedSpot, isAuthModalOpen…) — PERF-01.
+  // React state setters are themselves stable, so these callbacks never change identity.
+  const handleTabChange = useCallback((tab: 'map' | 'favorites' | 'list' | 'profile') => {
+    setActiveTab(tab);
+    setSelectedSpot(null);
+  }, [setActiveTab, setSelectedSpot]);
+
+  const handleAddSpotClick = useCallback(() => setIsAddingSpotMode(true), [setIsAddingSpotMode]);
+
+  const handleOpenAuth = useCallback(() => setIsAuthModalOpen(true), [setIsAuthModalOpen]);
+
   const handleSpotClick = (spot: Spot) => {
     setSelectedSpot(spot);
   };
@@ -100,11 +112,11 @@ function AppContent() {
             <div className="flex-1 px-4 py-4 space-y-2">
               <NavBar
                 activeTab={activeTab}
-                onTabChange={(tab) => { setActiveTab(tab); setSelectedSpot(null); }}
-                onAddSpotClick={() => setIsAddingSpotMode(true)}
+                onTabChange={handleTabChange}
+                onAddSpotClick={handleAddSpotClick}
                 isVertical={true}
                 user={user}
-                onOpenAuth={() => setIsAuthModalOpen(true)}
+                onOpenAuth={handleOpenAuth}
               />
             </div>
 
@@ -226,10 +238,10 @@ function AppContent() {
             <div className="md:hidden z-[1001]">
               <NavBar
                 activeTab={activeTab}
-                onTabChange={(tab) => { setActiveTab(tab); setSelectedSpot(null); }}
-                onAddSpotClick={() => setIsAddingSpotMode(true)}
+                onTabChange={handleTabChange}
+                onAddSpotClick={handleAddSpotClick}
                 user={user}
-                onOpenAuth={() => setIsAuthModalOpen(true)}
+                onOpenAuth={handleOpenAuth}
               />
             </div>
           </main>
