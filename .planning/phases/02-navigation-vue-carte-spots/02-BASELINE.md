@@ -132,6 +132,24 @@ Deux effets combinés :
 aucune URL "live" restante après fermeture (compteur doit retomber à 0, pas 1), et le cleanup ne doit
 se déclencher que sur un vrai démontage ou une suppression explicite d'image (pas sur chaque ajout).
 
+### APRÈS refactor (mesuré, 2026-07-29 — Plan 02-02 fusionné)
+
+Même protocole rejoué (hook `createObjectURL`/`revokeObjectURL`, 5 images/cycle, compte admin
+`updock.app@gmail.com`), sur 3 cycles indépendants (une reconnexion du navigateur pilotée a interrompu
+la série de 5 initialement prévue — non lié au code, incident d'outillage documenté dans
+`02-01-SUMMARY.md`) :
+
+| Cycle | `createObjectURL` | `revokeObjectURL` | URLs "live" après fermeture (sans réouverture) |
+|---|---|---|---|
+| 1 | 5 | 5 | **0** |
+| 2 | 5 | 5 | **0** |
+| 3 (session navigateur relancée, re-testé isolément) | 5 | 5 | **0** |
+
+**Résultat : 0 URL Blob résiduelle après fermeture, sur les 3 cycles testés** (vs 1 URL résiduelle
+systématique en baseline). `created === revoked` exactement à chaque cycle — plus de bruit de
+sur-révocation prématurée non plus (contrairement à la baseline où `revoked` dépassait largement
+`created` à cause du cleanup se déclenchant à chaque ajout d'image). Cible APRÈS refactor **atteinte**.
+
 ---
 
 ## 4. Protocole exact (verbatim RESEARCH.md § Protocole de mesure PERF-01)
@@ -183,6 +201,24 @@ filtre, lui, ne déclenche **aucun** render `NavBar` (le state est bien isolé d
 
 **Cible APRÈS refactor :** 0 render superflu de `NavBar` sur état non-nav (NavBar mémoïsé + callbacks
 stabilisés). Toute valeur > 0 dans la colonne de droite avant refactor = re-render inutile à éliminer.
+
+### APRÈS refactor (mesuré, 2026-07-29 — Plan 02-03 fusionné)
+
+Même protocole rejoué (`console.count`, `NavBar` désormais `memo`-wrappé, callbacks `App.tsx`
+stabilisés via `useCallback`), **avec une session authentifiée** cette fois (compte admin
+`updock.app@gmail.com`) — l'action 3 est donc un **vrai toggle favori** (pas un `AuthModal` verrouillé
+comme en baseline) :
+
+| Action non-nav déclenchée | Nb renders `NavBar` mobile | Nb renders `NavBar` desktop |
+|---|---|---|
+| Ouvrir puis fermer SpotDetail | **0** | **0** |
+| Toggler un filtre carte | **0** | **0** |
+| Ajouter puis retirer un favori (vrai toggle, session authentifiée) | **0** | **0** |
+
+**Résultat : 0 render `NavBar` supplémentaire sur les 3 actions combinées** (baseline : 4 renders réels
+cumulés par instance, soit 2 pour l'ouverture/fermeture SpotDetail + 2 pour l'ouverture/fermeture
+AuthModal). Cible APRÈS refactor **atteinte** : `memo` + callbacks stabilisés absorbent bien les
+re-renders de `App` déclenchés par `selectedSpot`/`isAuthModalOpen`/favoris.
 
 ---
 
