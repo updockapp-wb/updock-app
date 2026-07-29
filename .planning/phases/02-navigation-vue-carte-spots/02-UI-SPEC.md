@@ -42,6 +42,17 @@ un scope creep hors périmètre — gate **non déclenché à raison**, pas par 
 
 ---
 
+## Hiérarchie visuelle (point focal)
+
+**Point focal de l'écran principal (vue Carte) : la carte Mapbox elle-même.** C'est
+l'ancre visuelle dominante, plein cadre, qui porte l'attention et l'interaction primaire
+(exploration des spots via markers/clusters). La top bar (bouton filtre), la NavBar et
+le FAB « Add Spot » sont du **chrome secondaire** superposé : ils encadrent la carte sans
+lui disputer la hiérarchie. L'accent sky (voir Color) ne s'applique qu'à ce chrome pour
+signaler l'état actif/primaire, jamais à la carte, ce qui préserve le point focal unique.
+
+---
+
 ## Spacing Scale
 
 Échelle réellement présente dans les composants migrés (multiples de 4) :
@@ -62,23 +73,31 @@ Exceptions (présentes dans l'existant — **à préserver, ne pas « corriger �
 
 ## Typography
 
-Rôles réellement rendus dans les surfaces migrées (nav, top bar carte, FiltersModal) :
+Rôles réellement rendus dans les surfaces migrées (nav, top bar carte, FiltersModal).
+Le couple canonique est **400 (corps) + 700 (emphase/titres)** :
 
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
-| Caption / micro-label | 10px (`text-[10px]`) | 500 medium | 1.5 (héritée `:root`) |
-| Label / body-sm | 14px (`text-sm`) | 400 / 500 / 700 selon état | 1.5 |
+| Label / body-sm | 14px (`text-sm`) | 400 regular (→ 700 bold en état actif / emphase) | 1.5 (héritée `:root`) |
 | Body / input | 16px (`text-base`) | 400 regular | 1.5 |
 | Heading (titre modal) | 24px (`text-2xl`) | 700 bold | 1.2 (par défaut heading) |
 
-**Poids :** l'app utilise `font-normal` (400), `font-medium` (500) et `font-bold` (700).
-Le poids **500 (medium)** est une exception assumée, réservée aux micro-labels de la
-NavBar mobile (`text-[10px] font-medium`) et à quelques labels d'état. Le contrat
-canonique reste **400 (corps) + 700 (emphase/titres)** ; 500 n'est **pas** à propager
-à de nouveaux éléments — présent uniquement pour préserver l'existant.
+**Poids canoniques : 400 + 700 uniquement.** Le corps est en 400, l'emphase et les titres
+en 700. Aucun nouvel élément ne doit introduire d'autre poids.
 
 **Contrainte iOS (existante) :** `input, textarea, select { font-size: 16px }` dans
 `src/index.css` — anti-zoom au focus, ne pas descendre sous 16px sur les champs.
+
+### Exceptions typographiques (legacy Phase 1 — hors couple canonique, à préserver)
+
+Isolées ici — au même titre que l'exception 12px du Spacing — car héritées telles quelles
+de Phase 1 sous contrainte byte-identique. **Non propageables** à de nouveaux éléments :
+
+- **10px caption / micro-labels de la NavBar mobile** (`text-[10px] font-medium`) rendus en
+  **500 medium**, line-height 1.5. Poids hors couple canonique 400/700 ; exception assumée,
+  présente uniquement pour ne pas régresser l'existant.
+- **Quelques labels d'état ponctuels de la NavBar** utilisent aussi **500 medium** — même
+  statut d'exception legacy. À terme, tout nouveau libellé retombe sur 400/700.
 
 ---
 
