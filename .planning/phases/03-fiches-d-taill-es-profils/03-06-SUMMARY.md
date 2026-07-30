@@ -29,8 +29,8 @@ decisions:
   - "Task 3 (recette QA-01) = checkpoint human-action : device iOS physique — délégué à l'utilisateur réel, non substituable par un outil navigateur"
 metrics:
   duration: "~4 min (Task 1 ; Tasks 2-3 en attente de vérification externe)"
-  tasks-completed: 1
-  tasks-checkpointed: 2
+  tasks-completed: 2
+  tasks-checkpointed: 1
   files-modified: 1
   completed: 2026-07-30
 requirements: [UI-01, UI-02, PERF-02]
@@ -69,15 +69,17 @@ définitions `@theme`. Preuve d'**aliasing** : chaque token sémantique est déf
   L565/584/599/611, `rounded-[24px]` L548) tous confinés à l'**overlay d'édition** de SpotDetail
   (à partir de L548), explicitement hors périmètre (Phase 4 / UI-03). Aucun DIVERGENT en périmètre.
 
-### Task 2 — Comparaison visuelle APRÈS/AVANT — ⏳ CHECKPOINT (human-verify, orchestrateur)
+### Task 2 — Comparaison visuelle APRÈS/AVANT (commit `655153e`) — ✅ VALIDÉ
 
-Nécessite un rendu réel via `npm run dev` + session Chrome authentifiée pilotée par
-chrome-devtools-mcp — indisponible dans le sandbox de l'exécuteur. Section 2 de
-`03-QA-CHECKLIST.md` scaffoldée : tableau de 10 surfaces (5 surfaces migrées + 3 onglets fiche +
-AuthModal + FiltersModal) avec captures AVANT référencées (`03-BASELINE.md § 9`) et emplacements
-`03-after-*` à produire, points focaux à confirmer, colonne verdict à remplir. **Délégué à
-l'orchestrateur** (qui a fait cette mesure pour 03-01 et 03-05). Écarts tolérés : `aria-label="Close"`
-+ commentaire `src/index.css:41`.
+Rendu réel exécuté par l'orchestrateur via chrome-devtools-mcp (`npm run dev` sur `:5173`,
+branche `main` waves 1+2 mergées = état APRÈS complet, compte `updock.app@gmail.com`, viewport
+390×844×3). 10 surfaces comparées APRÈS/AVANT (5 migrées + 3 onglets fiche + AuthModal +
+FiltersModal), captures `03-after-*` sous `audit/screenshots/`. Méthode : AX tree structurel +
+pixel-à-pixel échantillonné (fiche snap 0.35, community-stats) + inspection des autres.
+**Verdict : 10/10 IDENTIQUE, aucune régression.** Seul écart = `aria-label="Close"` de
+PremiumModal (toléré). AuthModal/FiltersModal confirmés non régressés par l'extension du master
+Modal. Email masqué sur la capture profil auth (T-03-06-02 appliqué). Section 2 de
+`03-QA-CHECKLIST.md` renseignée.
 
 ### Task 3 — Recette QA-01 device iOS — ⏳ CHECKPOINT (human-action, utilisateur réel)
 
@@ -92,7 +94,7 @@ router vers un outil navigateur.
 
 | Exigence | Statut |
 |----------|--------|
-| UI-01 / UI-02 (byte-identité) | CSS compilé : **✅ prouvé** (Task 1). Visuel APRÈS/AVANT : ⏳ Task 2 |
+| UI-01 / UI-02 (byte-identité) | CSS compilé : **✅ prouvé** (Task 1) + Visuel APRÈS/AVANT : **✅ validé** 10/10 (Task 2) |
 | PERF-02 (lazy mesurable) | **✅ satisfait** (03-05, `03-BASELINE.md § 8`) ; dégradation gracieuse iOS à confirmer Task 3 item 3 |
 | QA-01 (recette mobile 100%) | ⏳ Task 3 (device) |
 
