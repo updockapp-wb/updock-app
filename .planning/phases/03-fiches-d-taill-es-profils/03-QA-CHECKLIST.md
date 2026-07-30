@@ -151,21 +151,33 @@ du plan. AuthModal et FiltersModal confirmés non régressés par l'extension du
 
 | # | Item de recette | Attendu | PASS/FAIL |
 |---|-----------------|---------|-----------|
-| 1 | **Fiche — gestuelle (chemin critique)** | Map → clic marker → SpotDetail au snap 0.35 → drag vers 0.95 → swipe-to-dismiss ferme ; morphing du nom (`layoutId` liste↔fiche) visible ; scroll interne sans accroc | _à remplir_ |
-| 2 | **Lightbox** | Ouverture depuis la vignette → next/prev fluides (prefetch, pas de délai) → swipe DANS la lightbox ne déclenche PAS le drag-to-dismiss (portail isolé) → fermeture OK | _à remplir_ |
-| 3 | **Onglets** Info/Avis/Sessions | Bascule OK ; avatars avis/sessions s'affichent (lazy) sans image manquante (Pitfall 5 sur device) | _à remplir_ |
-| 4a | **Non-auth — vignette** | Déconnecté : vignette floutée (`blur-sm`) + cadenas | _à remplir_ |
-| 4b | **Non-auth — cœur favori** | Le cœur favori ouvre l'auth (`onOpenAuth`, SpotDetail:288) | _à remplir_ |
-| 4c | **Non-auth — lightbox** | L'ouverture de la lightbox ouvre l'auth (SpotDetail:397) | _à remplir_ |
-| 4d | **Non-auth — rangée Admin** | « Tableau de Bord Admin » masquée pour un compte non-admin (Profile:154,414) | _à remplir_ |
-| 5a | **Profil authentifié** | Avatar, 2 stats (Card), rangées de réglages, Log Out présents | _à remplir_ |
-| 5b | **Profil anonyme** | Branche « Sign In / Join » | _à remplir_ |
-| 5c | **PremiumModal** | Ouverture depuis « Devenir Premium » ; fermeture par le bouton close ET par clic sur le backdrop | _à remplir_ |
-| 6 | **CommunityStatsScreen** | Ouverture depuis Profil ; titre NON masqué par la status bar (safe-area `pt-[calc(1rem+env(safe-area-inset-top))]` préservée) ; 2 KPI (Card) + liste pays | _à remplir_ |
-| 7 | **Auth & Filtres (non-régression)** | `AuthModal` (connexion) et `FiltersModal` (filtres carte) fonctionnent comme avant l'extension du master Modal | _à remplir_ |
+| 1 | **Fiche — gestuelle (chemin critique)** | Map → clic marker → SpotDetail au snap 0.35 → drag vers 0.95 → swipe-to-dismiss ferme ; morphing du nom (`layoutId` liste↔fiche) visible ; scroll interne sans accroc | **PASS** (device réel, confirmé par l'utilisateur) |
+| 2 | **Lightbox** | Ouverture depuis la vignette → next/prev fluides (prefetch, pas de délai) → swipe DANS la lightbox ne déclenche PAS le drag-to-dismiss (portail isolé) → fermeture OK | **PASS** (device réel, après correctif — voir note gap-closure ci-dessous) |
+| 3 | **Onglets** Info/Avis/Sessions | Bascule OK ; avatars avis/sessions s'affichent (lazy) sans image manquante (Pitfall 5 sur device) | _à remplir — session suspendue_ |
+| 4a | **Non-auth — vignette** | Déconnecté : vignette floutée (`blur-sm`) + cadenas | _à remplir — session suspendue_ |
+| 4b | **Non-auth — cœur favori** | Le cœur favori ouvre l'auth (`onOpenAuth`, SpotDetail:288) | **PASS** (device réel, après correctif) |
+| 4c | **Non-auth — lightbox** | L'ouverture de la lightbox ouvre l'auth (SpotDetail:397) | **PASS** (device réel, après correctif, y compris en visualisant les photos une fois connecté) |
+| 4d | **Non-auth — rangée Admin** | « Tableau de Bord Admin » masquée pour un compte non-admin (Profile:154,414) | _à remplir — session suspendue_ |
+| 5a | **Profil authentifié** | Avatar, 2 stats (Card), rangées de réglages, Log Out présents | _à remplir — session suspendue_ |
+| 5b | **Profil anonyme** | Branche « Sign In / Join » | _à remplir — session suspendue_ |
+| 5c | **PremiumModal** | Ouverture depuis « Devenir Premium » ; fermeture par le bouton close ET par clic sur le backdrop | _à remplir — session suspendue_ |
+| 6 | **CommunityStatsScreen** | Ouverture depuis Profil ; titre NON masqué par la status bar (safe-area `pt-[calc(1rem+env(safe-area-inset-top))]` préservée) ; 2 KPI (Card) + liste pays | _à remplir — session suspendue_ |
+| 7 | **Auth & Filtres (non-régression)** | `AuthModal` (connexion) et `FiltersModal` (filtres carte) fonctionnent comme avant l'extension du master Modal | _à remplir — session suspendue (non-régression re-vérifiée sur desktop après le correctif, voir note)_ |
 
-**Verdict section 3 :** _à écrire une fois tous les items renseignés (« recette 100% » ou liste des
-FAIL → gap closure)._
+**⚠ Bug bloquant trouvé et corrigé pendant la recette (gap closure immédiat, hors périmètre des plans 03-0X) :**
+
+En testant les items 2/4b/4c, l'utilisateur a découvert qu'ouvrir `AuthModal` depuis un cadenas/cœur alors que `SpotDetail` est ouvert rendait la modale **derrière** le tiroir (invisible ou partiellement masquée selon le snap), la rendant inutilisable.
+
+**Cause racine (pré-existante, aucun rapport avec les plans 03-0X) :** `#root` porte `isolation: isolate` (`src/index.css`, introduit en v1.1.1, jamais touché par la phase 3). `SpotDetail.tsx` utilise `shouldScaleBackground` sur son `Drawer.Root` (vaul), pré-existant également. Tout élément `position: fixed` rendu comme enfant React normal de `#root` (comme `AuthModal`) reste plafonné dans le contexte d'empilement isolé de `#root`, tandis que le portail natif de Vaul (`Drawer.Content`) s'échappe directement dans `<body>` et passe donc au-dessus, peu importe les valeurs de z-index.
+
+**Correctif appliqué et commité sur `main` (hors de ce worktree, commit `497f347`) :**
+- `src/ui/Modal.tsx` : les 3 formes (glass+center, light+sheet, light+center) sont maintenant rendues via `createPortal(..., document.body)`, échappant proprement à l'isolation de `#root` — corrige `AuthModal`, `PremiumModal` et `FiltersModal` d'un coup.
+- `src/App.tsx` : `AuthModal`/`AdminDashboard`/`WelcomeScreen` déplacés hors de `vaul-drawer-wrapper` (ceinture-et-bretelles pour `AdminDashboard`/`WelcomeScreen`, qui n'utilisent pas le `Modal` partagé).
+- Vérifié : build vert, non-régression confirmée sur desktop (chrome-devtools-mcp) pour AuthModal/PremiumModal/FiltersModal (structure + rendu identiques), puis confirmé fonctionnel sur device réel par l'utilisateur (items 2/4b/4c → PASS).
+
+Ce correctif vit sur `main`, **en dehors** de ce worktree et du périmètre `files_modified` déclaré par 03-06 — il devra être pris en compte lors du merge final de ce plan (déjà présent sur `main`, rien à merger côté worktree pour ce fix ; seul `03-QA-CHECKLIST.md` reste à committer ici).
+
+**Verdict section 3 :** _en cours — 4/12 items testés (tous PASS), session suspendue par l'utilisateur avant la fin de la recette. Reprendre avec les items 3, 4a, 4d, 5a, 5b, 5c, 6, 7._
 
 ---
 
