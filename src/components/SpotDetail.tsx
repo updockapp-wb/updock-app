@@ -215,7 +215,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     };
 
     const content = (
-        <div className="flex flex-col h-full bg-white md:rounded-[24px] relative">
+        <div className="flex flex-col h-full bg-white md:rounded-3xl relative">
             {/* Header Area */}
             <div className="w-full pt-6 pb-4 px-6 shrink-0">
                 <div className="flex items-start justify-between mb-4">
@@ -738,7 +738,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             {/* DESKTOP SIDEBAR */}
             <div className="hidden md:block absolute left-4 top-4 bottom-4 w-[400px] z-[1050]">
                 <motion.div
-                    className="h-full rounded-[24px] shadow-2xl overflow-hidden border border-slate-200"
+                    className="h-full rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
                     initial={{ x: '-105%' }}
                     animate={{ x: 0 }}
                     exit={{ x: '-105%' }}
@@ -760,7 +760,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     modal={false}
                 >
                     <Drawer.Portal>
-                        <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
+                        <Drawer.Content className="bg-white flex flex-col rounded-t-4xl h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-slate-300 mt-3 mb-2" />
                             <div className="flex-1 overflow-hidden">
                                 {content}
