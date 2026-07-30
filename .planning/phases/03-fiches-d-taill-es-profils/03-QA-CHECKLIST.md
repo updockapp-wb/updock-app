@@ -2,7 +2,7 @@
 phase: 03-fiches-d-taill-es-profils
 plan: 06
 type: qa-checklist
-status: in-progress
+status: awaiting-device-recette
 created: 2026-07-30
 reference_spot_id: 153f6575-acc1-446a-b332-58e0e5714214
 ---
@@ -101,38 +101,42 @@ satisfaits côté preuve CSS** ; il reste la confrontation au rendu réel (secti
 
 ---
 
-## 2. Comparaison visuelle APRÈS/AVANT — ⏳ EN ATTENTE (rendu réel : chrome-devtools-mcp)
+## 2. Comparaison visuelle APRÈS/AVANT — ✅ VALIDÉ (rendu réel : chrome-devtools-mcp)
 
-> **Étape non automatisable en CLI.** Nécessite `npm run dev` + session Chrome authentifiée
-> pilotée par chrome-devtools-mcp (comme pour les checkpoints des plans 03-01 et 03-05).
-> Les captures `03-after-*` vivent sous `audit/screenshots/` (racine du repo principal, hors
-> `.planning/`, non versionnées — mêmes conventions que les `03-before-*` de `03-BASELINE.md § 9`).
+> **Étape non automatisable en CLI.** Exécutée par l'orchestrateur via `npm run dev` sur `:5173`
+> (branche `main` avec waves 1+2 mergées = état APRÈS complet) + session Chrome authentifiée
+> (compte `updock.app@gmail.com`), viewport mobile émulé 390×844×3 (comme 03-01/03-05).
+> Captures `03-after-*` sous `audit/screenshots/` (racine du repo principal, hors `.planning/`,
+> non versionnées — mêmes conventions que les `03-before-*` de `03-BASELINE.md § 9`).
 >
-> **Rappel sécurité (T-03-06-02) :** masquer l'email du compte de test sur la capture du profil
-> authentifié (`Profile.tsx:205`). Aucun JWT / token / URL signée Supabase Storage dans une capture.
+> **Rappel sécurité (T-03-06-02) — appliqué :** email du compte de test masqué sur la capture du
+> profil authentifié via patch DOM temporaire, restauré après capture (même procédure que
+> 03-01/03-05). Aucun JWT / token / URL signée Supabase Storage dans une capture.
+>
+> **Méthode de comparaison :** comparaison structurelle (AX tree — mêmes headings/boutons/layout)
+> + comparaison pixel visuelle sur 3 paires échantillonnées (fiche snap 0.35, community-stats) +
+> inspection de toutes les autres surfaces. **Aucune divergence détectée.**
 
-Procédure : capturer chaque surface APRÈS (préfixe `03-after-`), comparer au pendant AVANT
-(`03-BASELINE.md § 9`, préfixe `03-before-`), vérifier que le point focal (`03-UI-SPEC.md
-§ Hiérarchie visuelle`) n'a pas bougé.
-
-| # | Surface | Capture AVANT (réf.) | Capture APRÈS (à produire) | Point focal à confirmer inchangé | Verdict |
-|---|---------|----------------------|-----------------------------|----------------------------------|---------|
-| 1 | Fiche spot — snap 0.35 | `03-before-fiche-snap035.png` | `03-after-fiche-snap035.png` | Nom du spot + badge de type (cible `layoutId`) | _à remplir_ |
-| 2 | Fiche — snap 0.95, onglet Info | `03-before-fiche-snap095-info.png` | `03-after-fiche-snap095-info.png` | Nom+badge, cartes stats, CTA Naviguer | _à remplir_ |
-| 3 | Fiche — snap 0.95, onglet Avis | `03-before-fiche-snap095-avis.png` | `03-after-fiche-snap095-avis.png` | Bloc note moyenne / empty state | _à remplir_ |
-| 4 | Fiche — snap 0.95, onglet Sessions | `03-before-fiche-snap095-sessions.png` | `03-after-fiche-snap095-sessions.png` | Empty state sessions | _à remplir_ |
-| 5 | Profil anonyme (déconnecté) | `03-before-profil-anonyme.png` | `03-after-profil-anonyme.png` | Branche `!user` : titre `text-xl` + CTA Sign In/Join | _à remplir_ |
-| 6 | Profil authentifié (email masqué) | `03-before-profil-auth.png` | `03-after-profil-auth.png` | Bloc identité (avatar 96×96 + nom `text-2xl`) | _à remplir_ |
-| 7 | PremiumModal (ouvert depuis Profil) | `03-before-premium-modal.png` | `03-after-premium-modal.png` | Badge Sparkles 64×64 dégradé + titre centré | _à remplir_ |
-| 8 | CommunityStatsScreen | `03-before-community-stats.png` | `03-after-community-stats.png` | 2 KPI (`text-2xl font-black`) sous l'app bar | _à remplir_ |
-| 9 | **AuthModal** (non-régression master Modal) | capture Phase 1/2 | `03-after-authmodal.png` | Forme glass+center inchangée | _à remplir_ |
-| 10 | **FiltersModal** (non-régression master Modal) | capture Phase 1/2 | `03-after-filtersmodal.png` | Bottom-sheet light+sheet inchangé | _à remplir_ |
+| # | Surface | Capture AVANT (réf.) | Capture APRÈS | Point focal confirmé inchangé | Verdict |
+|---|---------|----------------------|----------------|-------------------------------|---------|
+| 1 | Fiche spot — snap 0.35 | `03-before-fiche-snap035.png` | `03-after-fiche-snap035.png` | Nom du spot + badge de type (cible `layoutId`) | **IDENTIQUE** (pixel-à-pixel vérifié) |
+| 2 | Fiche — snap 0.95, onglet Info | `03-before-fiche-snap095-info.png` | `03-after-fiche-snap095-info.png` | Nom+badge, cartes stats, CTA Naviguer | **IDENTIQUE** |
+| 3 | Fiche — snap 0.95, onglet Avis | `03-before-fiche-snap095-avis.png` | `03-after-fiche-snap095-avis.png` | Empty state « Aucun avis pour le moment » | **IDENTIQUE** |
+| 4 | Fiche — snap 0.95, onglet Sessions | `03-before-fiche-snap095-sessions.png` | `03-after-fiche-snap095-sessions.png` | Empty state « Aucune session prévue » | **IDENTIQUE** |
+| 5 | Profil anonyme (déconnecté) | `03-before-profil-anonyme.png` | `03-after-profil-anonyme.png` | Branche `!user` : « Se connecter » / « Créer un compte » | **IDENTIQUE** |
+| 6 | Profil authentifié (email masqué) | `03-before-profil-auth.png` | `03-after-profil-auth.png` | Bloc identité (avatar 96×96 + nom `text-2xl`) | **IDENTIQUE** (email masqué à la capture) |
+| 7 | PremiumModal (ouvert depuis Profil) | `03-before-premium-modal.png` | `03-after-premium-modal.png` | Badge Sparkles 64×64 dégradé + titre centré | **IDENTIQUE** — `aria-label="Close"` confirmé (écart toléré attendu, rien d'autre) |
+| 8 | CommunityStatsScreen | `03-before-community-stats.png` | `03-after-community-stats.png` | 2 KPI (`text-2xl font-black`) sous l'app bar | **IDENTIQUE** (pixel-à-pixel vérifié, 2 KPI Card + liste pays) |
+| 9 | **AuthModal** (non-régression master Modal) | capture Phase 1/2 | `03-after-authmodal.png` | Forme glass+center inchangée | **IDENTIQUE** — « Bon retour », champs email/mot de passe, CTA « Se Connecter » |
+| 10 | **FiltersModal** (non-régression master Modal) | capture Phase 1/2 | `03-after-filtersmodal.png` | Bottom-sheet light+sheet inchangé | **IDENTIQUE** — « Filtres », liste TYPE DE DÉPART, CTA « Voir les Résultats » (bg-secondary confirmé visuellement) |
 
 **Écarts tolérés uniquement :** `aria-label="Close"` de PremiumModal (invisible), commentaire
 `src/index.css:41`. Tout autre écart = régression → gap closure.
 
-**Verdict section 2 :** _à écrire une fois les 10 lignes renseignées (« visuel validé » ou liste
-des régressions)._
+**Verdict section 2 : ✅ visuel validé, 10/10 surfaces IDENTIQUES. Aucune régression détectée.**
+Seul écart observé = `aria-label="Close"` de PremiumModal (surface 7), conforme aux écarts tolérés
+du plan. AuthModal et FiltersModal confirmés non régressés par l'extension du master Modal
+(3e forme `light`+`center`). Les 10 captures `03-after-*` produites sous `audit/screenshots/`.
 
 ---
 
@@ -169,7 +173,7 @@ FAIL → gap closure)._
 
 | Exigence | Preuve | Statut |
 |----------|--------|--------|
-| **UI-01 / UI-02** — byte-identité des wirings | Section 1 (CSS compilé, toutes paires IDENTIQUE) **+** section 2 (visuel APRÈS/AVANT) | CSS : **✅ prouvé** · Visuel : ⏳ en attente (section 2) |
+| **UI-01 / UI-02** — byte-identité des wirings | Section 1 (CSS compilé, toutes paires IDENTIQUE) **+** section 2 (visuel APRÈS/AVANT, 10/10 IDENTIQUE) | CSS : **✅ prouvé** · Visuel : **✅ validé** (10/10 surfaces) |
 | **PERF-02** — lazy loading mesurable | `03-BASELINE.md § 4-bis/5-bis/6-bis/8` (métriques A/B/C APRÈS + verdict) : métrique A < 10 ms (vs 2509 ms), métrique C 0→N, métrique B delta nul documenté | **✅ satisfait** (03-05) · dégradation gracieuse iOS à confirmer en section 3 item 3 |
 | **QA-01** — recette manuelle mobile 100% | Section 3 (device iOS physique) | ⏳ en attente (section 3) |
 
