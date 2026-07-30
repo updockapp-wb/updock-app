@@ -135,7 +135,7 @@ None — aucun service externe à configurer.
 - **Ancrage 03-05** : `id` du spot de référence + chiffres AVANT (A/B/C) figés dans `03-BASELINE.md` pour la mesure APRÈS.
 - **Point d'attention 03-05** : ne pas interpréter un delta nul sur les surfaces profil (déjà 0-1) comme un échec ; la cible d'optimisation prioritaire est la fiche snap 0.35 (2 img) et le premier `next` lightbox (2509 ms).
 
-## Self-Check
+## Self-Check: PASSED
 
 - **Fichier créé :** `.planning/phases/03-fiches-d-taill-es-profils/03-BASELINE.md` — FOUND
 - **Commits :** `93c9b2d` (Task 1), `ab30acf` (Task 2) — vérifiés ci-dessous
