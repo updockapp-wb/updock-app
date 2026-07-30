@@ -215,7 +215,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     };
 
     const content = (
-        <div className="flex flex-col h-full bg-white md:rounded-[24px] relative">
+        <div className="flex flex-col h-full bg-white md:rounded-3xl relative">
             {/* Header Area */}
             <div className="w-full pt-6 pb-4 px-6 shrink-0">
                 <div className="flex items-start justify-between mb-4">
@@ -235,7 +235,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                 {spot.type.join(' • ')}
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 text-slate-500 text-xs">
+                        <div className="flex items-center gap-2 text-muted text-xs">
                             <MapPin size={14} />
                             <span>{spot.position[0].toFixed(4)}, {spot.position[1].toFixed(4)}</span>
                         </div>
@@ -249,7 +249,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                         <UserIcon size={10} className="text-slate-400" />
                                     </div>
                                 )}
-                                <span className="text-slate-500">{uploaderProfile.display_name || t('review.anonymous')}</span>
+                                <span className="text-muted">{uploaderProfile.display_name || t('review.anonymous')}</span>
                                 {(user?.id === spot.user_id || user?.email === 'updock.app@gmail.com') && (
                                     <>
                                         <span className="text-slate-300">·</span>
@@ -260,7 +260,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                                 setPhotosToDelete([]);
                                                 setIsEditing(true);
                                             }}
-                                            className="text-sky-500 hover:text-sky-600 font-medium flex items-center gap-1"
+                                            className="text-primary hover:text-sky-600 font-medium flex items-center gap-1"
                                         >
                                             <Pencil size={12} />
                                             {t('spot.edit')}
@@ -295,7 +295,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         >
                             <Heart
                                 size={20}
-                                className={user && isFavorite(spot.id) ? 'fill-rose-500 text-rose-500' : 'text-slate-600'}
+                                className={user && isFavorite(spot.id) ? 'fill-accent text-accent' : 'text-slate-600'}
                             />
                             {!user && (
                                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-white rounded-full border border-slate-200 flex items-center justify-center">
@@ -374,21 +374,21 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     <>
                         {/* Stats Cards */}
                         <div className="grid grid-cols-2 gap-3 mb-6">
-                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                <div className="text-sky-500 mb-1"><Wind size={18} /></div>
+                            <div className="bg-background rounded-2xl p-4 border border-slate-100">
+                                <div className="text-primary mb-1"><Wind size={18} /></div>
                                 <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.difficulty')}</p>
-                                <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.difficulty}</p>
+                                <p className="font-bold text-text text-sm mt-0.5">{spot.difficulty}</p>
                             </div>
-                            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                            <div className="bg-background rounded-2xl p-4 border border-slate-100">
                                 <div className="text-teal-500 mb-1"><Waves size={18} /></div>
                                 <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{t('spot.height')}</p>
-                                <p className="font-bold text-slate-800 text-sm mt-0.5">{spot.height || '-'}m</p>
+                                <p className="font-bold text-text text-sm mt-0.5">{spot.height || '-'}m</p>
                             </div>
                         </div>
 
                         {/* Photo Preview */}
                         <div className="mb-6">
-                            <h3 className="font-bold text-slate-800 mb-3 text-sm flex items-center gap-2">
+                            <h3 className="font-bold text-text mb-3 text-sm flex items-center gap-2">
                                 📷 Photos
                             </h3>
                             <div
@@ -437,8 +437,8 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
 
                         {/* Description */}
                         <div className="mb-6">
-                            <h3 className="font-bold text-slate-800 mb-3 text-sm uppercase tracking-wider opacity-60">{t('spot.desc')}</h3>
-                            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                            <h3 className="font-bold text-text mb-3 text-sm uppercase tracking-wider opacity-60">{t('spot.desc')}</h3>
+                            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-background p-5 rounded-2xl border border-slate-100">
                                 {language === 'fr' && spot.description_fr ? spot.description_fr : spot.description}
                             </p>
                         </div>
@@ -483,7 +483,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         ) : (
                             <button
                                 onClick={() => onOpenAuth?.()}
-                                className="w-full mb-6 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
+                                className="w-full mb-6 py-3 bg-background border border-slate-200 rounded-xl text-sm font-bold text-muted hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
                             >
                                 {t('review.write')}
                                 <Lock size={14} className="text-slate-400" />
@@ -509,7 +509,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         ) : (
                             <button
                                 onClick={() => onOpenAuth?.()}
-                                className="w-full mb-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
+                                className="w-full mb-4 py-3 bg-background border border-slate-200 rounded-xl text-sm font-bold text-muted hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
                             >
                                 {t('session.create')}
                                 <Lock size={14} className="text-slate-400" />
@@ -738,7 +738,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             {/* DESKTOP SIDEBAR */}
             <div className="hidden md:block absolute left-4 top-4 bottom-4 w-[400px] z-[1050]">
                 <motion.div
-                    className="h-full rounded-[24px] shadow-2xl overflow-hidden border border-slate-200"
+                    className="h-full rounded-3xl shadow-2xl overflow-hidden border border-slate-200"
                     initial={{ x: '-105%' }}
                     animate={{ x: 0 }}
                     exit={{ x: '-105%' }}
@@ -760,7 +760,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     modal={false}
                 >
                     <Drawer.Portal>
-                        <Drawer.Content className="bg-white flex flex-col rounded-t-[32px] h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
+                        <Drawer.Content className="bg-white flex flex-col rounded-t-4xl h-full fixed bottom-0 left-0 right-0 z-[2001] outline-none shadow-2xl md:hidden">
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-slate-300 mt-3 mb-2" />
                             <div className="flex-1 overflow-hidden">
                                 {content}
