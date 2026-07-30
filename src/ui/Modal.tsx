@@ -10,13 +10,16 @@ interface ModalProps {
     layout?: 'center' | 'sheet'; // panel placement: centered dialog vs bottom sheet (slide-y)
 }
 
-// Master modal shell (DS-02). Two rendered shell shapes exposed as shapes, class strings
+// Master modal shell (DS-02). Three rendered shell shapes exposed as shapes, class strings
 // extracted verbatim from the existing app:
-//   - glass + center — the original Modal shell (consumed by AuthModal:84)
+//   - light + center — the opaque white centered dialog (PremiumModal.tsx:16-30; animated
+//                      fade backdrop + scale/y panel; its close button is a floating absolute
+//                      child that leans on the panel's `relative`, so no built-in close here)
 //   - light + sheet  — FiltersModal:29-37 (bottom sheet; its close button lives in the
 //                      child <Header surface="light" onClose>, so no built-in close here)
+//   - glass + center — the original Modal shell (consumed by AuthModal:84)
 // `surface` defaults to 'glass' and `layout` to 'center': existing consumers (AuthModal,
-// the sole one — see 02-BASELINE.md § 1) render byte-identically without any prop change.
+// FiltersModal — see 02/03-BASELINE.md § 1) render byte-identically without any prop change.
 export default function Modal({
     isOpen,
     onClose,
@@ -24,19 +27,50 @@ export default function Modal({
     surface = 'glass',
     layout = 'center',
 }: ModalProps) {
-    // The two shapes are shipped as pairs; a mixed pair (e.g. glass + sheet) has no
-    // verbatim source in the app, so it is not a supported appearance (DS principle:
-    // variants widen the API, never invent an appearance).
+    // The shapes ship as pairs. The supported appearances are light+center, light+sheet and
+    // glass+center; the mixed pair glass+sheet has no verbatim source in the app, so it is
+    // not a supported appearance (DS principle: variants widen the API, never invent one).
+
+    // Light centered shape (PremiumModal.tsx:16-30, verbatim) — evaluated FIRST so that
+    // light+center never falls through to the bottom-sheet branch below.
+    if (surface === 'light' && layout === 'center') {
+        return (
+            <AnimatePresence>
+                {isOpen && (
+                    <div className="fixed inset-0 z-[5000] flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={onClose}
+                            className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
+                        />
+
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="relative w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl overflow-hidden"
+                        >
+                            {children}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+        );
+    }
+
+    // Light bottom-sheet shape (FiltersModal:29-37, verbatim). Reached by light+sheet,
+    // glass+sheet and light-only. glass+sheet has no verbatim source and stays unsupported.
     const isLightSheet = surface === 'light' || layout === 'sheet';
 
     if (isLightSheet) {
-        if (import.meta.env.DEV && (surface !== 'light' || layout !== 'sheet')) {
+        if (import.meta.env.DEV && surface === 'glass' && layout === 'sheet') {
             console.warn(
-                'Modal: `surface="light"` and `layout="sheet"` are only supported together; rendering the light bottom-sheet shape.'
+                'Modal: the supported pairs are `glass`+`center`, `light`+`sheet` and `light`+`center`; `glass`+`sheet` has no verbatim source and is not supported — rendering the light bottom-sheet shape.'
             );
         }
 
-        // Light bottom-sheet shape (FiltersModal:29-37, verbatim)
         return (
             <AnimatePresence>
                 {isOpen && (
