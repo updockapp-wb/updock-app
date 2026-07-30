@@ -12,6 +12,8 @@ created: 2026-07-30
 > Contrat visuel et d'interaction pour la migration des formulaires (ajout/édition de spot) et du système de favoris vers le design system. Généré par gsd-ui-researcher, vérifié par gsd-ui-checker.
 >
 > **Nature :** refactor interne, **zéro régression** (milestone v2.0). Les valeurs ci-dessous sont **extraites verbatim** de l'existant (`src/index.css`, `src/ui/*`, `AddSpotForm.tsx`) — aucune valeur de design inventée. UI-03 / ROBUST-01 / ROBUST-02.
+>
+> **Contexte contraignant (04-RESEARCH.md) :** le projet ne possède **aucun test automatisé** et impose une contrainte **zéro-régression stricte** sur le rendu visuel existant. Les composants activement migrés par cette phase (`AddSpotForm`, boutons favori) sont alignés sur le design system ci-dessous ; les autres composants maîtres non touchés (Modal, Header, Card, parties intactes d'AuthModal) restent verbatim.
 
 ---
 
@@ -31,21 +33,31 @@ created: 2026-07-30
 
 ## Spacing Scale
 
-Échelle Tailwind v4 (base 4px) telle qu'utilisée verbatim dans les formulaires existants. Valeurs multiples de 4.
+Échelle Tailwind v4 (base 4px) telle qu'utilisée verbatim dans les formulaires existants.
 
 | Token | Value | Usage (verbatim existant) |
 |-------|-------|---------------------------|
-| xs | 4px | gaps fins, `p-1.5` boutons suppression photo (6px, exception ci-dessous) |
-| sm | 8px | `gap-2` pills de type, `space-y-2` (label→champ), `mb-2` labels |
-| md | 12px | `gap-3` grille photos 3-col, `py-3` rung `Button size=md` |
+| xs | 4px | gaps fins entre éléments |
+| sm | 8px | `gap-2` pills de type, `space-y-2` (label→champ), `mb-2` labels, `p-2` bouton de suppression de photo (survol) |
+| md | 12px | `gap-3` grille photos 3-col, `py-3` rung `Button size=md` — **hors set standard, exception justifiée ci-dessous** |
 | lg | 16px | `p-4` intérieur des champs light + preview localisation, `py-4` submit (`Button size=lg`) |
 | xl | 24px | `space-y-6` entre blocs de formulaire, `mb-6` en-tête, `p-6` sheet |
 | 2xl | 32px | `p-8` panneau Modal glass/light-center |
 
-Exceptions :
-- **Cibles tactiles boutons icône (favori, fermeture) : min 44×44px** — les boutons `iconOnly` (coeur, X) doivent conserver une zone cliquable ≥44px même si l'icône fait 20px (accessibilité mobile, cible QA-01). `p-2` (8px) autour d'une icône 20px = 36px : ajouter le padding nécessaire pour atteindre 44px sur les boutons favori migrés (D-10).
-- `p-1.5` (6px) sur le bouton de suppression de photo dans la grille : conservé verbatim (élément survol, non tactile-primaire) — ne pas « corriger ».
-- `min-h-[100px]` sur la zone `<textarea>` description : conservé verbatim.
+Set 8-point de référence : **4, 8, 16, 24, 32, 48, 64**. Les valeurs qui en sortent sont listées et justifiées ci-dessous.
+
+### Exceptions justifiées (décisions assumées, hors set standard)
+
+Le projet n'a **aucun test automatisé** et impose une contrainte **zéro-régression** sur le rendu visuel existant (04-RESEARCH.md). Les valeurs ci-dessous sont extraites verbatim du code de production. Elles sortent du set 8-point mais sont **conservées et justifiées explicitement comme décisions développeur**, plutôt que modifiées au risque d'une régression visuelle observable et non détectable par des tests.
+
+| Valeur hors-set | Où | Justification (décision assumée) |
+|-----------------|-----|----------------------------------|
+| **12px** (`md`, `gap-3` / `py-3`) | grille photos 3-col, padding vertical `Button size=md` | Échelon natif Tailwind v4 (`*-3`), présent verbatim dans le DS existant (Phases 1→3) et dans les formulaires. Le remonter à 8px ou 16px élargirait/rétrécirait boutons et grille photos = régression visuelle directe sur des écrans déjà livrés. **Conservé — décision zéro-régression assumée.** |
+| **44px** (cible tactile) | boutons icône favori (coeur) et fermeture (`iconOnly`) | **Exigence WCAG 2.1 AA — cible tactile ≥44×44px** (cible QA-01 / D-10). `p-2` (8px) autour d'une icône 20px = 36px : ajouter le padding nécessaire pour atteindre 44px sur les boutons favori migrés. Non négociable pour l'accessibilité mobile ; prime volontairement sur l'alignement au set 8-point. |
+
+Autres valeurs arbitraires conservées verbatim (dans le set ou multiples de 4, pas d'écart de contrat) :
+- `min-h-[100px]` (100px, multiple de 4) sur la zone `<textarea>` description — conservé verbatim.
+- **Bouton de suppression de photo** (survol, dans la grille) : passe de `p-1.5` (6px, hors set) à **`p-2` (8px)** — composant activement migré par cette phase, aligné sur le set 8-point. Le badge de suppression reste positionné en absolu sur la vignette ; l'écart de 2px est absorbé par le positionnement `absolute` sans décalage visible.
 
 ---
 
@@ -56,12 +68,16 @@ Tailles et graisses extraites verbatim des formulaires. iOS impose `font-size: 1
 | Role | Size | Weight | Line Height | Usage verbatim |
 |------|------|--------|-------------|----------------|
 | Heading (titre form) | 24px (`text-2xl`) | 700 (`font-bold`) | 1.2 | `add.title`, `spot.edit_title` — `text-2xl font-bold text-slate-800` |
-| Body / champ de saisie | 16px (`text-base`, forcé iOS) | 400 (`font-medium` sur `input` name = 500, voir exception) | 1.5 | valeur saisie dans input/textarea/select |
-| Label de champ (surface light) | 14px (`text-sm`) | 500 (`font-medium`) | 1.5 | `block text-sm font-medium text-slate-700 mb-2` |
+| Body / champ de saisie | 16px (`text-base`, forcé iOS) | 400 (`font-normal`) | 1.5 | valeur saisie dans input/textarea/select |
+| Label de champ (surface light) | 14px (`text-sm`) | 400 (`font-normal`) | 1.5 | `block text-sm font-normal text-slate-700 mb-2` |
 | Meta / label glass + pill | 12px (`text-xs`) | 700 (`font-bold`) | 1.5 | label glass `uppercase tracking-wider`, pills de type `text-xs font-bold`, compteur photos |
 
-Graisses déclarées (2 dominantes) : **regular 400** (corps/valeurs), **bold 700** (titres, boutons, pills, labels glass).
-Exception documentée : **medium 500** (`font-medium`) — réservé aux **labels de champ sur surface light** et à la valeur de l'`input name`. Préservé verbatim (zéro-régression) ; ne pas convertir en 400 ou 700.
+### Graisses déclarées — 2 graisses
+
+- **regular 400** (`font-normal`) — corps / valeurs des champs de saisie **et** labels de champ sur surface light.
+- **bold 700** (`font-bold`) — titres, boutons, pills, labels glass.
+
+> Le contrat déclare **exactement 2 graisses** (400 + 700), conforme à la règle « 2 graisses max ». Les labels de champ light et la valeur de l'`input name` — qui étaient en `font-medium` (500) dans le code existant — sont **normalisés à `font-normal` (400)** dans le cadre de la migration de `AddSpotForm` vers le design system. Choix : `font-normal` (et non `font-bold`) pour les labels, car les labels sont volontairement dé-emphasés relativement aux valeurs et au titre ; la hiérarchie repose désormais sur la taille (14px label vs 16px valeur vs 24px titre) et sur la couleur (`slate-700` label vs `slate-800` titre), pas sur la graisse. Composants concernés activement migrés par cette phase — ajustement de graisse légitime, dans le périmètre.
 
 ---
 
@@ -94,26 +110,28 @@ Interdits (anti-régression) : ne pas introduire de nouvelle couleur, ne pas uti
 
 ## Copywriting Contract
 
-Toute chaîne passe par `useLanguage().t(key)` et **doit** être ajoutée dans **`fr.json` ET `en.json`** (parité obligatoire — `t()` renvoie la clé brute si absente). Clés existantes réutilisées + nouvelles clés à créer.
+Toute chaîne passe par `useLanguage().t(key)` et **doit** être présente dans **`fr.json` ET `en.json`** (parité obligatoire — `t()` renvoie la clé brute si absente). Clés existantes réutilisées + nouvelles clés à créer.
 
-| Element | Clé i18n | Copy (fr) |
-|---------|----------|-----------|
-| Primary CTA (submit ajout) | `add.submit` (existant) | « Proposer le Spot » |
-| CTA en cours d'envoi | `add.sending` (existant) | « Envoi… » |
-| CTA submit (édition) | `spot.edit_save` (existant) | « Enregistrer » |
-| Empty state favoris | `fav.empty` (existant) | « Aucun favori pour le moment. » |
-| Erreur — nom vide | `form.error.name_required` (NOUVEAU) | « Le nom du spot est obligatoire. » |
-| Erreur — nom trop long | `form.error.name_too_long` (NOUVEAU) | « Le nom est trop long (100 caractères max). » |
-| Erreur — description trop longue | `form.error.desc_too_long` (NOUVEAU) | « La description est trop longue (2000 caractères max). » |
-| Erreur — aucun type (D-03) | `form.error.type_required` (NOUVEAU) | « Sélectionne au moins un type de spot. » |
-| Erreur — échec soumission (D-07) | `form.error.submit_failed` (NOUVEAU) | « Échec de l'envoi. Tes informations sont conservées, réessaie. » |
-| Toast revert favori (D-08) | `fav.error.revert` (NOUVEAU) | « Échec, réessaie. » |
-| Confirmation « pas de photo » — titre (D-04) | `form.confirm.no_photo.title` (NOUVEAU) | « Publier sans photo ? » |
-| Confirmation « pas de photo » — corps (D-04) | `form.confirm.no_photo.body` (NOUVEAU) | « Une photo aide les autres riders à repérer le spot en un coup d'œil. Tu pourras en ajouter une plus tard en modifiant le spot. » |
-| Confirmation — action « publier quand même » (D-04) | `form.confirm.no_photo.confirm` (NOUVEAU) | « Publier quand même » |
-| Confirmation — action « ajouter une photo » (D-04) | `form.confirm.no_photo.cancel` (NOUVEAU) | « Ajouter une photo » |
-| aria-label favori (retirer) | `fav.remove` (NOUVEAU) | « Retirer des favoris » |
-| aria-label favori (ajouter) | `fav.add` (NOUVEAU) | « Ajouter aux favoris » |
+| Element | Clé i18n | Copy (fr) | Copy (en) |
+|---------|----------|-----------|-----------|
+| Primary CTA (submit ajout) | `add.submit` (existant) | « Proposer le Spot » | "Submit Spot" |
+| CTA en cours d'envoi | `add.sending` (existant) | « Envoi… » | "Sending…" |
+| CTA submit (édition) | `spot.edit_save` (existant — **fr à mettre à jour**) | « Enregistrer les modifications » | "Save Changes" (déjà conforme) |
+| Empty state favoris | `fav.empty` (existant) | « Aucun favori pour le moment. » | "No favorites yet." |
+| Erreur — nom vide | `form.error.name_required` (NOUVEAU) | « Le nom du spot est obligatoire. » | "Spot name is required." |
+| Erreur — nom trop long | `form.error.name_too_long` (NOUVEAU) | « Le nom est trop long (100 caractères max). » | "Name is too long (100 characters max)." |
+| Erreur — description trop longue | `form.error.desc_too_long` (NOUVEAU) | « La description est trop longue (2000 caractères max). » | "Description is too long (2000 characters max)." |
+| Erreur — aucun type (D-03) | `form.error.type_required` (NOUVEAU) | « Sélectionne au moins un type de spot. » | "Select at least one spot type." |
+| Erreur — échec soumission (D-07) | `form.error.submit_failed` (NOUVEAU) | « Échec de l'envoi. Tes informations sont conservées, réessaie. » | "Submission failed. Your details are saved, try again." |
+| Toast revert favori (D-08) | `fav.error.revert` (NOUVEAU) | « Échec, réessaie. » | "Failed, try again." |
+| Confirmation « pas de photo » — titre (D-04) | `form.confirm.no_photo.title` (NOUVEAU) | « Publier sans photo ? » | "Publish without a photo?" |
+| Confirmation « pas de photo » — corps (D-04) | `form.confirm.no_photo.body` (NOUVEAU) | « Une photo aide les autres riders à repérer le spot en un coup d'œil. Tu pourras en ajouter une plus tard en modifiant le spot. » | "A photo helps other riders spot it at a glance. You can add one later by editing the spot." |
+| Confirmation — action « publier quand même » (D-04) | `form.confirm.no_photo.confirm` (NOUVEAU) | « Publier quand même » | "Publish anyway" |
+| Confirmation — action « ajouter une photo » (D-04) | `form.confirm.no_photo.cancel` (NOUVEAU) | « Ajouter une photo » | "Add a photo" |
+| aria-label favori (retirer) | `fav.remove` (NOUVEAU) | « Retirer des favoris » | "Remove from favorites" |
+| aria-label favori (ajouter) | `fav.add` (NOUVEAU) | « Ajouter aux favoris » | "Add to favorites" |
+
+**Correctif copywriting `spot.edit_save` :** le libellé fr existant est le verbe nu « Enregistrer » (équivalent du générique bloqué « Save »). Il est remplacé par le libellé **verbe + nom « Enregistrer les modifications »**. La version en.json (`"Save Changes"`) est déjà conforme et sert de référence de parité — le planner doit **mettre à jour `fr.json` L144** (`"spot.edit_save": "Enregistrer les modifications"`). Changement de copie assumé (amélioration de clarté, pas une régression fonctionnelle).
 
 **Limites de longueur (D-02 — tranché) :** nom **max 100**, description **max 2000** (aligné CONCERNS.md, RESEARCH A1). Le planner peut ajuster à 50/500 si l'utilisateur le demande, sinon 100/2000 est le contrat.
 
@@ -129,7 +147,7 @@ Actions destructrices de cette phase :
 | Zone | Avant (natif) | Après (DS) | Décision |
 |------|---------------|------------|----------|
 | Champs texte nom/description | `<input>` / `<textarea>` inline | `Input surface="light"` (+ `multiline` pour desc) | D-01 — **étendre** `Input` (prop `surface: 'glass' \| 'light'`, défaut `glass` ; `multiline`, `maxLength`, `error`). Classes light extraites verbatim de `AddSpotForm` L206/L218. |
-| Label de champ light | `<label class="text-sm font-medium text-slate-700">` | rendu par `Input surface="light"` | La variante light **ne doit pas** rendre le label glass `uppercase text-white/70` (régression directe) — reproduire `text-sm font-medium text-slate-700`. |
+| Label de champ light | `<label class="text-sm font-medium text-slate-700">` | rendu par `Input surface="light"` en `text-sm font-normal text-slate-700` | La variante light **ne doit pas** rendre le label glass `uppercase text-white/70` (régression directe) — reproduire `text-sm text-slate-700 mb-2`, graisse normalisée à `font-normal` (contrat 2 graisses). |
 | Pills type de spot | `<button>` toggle stylé | **restent des `<button>` stylés aux tokens** | D-01 / A4 — `Button` n'a pas de variante « pill sélectionnable » ; toggles de sélection ≠ actions. Conserver verbatim (`border-sky-500 bg-sky-50` actif / `border-slate-100 bg-white text-slate-400` inactif). |
 | Difficulté | `<select>` natif (AddSpotForm) | harmoniser en **pills** comme SpotDetail/Admin | A5 — changement UI voulu par UI-03 (cohérence), pas une régression. À confirmer au planner. |
 | Bouton submit | `<button>` + `Loader2` custom | `Button variant="primary" size="lg" loading` | UI-03 — `Button` gère déjà spinner + disabled. |
