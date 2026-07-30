@@ -131,6 +131,21 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             .then(({ data }) => setUploaderProfile(data));
     }, [spot?.id]);
 
+    // Prefetch lightbox neighbors (±1) into the browser HTTP cache when the viewer
+    // is open. Uses new Image() so no <img> is added to the DOM (D-03 respected):
+    // the lightbox still renders a single motion.img. Bounded to 2 requests, gated on
+    // length >= 2, tight deps -> no loop, no accumulation (threat T-03-05-01).
+    useEffect(() => {
+        if (!isImageOpen || !spot?.image_urls || spot.image_urls.length < 2) return;
+        const n = spot.image_urls.length;
+        const nextIndex = (currentPhotoIndex + 1) % n;
+        const prevIndex = (currentPhotoIndex - 1 + n) % n;
+        [nextIndex, prevIndex].forEach((i) => {
+            const img = new Image();
+            img.src = spot.image_urls![i];
+        });
+    }, [isImageOpen, currentPhotoIndex, spot?.id]);
+
     const handleReviewSubmit = (review: Review) => {
         setReviews(prev => {
             const filtered = prev.filter(r => r.user_id !== review.user_id);
@@ -409,6 +424,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                         <img
                                             src={spot.image_urls[0]}
                                             alt={spot.name}
+                                            loading="lazy"
                                             className={`w-full h-full object-cover transition-all duration-300 ${!user ? 'blur-sm scale-105' : ''}`}
                                         />
                                         {/* Overlay cadenas — seulement si non connecté */}

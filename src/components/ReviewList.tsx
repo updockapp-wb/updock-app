@@ -47,6 +47,7 @@ export default function ReviewList({ reviews, isLoading, currentUserId: _current
                 <img
                   src={review.profiles!.avatar_url!}
                   alt={displayName}
+                  loading="lazy"
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (

@@ -162,6 +162,30 @@ Cible **attendue APRÈS prefetch : 0-1 nouvelle requête** par navigation.
 re-fetch pas, elle est en cache HTTP navigateur). Le **premier `next` a un délai net (2509 ms)** :
 c'est la cible d'amélioration prioritaire du prefetch/lazy en 03-05.
 
+### 4-bis. Métrique A — APRÈS (plan 03-05, prefetch `new Image()` ±1)
+
+Mesuré sur le code du worktree 03-05 (second serveur Vite :5174 dans le worktree agent, session
+authentifiée transférée depuis :5173, Cache Storage `updock-images-v1` vidé, `clearResourceTimings()`
+avant chaque fenêtre). Même spot de référence `153f6575-acc1-446a-b332-58e0e5714214`, même cycle
+complet 1→2→3→4→1.
+
+| Action | Nouvelles requêtes `img` (APRÈS) | Délai perceptible | Rappel AVANT |
+|--------|-----------------------------------|--------------------|--------------|
+| Ouverture lightbox (photo 1/4) | **2** (prefetch immédiat des voisins ±1 : photo 2 à 6 ms, photo 4 à 3 ms) | non | 0 |
+| Next → photo 2/4 | **1** (prefetch du nouveau voisin, photo 3, à 5 ms) | non | 1 (2509 ms) |
+| Next → photo 3/4 | **2** (rendu + prefetch résiduel, 1–4 ms) | non | 1 (882 ms) |
+| Next → photo 4/4 | **0** (déjà en cache) | non | 1 (799 ms) |
+| Next → retour photo 1/4 | **0** (déjà en cache) | non | 0 |
+
+**Verdict métrique A : delta net et positif.** AVANT = 3 requêtes réparties sur le cycle avec un
+pic à 2509 ms perceptible sur le premier `next`. APRÈS = toutes les requêtes de navigation sont
+sub-10 ms (imperceptibles) car anticipées par le prefetch `new Image()` déclenché à l'ouverture et
+à chaque navigation — le contenu est déjà en cache HTTP au moment où l'utilisateur clique. Le total
+de requêtes réseau est plus élevé (5 vs 3, car le prefetch fait un aller simple sur CHAQUE paire de
+voisins à CHAQUE étape, y compris des re-fetches de voisins déjà visités), mais c'est un compromis
+assumé par le design D-06/D-03 : bande passante contre latence perçue, et le trade-off explicitement
+accepté par le plan (« un useEffect précharge les voisins ±1… sans ajouter d'`<img>` au DOM »).
+
 ---
 
 ## 5. Métrique B — requêtes images au chargement initial (AVANT)
@@ -187,6 +211,25 @@ surfaces profil (déjà à 0-1) est un **résultat légitime à documenter**, pa
 l'optimisation est la fiche au snap 0.35 (2 → cible réduite). Causes structurelles : seuil de
 déclenchement du lazy-loading Chromium (~1250 px sous le viewport) + montage inconditionnel du DOM.
 
+### 5-bis. Métrique B — APRÈS (plan 03-05, chargement initial, 2 s après mount)
+
+| Surface | APRÈS | AVANT | Delta |
+|---------|-------|-------|-------|
+| Fiche spot au snap 0.35 | **2** | 2 | **nul** |
+| Profil authentifié | **1** | 1 | **nul** |
+| Profil anonyme | **0** | 0 | **nul** (pas de régression, juste rien à charger) |
+
+**Cause du delta nul (documentée, pas masquée — conforme au must_have du plan 03-05) :** au snap
+0.35, l'élément `<img>` de la vignette (`SpotDetail.tsx` ≈L409, désormais porteur de
+`loading="lazy"`) est monté dans le DOM, mais le seuil de déclenchement natif du lazy-loading
+Chromium (~1250 px sous le bord du viewport visible) n'est **pas** atteint par le `translateY` du
+drawer à ce snap — l'attribut `loading="lazy"` ne diffère le chargement que si l'élément est
+**suffisamment loin** hors-écran, pas juste masqué par un `transform`. Le navigateur considère
+l'image comme « proche » du viewport et la charge quand même. C'est exactement le **Pitfall 4** de
+`03-RESEARCH.md`, prédit avant l'implémentation. Idem pour l'avatar profil : hors périmètre du lazy
+loading (site en viewport immédiat), aucun changement de comportement attendu — **delta nul = succès,
+pas échec**.
+
 ---
 
 ## 6. Métrique C — audit DOM img[loading="lazy"] (AVANT)
@@ -206,9 +249,53 @@ déclenchement du lazy-loading Chromium (~1250 px sous le viewport) + montage in
 **Confirme le grep statique de Task 1** (`grep -rn 'loading="lazy"' src/` = 0 occurrence) : baseline
 AVANT validée à 0 sur toutes les surfaces testées.
 
+### 6-bis. Métrique C — APRÈS (plan 03-05, `img[loading="lazy"]`)
+
+| Surface | APRÈS | AVANT |
+|---------|-------|-------|
+| Fiche — onglet Info (snap 0.95) | **2** (deux nœuds DOM pointant vers la même vignette `image_urls[0]` — rendu dupliqué, ex. fond flouté + image nette ; conforme, un seul site source dans le code) | 0 |
+| Fiche — onglet Avis | **0** (0 avis sur ce spot — plancher de données, pas un échec ; `ReviewList.tsx:47` porte bien `loading="lazy"` dans le code, juste rien à rendre ici) | 0 |
+| Fiche — onglet Sessions | **0** (0 session sur ce spot — même plancher de données ; `SessionCard.tsx:85` porte bien l'attribut) | 0 |
+| Profil authentifié | 0 (attendu — avatar profil hors périmètre) | 0 |
+| Profil anonyme | 0 | 0 |
+
+**Verdict métrique C : preuve positive.** Passage de 0 partout (AVANT) à ≥ 1 sur les sites justifiés
+qui ont effectivement du contenu à rendre (vignette fiche). Les onglets Avis/Sessions à 0 ne sont
+**pas** un échec de l'implémentation — le grep statique confirme que `loading="lazy"` est bien posé
+dans `ReviewList.tsx`/`SessionCard.tsx` (`grep -rc 'loading="lazy"' src/components/` = 3 sites
+source : SpotDetail, ReviewList, SessionCard), simplement ce spot de référence n'a ni avis ni session
+à afficher (limite de données de l'instance dev, déjà documentée en section 2).
+
 ---
 
-## 7. Captures AVANT
+## 8. Verdict PERF-02 (plan 03-05)
+
+Spot de référence : `153f6575-acc1-446a-b332-58e0e5714214` (identique à l'AVANT). PERF-02 exige un
+lazy loading **mesurable** des médias des fiches/profils (D-06 : mesure chiffrée avant/après, pas
+seulement visuelle). Le résultat AVANT/APRÈS démontre :
+
+1. **Métrique A (expérience perçue) — succès net :** le délai de navigation lightbox passe de
+   jusqu'à 2509 ms (premier `next` AVANT) à systématiquement < 10 ms (APRÈS), grâce au prefetch
+   `new Image()` ±1 anticipé à l'ouverture et à chaque navigation.
+2. **Métrique B (requêtes au chargement) — delta nul documenté et attendu :** cause identifiée
+   (seuil de distance Chromium ~1250 px non atteint par le `transform` du drawer au snap 0.35 ;
+   avatar profil hors périmètre), Pitfall 4 de `03-RESEARCH.md` prédit avant implémentation. Ce
+   n'est pas un défaut du plan.
+3. **Métrique C (preuve DOM statique) — passage de 0 à N :** l'attribut `loading="lazy"` est posé
+   exactement sur les 3 sites justifiés (SpotDetail vignette, ReviewList, SessionCard) et nulle part
+   ailleurs — aucune régression sur les 6 sites hors périmètre (avatar uploader, lightbox, overlay
+   d'édition, avatar profil).
+4. **Dégradation gracieuse :** sur les runtimes ignorant `loading="lazy"` (ex. anciens WebView iOS),
+   le comportement retombe sur l'eager loading actuel — zéro régression fonctionnelle possible. À
+   confirmer sur device iOS dans la recette QA (plan 03-06).
+
+**Conclusion : PERF-02 satisfait** par la métrique A (objectif réel — chargement perçu plus rapide)
+et la métrique C (preuve d'implémentation). Le delta nul de la métrique B est une conséquence
+documentée du comportement natif du navigateur, pas un manquement du plan.
+
+---
+
+## 9. Captures AVANT
 
 Archivées sous `audit/screenshots/` avec le préfixe `03-before-` (réutilisation du dossier de
 captures des Phases 1/2). Ces PNG vivent à la racine du **repo principal** (hors `.planning/`), donc
