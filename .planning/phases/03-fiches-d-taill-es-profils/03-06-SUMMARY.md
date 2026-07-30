@@ -10,8 +10,8 @@ requires:
   - "03-04 (SpotDetail tokens + rayons)"
   - "03-05 (lazy loading + prefetch, métriques APRÈS)"
 provides:
-  - "03-QA-CHECKLIST.md — preuve byte-identité CSS (section 1, complète) + templates de recette visuelle et device (sections 2-3)"
-  - "Verdict UI-01/UI-02 côté preuve CSS compilé (toutes paires IDENTIQUE)"
+  - "03-QA-CHECKLIST.md — preuve byte-identité CSS (section 1) + comparaison visuelle 10/10 (section 2) + recette device 12/12 (section 3), toutes complètes"
+  - "Verdict de phase final : UI-01, UI-02, PERF-02, QA-01 tous satisfaits — phase 3 validée à 100%"
 affects:
   - ".planning/phases/03-fiches-d-taill-es-profils/03-QA-CHECKLIST.md"
 tech-stack:
@@ -27,10 +27,11 @@ decisions:
   - "Task 1 (byte-identité CSS) exécutée intégralement en sandbox : npm run build + extraction du CSS compilé, 12 paires prouvées IDENTIQUE"
   - "Task 2 (visuel APRÈS/AVANT) = checkpoint human-verify : rendu réel via chrome-devtools-mcp — délégué à l'orchestrateur (comme 03-01/03-05)"
   - "Task 3 (recette QA-01) = checkpoint human-action : device iOS physique — délégué à l'utilisateur réel, non substituable par un outil navigateur"
+  - "Bug de modale masquée derrière le tiroir SpotDetail (isolation:isolate sur #root + portail Vaul) corrigé en gap closure immédiat pendant la recette (commit 497f347 sur main), plutôt que différé — cause racine claire, fix chirurgical (createPortal) à faible risque"
+  - "Recette étalée sur deux sessions (4/12 puis 12/12 items) sans invalider les items déjà PASS — chaque item est un contrôle indépendant"
 metrics:
-  duration: "~4 min (Task 1 ; Tasks 2-3 en attente de vérification externe)"
-  tasks-completed: 2
-  tasks-checkpointed: 1
+  duration: "~4 min (Task 1, sandbox) + recette device étalée sur deux sessions (4/12 puis 8/12 restants)"
+  tasks-completed: 3
   files-modified: 1
   completed: 2026-07-30
 requirements: [UI-01, UI-02, PERF-02]
@@ -38,11 +39,12 @@ requirements: [UI-01, UI-02, PERF-02]
 
 # Phase 3 Plan 06 : Recette de phase — byte-identité + non-régression Summary
 
-Phase gate de la Phase 3. La preuve **byte-identité CSS compilé** de tous les wirings de token du
-périmètre est produite et concluante (12 paires, toutes IDENTIQUE) ; les deux vérifications non
-scriptables — comparaison visuelle APRÈS/AVANT (navigateur) et recette manuelle mobile QA-01
-(device iOS physique) — sont scaffoldées dans `03-QA-CHECKLIST.md` et remontées comme checkpoints
-distincts vers, respectivement, l'orchestrateur (chrome-devtools-mcp) et l'utilisateur réel.
+Phase gate de la Phase 3, **validée à 100%**. La preuve **byte-identité CSS compilé** de tous les
+wirings de token du périmètre est concluante (12 paires, toutes IDENTIQUE), la comparaison
+**visuelle APRÈS/AVANT** est validée 10/10, et la **recette manuelle mobile QA-01** sur device iOS
+physique est passée à **12/12 items PASS**. Un bug bloquant (modale masquée derrière le tiroir
+SpotDetail) découvert pendant la recette a été corrigé en gap closure immédiat et confirmé
+fonctionnel sur device avant de sceller le verdict final.
 
 ## What Was Built
 
@@ -81,22 +83,40 @@ PremiumModal (toléré). AuthModal/FiltersModal confirmés non régressés par l
 Modal. Email masqué sur la capture profil auth (T-03-06-02 appliqué). Section 2 de
 `03-QA-CHECKLIST.md` renseignée.
 
-### Task 3 — Recette QA-01 device iOS — ⏳ CHECKPOINT (human-action, utilisateur réel)
+### Task 3 — Recette QA-01 device iOS (commits `324ddb4`, `99b3a96`) — ✅ COMPLET (12/12 PASS)
 
 Gestuelle tactile (`vaul` drag-to-dismiss, snap points, `layoutId`), comportement réel de
-`loading="lazy"` en WebView iOS et safe-area : **non reproductibles en desktop ni par aucun outil
-navigateur**. Section 3 scaffoldée : 13 items (gestuelle, lightbox, onglets, 4 gardes non
-authentifiées, profil auth/anonyme, PremiumModal, CommunityStats safe-area, auth/filtres) avec
-colonne PASS/FAIL. **Délégué à l'utilisateur réel sur son iPhone** — distinct de Task 2, à ne pas
-router vers un outil navigateur.
+`loading="lazy"` en WebView iOS et safe-area : non reproductibles en desktop ni par aucun outil
+navigateur — déroulé par l'utilisateur réel sur son iPhone, item par item, sur deux sessions.
 
-## Verdict de phase (état à la remise)
+**12/12 items PASS :** fiche spot — gestuelle chemin critique ; lightbox (prefetch fluide, portail
+isolé du drag-to-dismiss) ; onglets Info/Avis/Sessions (avatars lazy sans image manquante) ; passe
+non authentifiée complète (vignette floutée+cadenas, cœur favori→auth, lightbox→auth, rangée Admin
+masquée) ; profil authentifié (avatar, stats, réglages, Log Out) ; profil anonyme (Sign In/Join) ;
+PremiumModal (ouverture + double fermeture bouton/backdrop) ; CommunityStatsScreen (safe-area
+préservée, 2 KPI + liste pays) ; non-régression AuthModal/FiltersModal.
+
+**Bug bloquant trouvé et corrigé en gap closure (items 2/4b/4c) :** `AuthModal`/`PremiumModal`
+rendus derrière le tiroir `SpotDetail` (invisibles ou partiellement masqués selon le snap), le
+rendant inutilisable. **Cause racine :** `#root { isolation: isolate }` (pré-existant, v1.1.1)
+plafonne tout `position: fixed` rendu comme enfant React normal, tandis que le portail natif de
+Vaul (`Drawer.Content`) s'échappe dans `<body>` et passe au-dessus quel que soit le z-index.
+**Fix :** les 3 formes du master `Modal` (`src/ui/Modal.tsx`) rendues via `createPortal(...,
+document.body)` ; `AuthModal`/`AdminDashboard`/`WelcomeScreen` déplacés hors de
+`vaul-drawer-wrapper` dans `src/App.tsx`. Mergé sur `main` (commit `497f347`, **hors périmètre de
+ce worktree**), vérifié en desktop puis confirmé fonctionnel sur device avant reprise de la
+recette (items 2/4b/4c → PASS).
+
+## Verdict de phase final
 
 | Exigence | Statut |
 |----------|--------|
 | UI-01 / UI-02 (byte-identité) | CSS compilé : **✅ prouvé** (Task 1) + Visuel APRÈS/AVANT : **✅ validé** 10/10 (Task 2) |
-| PERF-02 (lazy mesurable) | **✅ satisfait** (03-05, `03-BASELINE.md § 8`) ; dégradation gracieuse iOS à confirmer Task 3 item 3 |
-| QA-01 (recette mobile 100%) | ⏳ Task 3 (device) |
+| PERF-02 (lazy mesurable) | **✅ satisfait** (03-05, `03-BASELINE.md § 8`) ; dégradation gracieuse iOS confirmée (item 3) |
+| QA-01 (recette mobile 100%) | **✅ satisfait — 12/12 items PASS** sur device iOS physique (Task 3) |
+
+**Phase 3 (Fiches Détaillées & Profils) validée sans régression.** Success criterion 4 du
+ROADMAP Phase 3 honoré.
 
 ## Deviations from Plan
 
