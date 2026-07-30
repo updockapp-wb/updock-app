@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: executing
-stopped_at: Session resumed, proceeding to plan-phase 3
-last_updated: "2026-07-30T11:15:52.608Z"
-last_activity: 2026-07-30 -- Phase 03 execution started
+status: phase_complete
+stopped_at: Phase 03 complete, ready to discuss/plan Phase 4
+last_updated: "2026-07-30T23:00:06.000Z"
+last_activity: 2026-07-30 -- Phase 03 complete (QA-01 12/12 PASS, worktree merged)
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 15
-  completed_plans: 9
-  percent: 40
+  completed_plans: 15
+  percent: 60
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 03 — fiches-d-taill-es-profils
+**Current focus:** Phase 04 — formulaires-interactions (à démarrer)
 
 ## Current Position
 
-Phase: 03 (fiches-d-taill-es-profils) — EXECUTING
-Plan: 1 of 6
-Status: Executing Phase 03
-Last activity: 2026-07-30 -- Phase 03 execution started
+Phase: 03 (fiches-d-taill-es-profils) — COMPLETE
+Plan: 6 of 6
+Status: Phase 3 validée à 100% (UI-01/UI-02/PERF-02/QA-01)
+Last activity: 2026-07-30 -- QA-01 recette 12/12 PASS, worktree mergé sur main
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Décisions complètes dans PROJECT.md (Key Decisions). Récentes affectant le tr
 - Design system construit en Phase 1, adopté écran par écran (Phases 2-4) — tokens extraits de l'existant, pas de rebranding
 - Approche incrémentale imposée : un module/composant à la fois, jamais de balayage global
 - Pas d'infra de test : validation par checklist de recette manuelle mobile (QA-01) après chaque phase
+- Phase 3 : bug de modale masquée derrière le tiroir SpotDetail (isolation:isolate sur #root + portail Vaul) corrigé en gap closure immédiat pendant la recette QA-01 (commit 497f347) — createPortal sur le master Modal
 
 ### Pending Todos
 
@@ -93,6 +94,6 @@ Voir `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-07-30T06:21:41.050Z
-Stopped at: Session resumed, proceeding to plan-phase 3
-Resume file: .planning/phases/03-fiches-d-taill-es-profils/03-UI-SPEC.md
+Last session: 2026-07-30T23:00:06.000Z
+Stopped at: Phase 03 complete (QA-01 12/12 PASS), worktree merged to main. Ready to discuss/plan Phase 4 (Formulaires & Interactions).
+Resume file: none

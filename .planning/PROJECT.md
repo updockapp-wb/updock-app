@@ -24,7 +24,11 @@ Les spots, avant tout. Trouver et découvrir des spots de pumpfoil partout dans 
 
 Requirements détaillés : voir `.planning/REQUIREMENTS.md`. Roadmap : voir `.planning/ROADMAP.md`.
 
-**Phase 1 (Audit & Design System) — Complete (2026-07-29).** DS-01/DS-02/DS-03 validés : audit chiffré (`01-AUDIT.md`, baseline gzip JS ≈504 kB), tokens centralisés dans `src/index.css` (couleurs aliasées aux variables Tailwind natives — zéro dérive de couleur), 5 composants maîtres (`src/ui/{Button,Card,Header,Input,Modal}`) extraits verbatim de l'app existante et prouvés sur l'AuthModal (migration D-09, parité pixel confirmée, logique auth byte-identique). Phase 2 (Navigation & Vue Carte) peut démarrer.
+**Phase 1 (Audit & Design System) — Complete (2026-07-28).** DS-01/DS-02/DS-03 validés : audit chiffré (`01-AUDIT.md`, baseline gzip JS ≈504 kB), tokens centralisés dans `src/index.css` (couleurs aliasées aux variables Tailwind natives — zéro dérive de couleur), 5 composants maîtres (`src/ui/{Button,Card,Header,Input,Modal}`) extraits verbatim de l'app existante et prouvés sur l'AuthModal (migration D-09, parité pixel confirmée, logique auth byte-identique).
+
+**Phase 2 (Navigation & Vue Carte / Spots) — Complete (2026-07-29).** NAV-01/MAP-01/MAP-02/PERF-01 validés.
+
+**Phase 3 (Fiches Détaillées & Profils) — Complete (2026-07-30).** UI-01/UI-02/PERF-02 validés : SpotDetail et Profile/CommunityStatsScreen migrés vers le design system (tokens + composants maîtres), lazy loading des médias (`loading="lazy"` ×3 + prefetch lightbox), byte-identité CSS et visuelle prouvées (10/10 surfaces), recette QA-01 device iOS à 100% (12/12 items PASS). Bug de modale masquée derrière le tiroir SpotDetail découvert et corrigé en gap closure (`createPortal` sur le master Modal, commit `497f347`). Phase 4 (Formulaires & Interactions) peut démarrer.
 
 ## Requirements
 

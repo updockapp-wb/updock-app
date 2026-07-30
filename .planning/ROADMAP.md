@@ -15,7 +15,7 @@ Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.p
 
 - [x] **Phase 1: Audit & Design System** - Audit d'architecture chiffré + tokens centralisés + composants maîtres réutilisables (completed 2026-07-28)
 - [x] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte (completed 2026-07-29)
-- [ ] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias
+- [x] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias (completed 2026-07-30)
 - [ ] **Phase 4: Formulaires & Interactions** - Harmonisation UI des formulaires/favoris + validation et gestion d'erreurs robustes
 - [ ] **Phase 5: Recette globale & nettoyage final** - Suppression code mort/deps, homogénéisation d'état, réduction bundle, non-régression
 
@@ -111,7 +111,7 @@ Plans:
 
 **Wave 3** *(phase gate — bloqué sur toutes les waves précédentes)*
 
-- [ ] 03-06-PLAN.md — Preuve byte-identité CSS + comparaison visuelle 5 surfaces + recette QA-01 device à 100% [Wave 3]
+- [x] 03-06-PLAN.md — Preuve byte-identité CSS + comparaison visuelle 5 surfaces + recette QA-01 device à 100% [Wave 3]
 
 **UI hint**: yes
 
@@ -153,6 +153,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
-| 3. Fiches Détaillées & Profils | 5/6 | In Progress|  |
+| 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
