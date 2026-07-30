@@ -10,6 +10,8 @@ import { useNotifications } from '../context/NotificationsContext';
 import PremiumModal from './PremiumModal';
 import CommunityStatsScreen from './CommunityStatsScreen';
 import { supabase } from '../lib/supabase';
+import Card from '../ui/Card';
+import Button from '../ui/Button';
 
 interface ProfileProps {
     onOpenAuth?: () => void;
@@ -73,27 +75,27 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="w-full h-full flex flex-col items-center justify-center px-6 bg-slate-50"
+                className="w-full h-full flex flex-col items-center justify-center px-6 bg-background"
             >
                 {/* Illustration */}
                 <div className="w-[120px] h-[120px] rounded-full bg-sky-50 flex items-center justify-center">
-                    <MapPin size={48} className="text-sky-500" />
+                    <MapPin size={48} className="text-primary" />
                 </div>
 
                 {/* Title */}
-                <h2 className="text-xl font-bold text-slate-800 text-center mt-6">
+                <h2 className="text-xl font-bold text-text text-center mt-6">
                     {t('anon_profile.title')}
                 </h2>
 
                 {/* Subtitle */}
-                <p className="text-base font-normal text-slate-500 text-center mt-2 max-w-[280px]">
+                <p className="text-base font-normal text-muted text-center mt-2 max-w-[280px]">
                     {t('anon_profile.subtitle')}
                 </p>
 
                 {/* Sign in button (primary) */}
                 <button
                     onClick={() => onOpenAuth?.()}
-                    className="w-full max-w-[320px] bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-xl mt-8 transition-colors"
+                    className="w-full max-w-[320px] bg-primary hover:bg-sky-400 text-white font-bold py-4 rounded-xl mt-8 transition-colors"
                 >
                     {t('anon_profile.btn_login')}
                 </button>
@@ -101,7 +103,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 {/* Create account button (secondary) */}
                 <button
                     onClick={() => onOpenAuth?.()}
-                    className="w-full max-w-[320px] bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-xl mt-3 hover:bg-slate-50 transition-colors"
+                    className="w-full max-w-[320px] bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-xl mt-3 hover:bg-background transition-colors"
                 >
                     {t('anon_profile.btn_signup')}
                 </button>
@@ -122,9 +124,9 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 {/* Language toggle (settings accessible for anonymous) */}
                 <div className="mt-12 w-full max-w-[320px]">
                     <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                        <div className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center justify-between p-4 hover:bg-background transition-colors">
                             <div className="flex items-center gap-3 text-slate-700">
-                                <Globe size={20} className="text-sky-500" />
+                                <Globe size={20} className="text-primary" />
                                 <span className="font-medium">{t('profile.language')}</span>
                             </div>
                             <div className="flex bg-slate-100 rounded-lg p-1">
@@ -154,7 +156,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
     const isAdmin = user?.email === 'updock.app@gmail.com';
 
     return (
-        <div className="w-full h-full flex flex-col p-6 overflow-y-auto bg-slate-50">
+        <div className="w-full h-full flex flex-col p-6 overflow-y-auto bg-background">
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">
                 <div className="relative group">
@@ -175,7 +177,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         <>
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-100 text-sky-500 hover:text-sky-600 transition-transform active:scale-90"
+                                className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-slate-100 text-primary hover:text-sky-600 transition-transform active:scale-90"
                             >
                                 <Camera size={14} />
                             </button>
@@ -196,7 +198,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                     )}
                 </div>
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-800">
+                    <h2 className="text-2xl font-bold text-text">
                         {user ? (profile?.display_name || user?.email?.split('@')[0] || 'Updocker') : 'Guest'}
                     </h2>
                     {user ? (
@@ -222,7 +224,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             {/* Display Name Section */}
             {user && (
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-slate-500 mb-2">{t('profile.display_name')}</label>
+                    <label className="block text-sm font-medium text-muted mb-2">{t('profile.display_name')}</label>
                     {editingName ? (
                         <div className="flex gap-2">
                             <input
@@ -230,7 +232,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                                 value={nameInput}
                                 onChange={(e) => setNameInput(e.target.value)}
                                 maxLength={30}
-                                className="flex-1 p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium"
+                                className="flex-1 p-3 bg-background border-2 border-slate-100 rounded-xl focus:border-primary focus:outline-none font-medium"
                                 placeholder={t('profile.name_placeholder')}
                                 autoFocus
                             />
@@ -241,7 +243,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                                     }
                                     setEditingName(false);
                                 }}
-                                className="px-4 py-3 bg-sky-500 text-white rounded-xl font-medium"
+                                className="px-4 py-3 bg-primary text-white rounded-xl font-medium"
                             >
                                 {t('profile.save')}
                             </button>
@@ -252,7 +254,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                                 setNameInput(profile?.display_name || '');
                                 setEditingName(true);
                             }}
-                            className="w-full text-left p-3 bg-slate-50 rounded-xl font-medium text-slate-900 hover:bg-slate-100 transition-colors"
+                            className="w-full text-left p-3 bg-background rounded-xl font-medium text-slate-900 hover:bg-slate-100 transition-colors"
                         >
                             {profile?.display_name || t('profile.set_name')}
                         </button>
@@ -262,20 +264,20 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                <Card>
                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Spots Added</p>
-                    <p className="text-2xl font-black text-slate-800">{spotsCount}</p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <p className="text-2xl font-black text-text">{spotsCount}</p>
+                </Card>
+                <Card>
                     <p className="text-slate-400 text-xs font-bold uppercase mb-1">Favorites</p>
-                    <p className="text-2xl font-black text-slate-800">{favorites.length}</p>
-                </div>
+                    <p className="text-2xl font-black text-text">{favorites.length}</p>
+                </Card>
             </div>
 
             {/* Upcoming Sessions */}
             {user && userUpcomingSessions.length > 0 && (
                 <div className="mt-6 mb-8">
-                    <h3 className="text-sm font-bold text-slate-800 mb-3">{t('session.upcoming')}</h3>
+                    <h3 className="text-sm font-bold text-text mb-3">{t('session.upcoming')}</h3>
                     <div className="bg-white rounded-xl border border-slate-100 overflow-hidden">
                         {userUpcomingSessions.map((session, index) => {
                             const date = new Date(session.starts_at);
@@ -289,9 +291,9 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                                         index < userUpcomingSessions.length - 1 ? 'border-b border-slate-100' : ''
                                     }`}
                                 >
-                                    <Calendar size={16} className="text-sky-500 shrink-0" />
+                                    <Calendar size={16} className="text-primary shrink-0" />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold text-slate-800 truncate">{session.spot_name}</p>
+                                        <p className="text-sm font-bold text-text truncate">{session.spot_name}</p>
                                         <p className="text-xs text-slate-400">{dateStr} {timeStr}</p>
                                     </div>
                                     <div className="flex items-center gap-1 shrink-0">
@@ -308,11 +310,11 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             {/* Community Stats Nav Row */}
             <div
                 onClick={() => setIsCommunityStatsOpen(true)}
-                className="bg-white rounded-3xl border border-slate-100 overflow-hidden mb-6 cursor-pointer hover:bg-slate-50 transition-colors"
+                className="bg-white rounded-3xl border border-slate-100 overflow-hidden mb-6 cursor-pointer hover:bg-background transition-colors"
             >
                 <div className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3 text-slate-700">
-                        <BarChart2 size={20} className="text-sky-500" />
+                        <BarChart2 size={20} className="text-primary" />
                         <span className="font-medium">{t('community_stats.nav_label')}</span>
                     </div>
                     <ChevronRight size={20} className="text-slate-300" />
@@ -324,9 +326,9 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
 
             <div className="bg-white rounded-3xl border border-slate-100 overflow-hidden mb-6">
                 {/* Language Toggle */}
-                <div className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                <div className="flex items-center justify-between p-4 border-b border-slate-50 hover:bg-background transition-colors">
                     <div className="flex items-center gap-3 text-slate-700">
-                        <Globe size={20} className="text-sky-500" />
+                        <Globe size={20} className="text-primary" />
                         <span className="font-medium">{t('profile.language')}</span>
                     </div>
                     <div className="flex bg-slate-100 rounded-lg p-1">
@@ -351,10 +353,10 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         // Open system settings on iOS
                         window.location.href = 'app-settings:';
                     } : undefined}
-                    className={`flex items-center justify-between p-4 border-b border-slate-50 ${permissionStatus === 'denied' ? 'hover:bg-slate-50 transition-colors cursor-pointer' : ''}`}
+                    className={`flex items-center justify-between p-4 border-b border-slate-50 ${permissionStatus === 'denied' ? 'hover:bg-background transition-colors cursor-pointer' : ''}`}
                 >
                     <div className="flex items-center gap-3 text-slate-700">
-                        <Bell size={20} className={permissionStatus === 'granted' ? 'text-sky-500' : 'text-slate-400'} />
+                        <Bell size={20} className={permissionStatus === 'granted' ? 'text-primary' : 'text-slate-400'} />
                         <span className="font-medium">{t('profile.notifications')}</span>
                     </div>
                     {permissionStatus === 'granted' && (
@@ -363,7 +365,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         </span>
                     )}
                     {permissionStatus === 'denied' && (
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-muted">
                             {t('notification.disabled')}
                         </span>
                     )}
@@ -371,7 +373,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         <ChevronRight size={20} className="text-slate-300" />
                     )}
                     {permissionStatus === 'loading' && (
-                        <div className="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     )}
                 </div>
 
@@ -380,7 +382,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                     <div className="flex items-center justify-between p-4 border-b border-slate-50">
                         <div className="flex flex-col gap-0.5">
                             <div className="flex items-center gap-3 text-slate-700">
-                                <Bell size={20} className="text-sky-500" />
+                                <Bell size={20} className="text-primary" />
                                 <span className="font-medium">{t('profile.notif_session_toggle')}</span>
                             </div>
                             <p className="text-xs text-slate-400 ml-8">{t('profile.notif_session_desc')}</p>
@@ -388,7 +390,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                         <button
                             onClick={() => toggleNotifSession()}
                             className={`relative w-11 h-6 rounded-full transition-colors ${
-                                (profile?.notif_session_enabled ?? true) ? 'bg-sky-500' : 'bg-slate-200'
+                                (profile?.notif_session_enabled ?? true) ? 'bg-primary' : 'bg-slate-200'
                             }`}
                         >
                             <div
@@ -402,10 +404,10 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
 
                 <div
                     onClick={() => setIsPremiumOpen(true)}
-                    className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="flex items-center justify-between p-4 hover:bg-background transition-colors cursor-pointer"
                 >
                     <div className="flex items-center gap-3 text-slate-700">
-                        <CreditCard size={20} className="text-rose-500" />
+                        <CreditCard size={20} className="text-accent" />
                         <span className="font-medium">{t('profile.go_premium')}</span>
                     </div>
                     <ChevronRight size={20} className="text-slate-300" />
@@ -414,7 +416,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 {isAdmin && (
                     <div
                         onClick={onAdminClick}
-                        className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors cursor-pointer border-t border-slate-50"
+                        className="flex items-center justify-between p-4 hover:bg-background transition-colors cursor-pointer border-t border-slate-50"
                     >
                         <div className="flex items-center gap-3 text-slate-700">
                             <Shield size={20} className="text-emerald-500" />
@@ -426,13 +428,10 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             </div>
 
             {user && (
-                <button
-                    onClick={() => signOut()}
-                    className="w-full bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold py-4 rounded-2xl transition-all mb-8 flex items-center justify-center gap-2"
-                >
+                <Button variant="secondary" size="lg" onClick={() => signOut()} className="w-full mb-8">
                     <LogOut size={18} />
                     Log Out
-                </button>
+                </Button>
             )}
 
             <div className="mt-auto text-center pb-8">
