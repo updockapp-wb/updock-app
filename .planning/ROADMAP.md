@@ -127,7 +127,23 @@ Plans:
   3. Les appels API en échec sont gérés avec un feedback utilisateur cohérent (loading / erreur / retry), sans crash ni état bloqué.
   4. La checklist de recette manuelle sur ajout/édition de spot et favoris passe à 100% — aucune régression fonctionnelle.
 
-**Plans**: TBD
+**Plans**: 6 plans (3 waves)
+Plans:
+**Wave 1** *(fondations, fichiers disjoints)*
+
+- [ ] 04-01-PLAN.md — Extension Input (surface light + multiline + maxLength + error) + clés i18n validation/confirmation/favori [Wave 1]
+- [ ] 04-02-PLAN.md — Propagation d'erreur contexts : updateSpot rethrow + Toast approve/delete, toggleFavorite Promise rejetante (ROBUST-02) [Wave 1]
+
+**Wave 2** *(migrations formulaires/favoris, fichiers disjoints — bloqué sur Wave 1)*
+
+- [ ] 04-03-PLAN.md — AddSpotForm : champs→Input, submit→Button, validation client, confirmation douce pas-de-photo (D-04) [Wave 2]
+- [ ] 04-04-PLAN.md — SpotDetail : bouton favori Button iconOnly + toast revert (D-08/D-10), édition inline→Input/Button + validation/erreur inline [Wave 2]
+- [ ] 04-05-PLAN.md — AdminDashboard édition→Input/Button + i18n + feedback (D-09) + App.tsx bouton favori liste (D-10) [Wave 2]
+
+**Wave 3** *(phase gate — bloqué sur Wave 2)*
+
+- [ ] 04-06-PLAN.md — Checklist recette manuelle 04-QA-CHECKLIST + build/lint verts + recette device 100% (QA-01) [Wave 3]
+
 **UI hint**: yes
 
 ### Phase 5: Recette globale & nettoyage final
@@ -154,5 +170,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
-| 4. Formulaires & Interactions | 0/TBD | Not started | - |
+| 4. Formulaires & Interactions | 0/6 | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
