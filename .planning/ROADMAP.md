@@ -93,7 +93,26 @@ Plans:
   3. Les images et médias des fiches détaillées et des profils sont chargés en lazy loading.
   4. La checklist de recette manuelle sur fiche spot et profil passe à 100% — comportement utilisateur inchangé.
 
-**Plans**: TBD
+**Plans**: 6 plans (4 waves)
+Plans:
+**Wave 0** *(baseline gate — doit précéder tout refactor)*
+
+- [ ] 03-01-PLAN.md — Baseline réseau chiffrée (métriques A/B/C) + audit consommateurs Modal + captures AVANT [Wave 0]
+
+**Wave 1** *(parallèle, fichiers disjoints — bloqué sur Wave 0)*
+
+- [ ] 03-02-PLAN.md — Extension Modal (3e forme light+center) + migration PremiumModal (Modal + Header + tokens) [Wave 1]
+- [ ] 03-03-PLAN.md — Migration Profile + CommunityStatsScreen (Card ×4, Button secondary, wiring tokens) [Wave 1]
+- [ ] 03-04-PLAN.md — SpotDetail : wiring tokens + rayons canoniques, coque vaul/layoutId gelés [Wave 1]
+
+**Wave 2** *(bloqué sur 03-04 — fichier SpotDetail partagé)*
+
+- [ ] 03-05-PLAN.md — Lazy loading (loading="lazy" ×3 + prefetch voisins ±1 lightbox) + mesure PERF-02 APRÈS [Wave 2]
+
+**Wave 3** *(phase gate — bloqué sur toutes les waves précédentes)*
+
+- [ ] 03-06-PLAN.md — Preuve byte-identité CSS + comparaison visuelle 5 surfaces + recette QA-01 device à 100% [Wave 3]
+
 **UI hint**: yes
 
 ### Phase 4: Formulaires & Interactions
@@ -134,6 +153,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
-| 3. Fiches Détaillées & Profils | 0/TBD | Not started | - |
+| 3. Fiches Détaillées & Profils | 0/6 | Planned | - |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
