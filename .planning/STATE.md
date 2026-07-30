@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
 status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-07-29T21:52:39.149Z"
+stopped_at: Phase 3 UI-SPEC approved
+last_updated: "2026-07-30T06:21:41.063Z"
 last_activity: 2026-07-29 -- Phase 02 execution started
 progress:
   total_phases: 5
@@ -93,6 +93,6 @@ Voir `.planning/todos/pending/`.
 
 ## Session Continuity
 
-Last session: 2026-07-29T21:52:39.140Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-fiches-d-taill-es-profils/03-CONTEXT.md
+Last session: 2026-07-30T06:21:41.050Z
+Stopped at: Phase 3 UI-SPEC approved
+Resume file: .planning/phases/03-fiches-d-taill-es-profils/03-UI-SPEC.md
