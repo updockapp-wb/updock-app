@@ -2,7 +2,7 @@
 phase: 03-fiches-d-taill-es-profils
 plan: 06
 type: qa-checklist
-status: awaiting-device-recette
+status: validated-100
 created: 2026-07-30
 reference_spot_id: 153f6575-acc1-446a-b332-58e0e5714214
 ---
@@ -153,16 +153,16 @@ du plan. AuthModal et FiltersModal confirmés non régressés par l'extension du
 |---|-----------------|---------|-----------|
 | 1 | **Fiche — gestuelle (chemin critique)** | Map → clic marker → SpotDetail au snap 0.35 → drag vers 0.95 → swipe-to-dismiss ferme ; morphing du nom (`layoutId` liste↔fiche) visible ; scroll interne sans accroc | **PASS** (device réel, confirmé par l'utilisateur) |
 | 2 | **Lightbox** | Ouverture depuis la vignette → next/prev fluides (prefetch, pas de délai) → swipe DANS la lightbox ne déclenche PAS le drag-to-dismiss (portail isolé) → fermeture OK | **PASS** (device réel, après correctif — voir note gap-closure ci-dessous) |
-| 3 | **Onglets** Info/Avis/Sessions | Bascule OK ; avatars avis/sessions s'affichent (lazy) sans image manquante (Pitfall 5 sur device) | _à remplir — session suspendue_ |
-| 4a | **Non-auth — vignette** | Déconnecté : vignette floutée (`blur-sm`) + cadenas | _à remplir — session suspendue_ |
+| 3 | **Onglets** Info/Avis/Sessions | Bascule OK ; avatars avis/sessions s'affichent (lazy) sans image manquante (Pitfall 5 sur device) | **PASS** (device réel) |
+| 4a | **Non-auth — vignette** | Déconnecté : vignette floutée (`blur-sm`) + cadenas | **PASS** (device réel) |
 | 4b | **Non-auth — cœur favori** | Le cœur favori ouvre l'auth (`onOpenAuth`, SpotDetail:288) | **PASS** (device réel, après correctif) |
 | 4c | **Non-auth — lightbox** | L'ouverture de la lightbox ouvre l'auth (SpotDetail:397) | **PASS** (device réel, après correctif, y compris en visualisant les photos une fois connecté) |
-| 4d | **Non-auth — rangée Admin** | « Tableau de Bord Admin » masquée pour un compte non-admin (Profile:154,414) | _à remplir — session suspendue_ |
-| 5a | **Profil authentifié** | Avatar, 2 stats (Card), rangées de réglages, Log Out présents | _à remplir — session suspendue_ |
-| 5b | **Profil anonyme** | Branche « Sign In / Join » | _à remplir — session suspendue_ |
-| 5c | **PremiumModal** | Ouverture depuis « Devenir Premium » ; fermeture par le bouton close ET par clic sur le backdrop | _à remplir — session suspendue_ |
-| 6 | **CommunityStatsScreen** | Ouverture depuis Profil ; titre NON masqué par la status bar (safe-area `pt-[calc(1rem+env(safe-area-inset-top))]` préservée) ; 2 KPI (Card) + liste pays | _à remplir — session suspendue_ |
-| 7 | **Auth & Filtres (non-régression)** | `AuthModal` (connexion) et `FiltersModal` (filtres carte) fonctionnent comme avant l'extension du master Modal | _à remplir — session suspendue (non-régression re-vérifiée sur desktop après le correctif, voir note)_ |
+| 4d | **Non-auth — rangée Admin** | « Tableau de Bord Admin » masquée pour un compte non-admin (Profile:154,414) | **PASS** (device réel) |
+| 5a | **Profil authentifié** | Avatar, 2 stats (Card), rangées de réglages, Log Out présents | **PASS** (device réel) |
+| 5b | **Profil anonyme** | Branche « Sign In / Join » | **PASS** (device réel) |
+| 5c | **PremiumModal** | Ouverture depuis « Devenir Premium » ; fermeture par le bouton close ET par clic sur le backdrop | **PASS** (device réel) |
+| 6 | **CommunityStatsScreen** | Ouverture depuis Profil ; titre NON masqué par la status bar (safe-area `pt-[calc(1rem+env(safe-area-inset-top))]` préservée) ; 2 KPI (Card) + liste pays | **PASS** (device réel) |
+| 7 | **Auth & Filtres (non-régression)** | `AuthModal` (connexion) et `FiltersModal` (filtres carte) fonctionnent comme avant l'extension du master Modal | **PASS** (device réel, non-régression confirmée) |
 
 **⚠ Bug bloquant trouvé et corrigé pendant la recette (gap closure immédiat, hors périmètre des plans 03-0X) :**
 
@@ -177,7 +177,10 @@ En testant les items 2/4b/4c, l'utilisateur a découvert qu'ouvrir `AuthModal` d
 
 Ce correctif vit sur `main`, **en dehors** de ce worktree et du périmètre `files_modified` déclaré par 03-06 — il devra être pris en compte lors du merge final de ce plan (déjà présent sur `main`, rien à merger côté worktree pour ce fix ; seul `03-QA-CHECKLIST.md` reste à committer ici).
 
-**Verdict section 3 :** _en cours — 4/12 items testés (tous PASS), session suspendue par l'utilisateur avant la fin de la recette. Reprendre avec les items 3, 4a, 4d, 5a, 5b, 5c, 6, 7._
+**Verdict section 3 : ✅ recette QA-01 à 100% (12/12 items PASS) sur device iOS physique.** Aucun
+FAIL. Gestuelle native (drag-to-dismiss, snap points, layoutId, lightbox next/prev), passe non
+authentifiée (gardes V4), profil (authentifié/anonyme/PremiumModal), CommunityStatsScreen
+(safe-area) et non-régression AuthModal/FiltersModal tous confirmés fonctionnels sur device réel.
 
 ---
 
@@ -187,12 +190,15 @@ Ce correctif vit sur `main`, **en dehors** de ce worktree et du périmètre `fil
 |----------|--------|--------|
 | **UI-01 / UI-02** — byte-identité des wirings | Section 1 (CSS compilé, toutes paires IDENTIQUE) **+** section 2 (visuel APRÈS/AVANT, 10/10 IDENTIQUE) | CSS : **✅ prouvé** · Visuel : **✅ validé** (10/10 surfaces) |
 | **PERF-02** — lazy loading mesurable | `03-BASELINE.md § 4-bis/5-bis/6-bis/8` (métriques A/B/C APRÈS + verdict) : métrique A < 10 ms (vs 2509 ms), métrique C 0→N, métrique B delta nul documenté | **✅ satisfait** (03-05) · dégradation gracieuse iOS à confirmer en section 3 item 3 |
-| **QA-01** — recette manuelle mobile 100% | Section 3 (device iOS physique) | ⏳ en attente (section 3) |
+| **QA-01** — recette manuelle mobile 100% | Section 3 (device iOS physique) | **✅ satisfait (12/12 items PASS, 100%)** |
 
 **Note dégradation gracieuse iOS :** sur les WebViews ignorant `loading="lazy"` (cible
 `platform :ios, '15.0'` / `IPHONEOS_DEPLOYMENT_TARGET 14.0-15.6`), le comportement retombe sur
 l'eager loading actuel — zéro régression fonctionnelle, à confirmer en section 3 (item 3).
 
-**Verdict de phase final :** _à sceller une fois les sections 2 et 3 à 100% (chaîne « 100% » à
-inscrire dans le verdict de recette). Toute régression détectée déclenche un plan de gap closure,
-pas un arbitrage._
+**Verdict de phase final : ✅ PHASE 3 VALIDÉE À 100%.** UI-01/UI-02 prouvés (byte-identité CSS +
+visuel 10/10), PERF-02 satisfait (métriques A/B/C de 03-BASELINE.md), QA-01 à 100% (12/12 items
+PASS sur device iOS physique, y compris le bug de modale-derrière-le-tiroir découvert et corrigé
+en gap closure immédiat, commit `497f347` sur `main`). Aucune régression fonctionnelle détectée.
+Le success criterion 4 du ROADMAP Phase 3 est honoré. Prêt pour merge du worktree 03-06 vers
+`main` et clôture de la Phase 3.
