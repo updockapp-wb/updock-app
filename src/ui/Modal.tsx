@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import Button from './Button';
@@ -34,7 +35,7 @@ export default function Modal({
     // Light centered shape (PremiumModal.tsx:16-30, verbatim) — evaluated FIRST so that
     // light+center never falls through to the bottom-sheet branch below.
     if (surface === 'light' && layout === 'center') {
-        return (
+        return createPortal(
             <AnimatePresence>
                 {isOpen && (
                     <div className="fixed inset-0 z-[5000] flex items-center justify-center p-6">
@@ -56,7 +57,8 @@ export default function Modal({
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>,
+            document.body
         );
     }
 
@@ -71,7 +73,7 @@ export default function Modal({
             );
         }
 
-        return (
+        return createPortal(
             <AnimatePresence>
                 {isOpen && (
                     <div className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center pointer-events-none">
@@ -87,12 +89,13 @@ export default function Modal({
                         </motion.div>
                     </div>
                 )}
-            </AnimatePresence>
+            </AnimatePresence>,
+            document.body
         );
     }
 
     // Glass centered shape (original shell — default, keeps AuthModal unchanged)
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
@@ -111,6 +114,7 @@ export default function Modal({
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

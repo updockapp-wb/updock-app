@@ -245,21 +245,25 @@ function AppContent() {
               />
             </div>
           </main>
-
-          <AdminDashboard
-            isOpen={isAdminOpen}
-            onClose={() => setIsAdminOpen(false)}
-            onSpotSelect={handleSpotSelect}
-          />
-
-          <AnimatePresence>
-            {showWelcome && (
-              <WelcomeScreen onClose={() => setShowWelcome(false)} />
-            )}
-          </AnimatePresence>
-
-          <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
         </div>
+
+      {/* Global overlays — rendered OUTSIDE vaul-drawer-wrapper so they escape the
+          background-scale transform SpotDetail's shouldScaleBackground drawer applies
+          to that wrapper; otherwise their z-index is compared in a local stacking
+          context and loses to the drawer's body-portaled content (T-03-06 recette). */}
+      <AdminDashboard
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        onSpotSelect={handleSpotSelect}
+      />
+
+      <AnimatePresence>
+        {showWelcome && (
+          <WelcomeScreen onClose={() => setShowWelcome(false)} />
+        )}
+      </AnimatePresence>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 }
