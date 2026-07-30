@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { spots as staticSpots } from '../data/spots';
 import { getCountryFromCoords, countryCodeToFlag } from '../utils/countryFromCoords';
+import Card from '../ui/Card';
 
 interface CommunityStatsScreenProps {
     isOpen: boolean;
@@ -85,46 +86,46 @@ export default function CommunityStatsScreen({ isOpen, onClose }: CommunityStats
         new Intl.NumberFormat(language === 'fr' ? 'fr-FR' : 'en-US').format(n);
 
     return (
-        <div className="fixed inset-0 z-50 bg-slate-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
             {/* Header */}
             <div className="flex items-center gap-3 px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] border-b border-slate-100 bg-white">
                 <button
                     onClick={onClose}
-                    className="text-slate-600 hover:text-slate-800 transition-colors"
+                    className="text-slate-600 hover:text-text transition-colors"
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h1 className="text-lg font-bold text-slate-800">{t('community_stats.title')}</h1>
+                <h1 className="text-lg font-bold text-text">{t('community_stats.title')}</h1>
             </div>
 
             {/* Content */}
             <div className="p-6 space-y-6">
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <div className="w-6 h-6 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     </div>
                 ) : (
                     <>
                         {/* KPI Cards */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                            <Card>
                                 <p className="text-slate-400 text-xs font-bold uppercase mb-1">
                                     {t('community_stats.total_spots')}
                                 </p>
-                                <p className="text-2xl font-black text-slate-800">{fmt(totalSpots)}</p>
-                            </div>
-                            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                                <p className="text-2xl font-black text-text">{fmt(totalSpots)}</p>
+                            </Card>
+                            <Card>
                                 <p className="text-slate-400 text-xs font-bold uppercase mb-1">
                                     {t('community_stats.total_users')}
                                 </p>
-                                <p className="text-2xl font-black text-slate-800">{fmt(totalUsers)}</p>
-                            </div>
+                                <p className="text-2xl font-black text-text">{fmt(totalUsers)}</p>
+                            </Card>
                         </div>
 
                         {/* Spots by Country */}
                         {countryCounts.length > 0 && (
                             <div>
-                                <p className="text-sm font-bold text-slate-800 mb-3">
+                                <p className="text-sm font-bold text-text mb-3">
                                     {t('community_stats.spots_by_country')}
                                 </p>
                                 <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
@@ -136,7 +137,7 @@ export default function CommunityStatsScreen({ isOpen, onClose }: CommunityStats
                                             <span className="text-sm font-medium text-slate-700">
                                                 {countryCodeToFlag(code)} {name}
                                             </span>
-                                            <span className="text-sm font-bold text-slate-500">
+                                            <span className="text-sm font-bold text-muted">
                                                 {fmt(count)} {t('community_stats.spots_count')}
                                             </span>
                                         </div>
