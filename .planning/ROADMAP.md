@@ -107,7 +107,7 @@ Plans:
 
 **Wave 2** *(bloqué sur 03-04 — fichier SpotDetail partagé)*
 
-- [ ] 03-05-PLAN.md — Lazy loading (loading="lazy" ×3 + prefetch voisins ±1 lightbox) + mesure PERF-02 APRÈS [Wave 2]
+- [x] 03-05-PLAN.md — Lazy loading (loading="lazy" ×3 + prefetch voisins ±1 lightbox) + mesure PERF-02 APRÈS [Wave 2]
 
 **Wave 3** *(phase gate — bloqué sur toutes les waves précédentes)*
 
@@ -153,6 +153,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
-| 3. Fiches Détaillées & Profils | 4/6 | In Progress|  |
+| 3. Fiches Détaillées & Profils | 5/6 | In Progress|  |
 | 4. Formulaires & Interactions | 0/TBD | Not started | - |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
