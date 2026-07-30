@@ -85,6 +85,7 @@ export default function SessionCard({ session, index }: SessionCardProps) {
           <img
             src={session.creator_profile!.avatar_url!}
             alt=""
+            loading="lazy"
             className="w-8 h-8 rounded-full object-cover"
           />
         ) : (
