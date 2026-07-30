@@ -2,9 +2,11 @@
 phase: 03-fiches-d-taill-es-profils
 plan: 01
 type: baseline
-status: scaffold
+status: complete
 created: 2026-07-30
+measured: 2026-07-30
 wave: 0
+reference_spot_id: 153f6575-acc1-446a-b332-58e0e5714214
 ---
 
 # 03-BASELINE — Baseline réseau images & audit statique (AVANT refactor)
@@ -12,8 +14,16 @@ wave: 0
 > **GATE Wave 0.** Ce document doit être **entièrement renseigné** (chiffres A/B/B-bis/C +
 > captures) avant que les plans 03-02, 03-03 et 03-04 ne touchent le moindre fichier sous `src/`.
 >
-> **État actuel : scaffold + audit statique (Task 1) fait. Chiffres runtime & captures (Task 2) =
-> checkpoint humain instrumenté, non encore renseignés.**
+> **État : COMPLET.** Task 1 (audit statique) + Task 2 (mesures runtime instrumentées via
+> chrome-devtools-mcp sur session Chrome authentifiée, viewport mobile émulé 390×844×3) renseignés.
+> Gate Wave 0 **levé** : les plans 03-02, 03-03 et 03-04 peuvent démarrer.
+
+**Méthodologie de mesure (Task 2) :** `npm run dev` (:5173), Chrome piloté via chrome-devtools-mcp,
+compte de test authentifié. Cache Storage `updock-images-v1` vidé (`caches.delete`) avant chaque
+mesure. Compteur = `performance.getEntriesByType('resource').filter(r => r.initiatorType === 'img').length`
+avec `performance.clearResourceTimings()` avant chaque fenêtre. Viewport mobile émulé 390×844×3
+(iPhone-like) pour les mesures de fiche — les snap points 0.35/0.95 sont un comportement **mobile**
+(le desktop affiche un panneau latéral fixe sans snap).
 
 **Note liminaire — CommunityStatsScreen :** `src/components/CommunityStatsScreen.tsx` contient
 **zéro** balise `<img>` (les drapeaux sont des emoji unicode produits par `countryCodeToFlag()`).
@@ -72,19 +82,31 @@ paire explicite `light`/`sheet` conservent leur rendu actuel).
 
 ## 2. Spot de référence
 
-> À remplir en Task 2 (mesure instrumentée). La mesure **APRÈS** (plan 03-05) devra porter sur le
-> **MÊME `id`** pour que les deltas A/B/C soient comparables.
+La mesure **APRÈS** (plan 03-05) devra porter sur le **MÊME `id`** pour que les deltas A/B/C soient
+comparables.
 
 | Champ | Valeur |
 |-------|--------|
-| `id` du spot | _(à renseigner — Task 2)_ |
-| Nom | _(à renseigner)_ |
-| Nombre d'`image_urls` | _(à renseigner — cible ≥ 5, minimum 2)_ |
-| Nombre d'avis avec avatar | _(à renseigner — cible : plusieurs)_ |
-| Nombre de sessions avec avatar | _(à renseigner)_ |
+| `id` du spot | `153f6575-acc1-446a-b332-58e0e5714214` |
+| Nom | Lago del Salto - CNSV |
+| Nombre d'`image_urls` | **4** (max de la base ; cible ≥ 5 non atteignable actuellement) |
+| Nombre d'avis avec avatar | **0** (0 avis sur ce spot ; 2 avis au total dans toute la DB, sur d'autres spots) |
+| Nombre de sessions avec avatar | **0** (0 session sur ce spot ; 33 sessions au total dans la DB, aucune ici) |
 
-**Contrainte de reproductibilité :** consigner l'`id` public du spot (jamais de token/URL signée).
-Le plan 03-05 relira cet `id` pour rejouer les métriques sur le même spot.
+**⚠️ Déviation documentée — plancher de données de l'instance de dev :** sur les 85 spots de
+l'instance, **aucun** n'atteint ≥ 5 `image_urls` (max observé = 4), et la table `reviews` ne
+contient que **2 lignes au total** dans toute la base (un avis chacun sur 2 spots distincts, aucun
+avec plus d'une image). Aucun spot ne cumule donc « ≥ 5 images + plusieurs avis avec avatar » comme
+visé initialement — c'est un **plancher de données réel de l'instance**, pas une erreur de sélection.
+
+**Décision :** retenir le spot le plus riche en **images** (4) comme référence, car PERF-02 porte
+sur le chargement des **images** (l'objet principal de la mesure). Les avis/sessions sont donc
+mesurés à 0 en conséquence — **résultat réel, pas un oubli**. Cette limite de données (absence de
+spot « riche » en avis) est **hors du contrôle du plan 03-05** et ne doit pas être interprétée
+comme un échec de mesure : c'est un plancher représentatif de l'instance actuelle.
+
+**Contrainte de reproductibilité :** l'`id` public ci-dessus (jamais de token/URL signée) sera
+relu par le plan 03-05 pour rejouer les métriques sur le même spot.
 
 ---
 
@@ -124,38 +146,46 @@ Le plan 03-05 relira cet `id` pour rejouer les métriques sur le même spot.
 
 ## 4. Métrique A — requêtes images à la navigation lightbox (AVANT)
 
-> À remplir en Task 2. Compteur : `performance.getEntriesByType('resource').filter(r => r.initiatorType === 'img').length`,
-> relevé avant l'action puis 2 s après. Cible **attendue APRÈS prefetch : 0-1 nouvelle requête**.
+Compteur : `performance.getEntriesByType('resource').filter(r => r.initiatorType === 'img').length`,
+relevé avant l'action puis 2 s après. Spot de référence (4 photos), cycle complet 1→2→3→4→1.
+Cible **attendue APRÈS prefetch : 0-1 nouvelle requête** par navigation.
 
-| Action | Nouvelles requêtes `img` | Délai perceptible (oui/non) |
-|--------|--------------------------|-----------------------------|
-| Ouverture lightbox | _(à renseigner)_ | _(à renseigner)_ |
-| Next 1 | _(à renseigner)_ | _(à renseigner)_ |
-| Next 2 | _(à renseigner)_ | _(à renseigner)_ |
-| Next 3 | _(à renseigner)_ | _(à renseigner)_ |
-| Next 4 | _(à renseigner)_ | _(à renseigner)_ |
+| Action | Nouvelles requêtes `img` | Délai perceptible |
+|--------|--------------------------|-------------------|
+| Ouverture lightbox (photo 1/4) | 0 (déjà chargée par la vignette de la fiche) | non |
+| Next → photo 2/4 | 1 | **oui — 2509 ms** |
+| Next → photo 3/4 | 1 | non — 882 ms |
+| Next → photo 4/4 | 1 | non — 799 ms |
+| Next → retour photo 1/4 | 0 (déjà en cache navigateur HTTP) | non |
 
-Baseline attendue ≈ 4 (1 requête par navigation, chargement à la demande).
+**Total sur le cycle complet : 3 nouvelles requêtes réseau** (pas 4 — le retour à la photo 1 ne
+re-fetch pas, elle est en cache HTTP navigateur). Le **premier `next` a un délai net (2509 ms)** :
+c'est la cible d'amélioration prioritaire du prefetch/lazy en 03-05.
 
 ---
 
 ## 5. Métrique B — requêtes images au chargement initial (AVANT)
 
-> À remplir en Task 2. Même compteur `initiatorType === 'img'`, relevé avant → 2 s après montage
-> de la surface, sans interagir.
+Même compteur `initiatorType === 'img'`, relevé avant → 2 s après montage de la surface, sans
+interagir. Viewport mobile émulé 390×844×3.
 
 | Surface | Nombre de requêtes `img` |
 |---------|--------------------------|
-| Fiche spot au snap 0.35 | _(à renseigner)_ |
-| Profil authentifié (B-bis) | _(à renseigner)_ |
-| Profil anonyme (B-bis) | _(à renseigner)_ |
-| B-ter — lightbox sous Slow 3G (optionnel) | _(à renseigner — donnée, pas cible)_ |
+| Fiche spot au snap 0.35 (mobile) | **2** |
+| Profil authentifié (B-bis) | 1 (avatar propre) |
+| Profil anonyme (B-bis) | 0 |
+| B-ter — lightbox sous Slow 3G (optionnel) | **non mesuré** (sauté faute de temps ; qualifié « donnée, pas cible ») |
 
-**Note d'interprétation (à ne pas oublier au plan 03-05) :** un **delta nul APRÈS** sur cette
-métrique est un **résultat légitime à documenter**, pas un échec. Causes probables :
-montage conditionnel déjà en place (les images hors viewport ne sont pas montées) + seuil de
-déclenchement du lazy-loading Chromium (~1250 px sous le viewport). `03-RESEARCH.md` Pitfall 4
-prédit ce delta nul — d'où l'existence des trois métriques A/B/C plutôt qu'une seule.
+**Constat clé — Fiche au snap 0.35 = 2 requêtes :** la vignette `image_urls[0]` **ET** l'avatar
+« Ajouté par » se chargent tous les deux, alors que **seul l'avatar est visuellement dans le
+viewport** à ce snap. **Le DOM est monté en entier indépendamment du snap** (aucun montage
+conditionnel par visibilité). Cela **confirme exactement le Pitfall 4 de `03-RESEARCH.md`** et
+**justifie l'optimisation du plan 03-05** (lazy/conditionnel par snap).
+
+**Note d'interprétation (à ne pas oublier au plan 03-05) :** un **delta nul APRÈS** sur les
+surfaces profil (déjà à 0-1) est un **résultat légitime à documenter**, pas un échec — l'objet de
+l'optimisation est la fiche au snap 0.35 (2 → cible réduite). Causes structurelles : seuil de
+déclenchement du lazy-loading Chromium (~1250 px sous le viewport) + montage inconditionnel du DOM.
 
 ---
 
@@ -167,29 +197,35 @@ prédit ce delta nul — d'où l'existence des trois métriques A/B/C plutôt qu
 
 | Surface | Compte `img[loading="lazy"]` |
 |---------|------------------------------|
-| Fiche — onglet Info | _(à renseigner — attendu 0)_ |
-| Fiche — onglet Avis | _(à renseigner — attendu 0)_ |
-| Fiche — onglet Sessions | _(à renseigner — attendu 0)_ |
-| Profil | _(à renseigner — attendu 0)_ |
+| Fiche — onglet Info (snap 0.95) | 0 |
+| Fiche — onglet Avis (snap 0.95) | 0 |
+| Fiche — onglet Sessions (snap 0.95) | 0 |
+| Profil authentifié | 0 |
+| Profil anonyme | 0 |
+
+**Confirme le grep statique de Task 1** (`grep -rn 'loading="lazy"' src/` = 0 occurrence) : baseline
+AVANT validée à 0 sur toutes les surfaces testées.
 
 ---
 
 ## 7. Captures AVANT
 
-> À archiver en Task 2 sous `audit/screenshots/` avec le préfixe `03-before-` (réutilisation du
-> dossier de captures des Phases 1/2). Renseigner chaque chemin réel une fois la capture prise.
+Archivées sous `audit/screenshots/` avec le préfixe `03-before-` (réutilisation du dossier de
+captures des Phases 1/2). Ces PNG vivent à la racine du **repo principal** (hors `.planning/`), donc
+**hors du périmètre `files_modified` du plan** : ils restent des artefacts locaux non versionnés,
+comme les captures des Phases 1/2 déjà présentes dans ce dossier — ils ne sont PAS ajoutés au commit.
 
-| # | Surface | Chemin de capture (préfixe `03-before-`) |
-|---|---------|------------------------------------------|
-| 1 | Fiche spot — snap 0.35 | `audit/screenshots/03-before-fiche-snap035.png` _(à créer)_ |
-| 2 | Fiche spot — snap 0.95, onglet Info | `audit/screenshots/03-before-fiche-snap095-info.png` _(à créer)_ |
-| 3 | Fiche spot — snap 0.95, onglet Avis | `audit/screenshots/03-before-fiche-snap095-avis.png` _(à créer)_ |
-| 4 | Fiche spot — snap 0.95, onglet Sessions | `audit/screenshots/03-before-fiche-snap095-sessions.png` _(à créer)_ |
-| 5 | Profil anonyme | `audit/screenshots/03-before-profil-anonyme.png` _(à créer)_ |
-| 6 | Profil authentifié (email masqué, cf. T-03-01-A) | `audit/screenshots/03-before-profil-auth.png` _(à créer)_ |
-| 7 | PremiumModal | `audit/screenshots/03-before-premium-modal.png` _(à créer)_ |
-| 8 | CommunityStatsScreen | `audit/screenshots/03-before-community-stats.png` _(à créer)_ |
+| # | Surface | Chemin réel |
+|---|---------|-------------|
+| 1 | Fiche spot — snap 0.35 | `audit/screenshots/03-before-fiche-snap035.png` |
+| 2 | Fiche spot — snap 0.95, onglet Info | `audit/screenshots/03-before-fiche-snap095-info.png` |
+| 3 | Fiche spot — snap 0.95, onglet Avis | `audit/screenshots/03-before-fiche-snap095-avis.png` |
+| 4 | Fiche spot — snap 0.95, onglet Sessions | `audit/screenshots/03-before-fiche-snap095-sessions.png` |
+| 5 | Profil anonyme | `audit/screenshots/03-before-profil-anonyme.png` |
+| 6 | Profil authentifié (email masqué via patch DOM temporaire avant capture, restauré après) | `audit/screenshots/03-before-profil-auth.png` |
+| 7 | PremiumModal | `audit/screenshots/03-before-premium-modal.png` |
+| 8 | CommunityStatsScreen | `audit/screenshots/03-before-community-stats.png` |
 
-**Rappel sécurité (threat T-03-01-A) :** ne jamais faire apparaître dans une capture un JWT, un
-token de session, une URL signée Supabase Storage ni l'email du compte de test. La capture du
-profil authentifié doit **masquer l'adresse email** affichée (`Profile.tsx:205`).
+**Rappel sécurité (threat T-03-01-A) — appliqué :** aucune capture ne montre de JWT, token de
+session ni URL signée Supabase Storage. La capture du profil authentifié a été prise avec l'adresse
+email **masquée** (patch DOM temporaire avant capture, restauré après — `Profile.tsx:205`).
