@@ -227,7 +227,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             setSpots(prev => prev.map(s => s.id === id ? { ...s, is_approved: true } : s));
         } catch (error) {
             console.error('Error approving:', error);
-            alert('Failed to approve.');
+            Toast.show({ text: "Échec de l'approbation.", duration: 'long' });
         }
     };
 
@@ -259,7 +259,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
         } catch (error: any) {
             console.error('Error deleting spot:', error);
             const errorMessage = error.message || error.error_description || 'Unknown error';
-            alert(`[DEBUG] Failed to delete spot: ${errorMessage}`);
+            Toast.show({ text: `Échec de la suppression : ${errorMessage}`, duration: 'long' });
         }
     };
 
@@ -282,7 +282,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             setSpots(prev => prev.map(s => s.id === updatedSpot.id ? updatedSpot : s));
         } catch (error) {
             console.error('Error updating spot:', error);
-            alert('Failed to update spot.');
+            throw error;
         }
     };
 
