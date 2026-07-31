@@ -1,9 +1,9 @@
 ---
 phase: 05
 slug: recette-globale-nettoyage-final
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: approved
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-31
 ---
 
@@ -49,9 +49,9 @@ created: 2026-07-31
 
 ## Wave 0 Requirements
 
-- [ ] Create the merged QA-01 recette checklist artifact (from Phases 2/3/4 checklists + avis/session/auth flows + D-12 known exclusions) **before** the recette task. Source flows from `src/components/` (Map, SpotDetail, Profile, AuthModal, AddSpotForm, ReviewForm/List, SessionForm/List, AdminDashboard, FiltersModal, SearchModal) and `App.tsx` tabs (map/favorites/list/profile).
-- [ ] Create a Phase-5 `audit/` output target (e.g. `.planning/phases/05-recette-globale-nettoyage-final/audit/`) so `ANALYZE=1 npm run build` doesn't overwrite the frozen Phase-1 baseline artifacts.
-- [ ] No test framework install — locked "no automated test infrastructure" constraint stays in effect.
+- [x] Create the merged QA-01 recette checklist artifact (from Phases 2/3/4 checklists + avis/session/auth flows + D-12 known exclusions) **before** the recette task. Source flows from `src/components/` (Map, SpotDetail, Profile, AuthModal, AddSpotForm, ReviewForm/List, SessionForm/List, AdminDashboard, FiltersModal, SearchModal) and `App.tsx` tabs (map/favorites/list/profile). — Covered by plan `05-05` Task 1.
+- [x] Create a Phase-5 `audit/` output target (e.g. `.planning/phases/05-recette-globale-nettoyage-final/audit/`) so `ANALYZE=1 npm run build` doesn't overwrite the frozen Phase-1 baseline artifacts. — Covered by plan `05-04`.
+- [x] No test framework install — locked "no automated test infrastructure" constraint stays in effect. — Confirmed, no plan installs a test framework.
 
 ---
 
@@ -66,11 +66,11 @@ created: 2026-07-31
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 180s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 180s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-07-31 (verified by gsd-plan-checker during /gsd:plan-phase 5)

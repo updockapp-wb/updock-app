@@ -438,18 +438,21 @@ This is an internal refactor with **no new attack surface** — no new auth, cry
 |---------|--------|-----------|
 | Lazy-loading admin UI leaks admin bundle to non-admins | Info disclosure | Chunk contents are not a secret (client code), but gate the mount (`{isAdminOpen && ...}`) so non-admins never fetch it; server RLS remains the real access control |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which metric governs the PERF-03 −15% gate — summed total gzip JS, or eager/initial gzip JS?** (BLOCKING for the bundle task.)
    - What we know: Baseline is defined as the SUM of all `.js` gzip = 504.17 kB. The primary strategy (code-splitting) defers but doesn't shrink that sum; dep removal yields ~0 kB in the bundle.
    - What's unclear: Whether −15% is expected on the summed total (hard/maybe unreachable without deeper tree-shaking or descope) or on the initial/eager load (easily met by lazy Mapbox).
    - Recommendation: Adopt **eager/initial gzip JS** as the operative PERF-03 number (it reflects D-07's load-time UX intent), report the summed total for continuity, and confirm with the user in discuss/plan. If summed-total is mandatory, add a task to investigate `framer-motion`/`lucide-react` tree-shaking and flag risk of missing target.
+   - **RESOLVED (user decision during /gsd:plan-phase 5):** Eager/initial gzip JS is the operative PERF-03 pass/fail gate. Summed-total gzip JS is reported alongside for continuity with the Phase-1 baseline but is not the gate. Implemented in plan `05-04`.
 
 2. **Is `firebase` (^12.11.0) a required peer of `@capacitor-firebase/messaging`, or a genuinely removable direct dep?** (CODE-01 cleanliness, not bundle size.)
    - What we know: `firebase` JS is never imported in `src/`; only the native `@capacitor-firebase/messaging` plugin is used. knip does NOT flag `firebase` as unused.
    - Recommendation: Check the plugin's peerDependencies before touching it. If it's a required peer, keep it. Low priority — it's not in the web bundle either way.
+   - **RESOLVED (planning decision):** `firebase` is kept — not flagged by knip, and plan `05-02` requires the executor to verify `@capacitor-firebase/messaging`'s peerDependencies before any removal is considered. No removal planned this phase.
 
 3. **`AdminDashboard` currently mounts unconditionally (visibility via `isOpen`).** Switching to `{isAdminOpen && <Suspense>...}` avoids loading the chunk for non-admins — confirm no mount-time side-effect (subscription/fetch) is lost by not mounting it until opened.
+   - **RESOLVED (planning decision):** Plan `05-04` Task 2's `<read_first>` requires the executor to check `AdminDashboard.tsx` for mount-time side-effects before converting to conditional lazy mount, and to preserve any such effect if found.
 
 ## Sources
 
