@@ -94,6 +94,10 @@ None - plan executed exactly as written for both tasks' actions.
 - Périmètre de migration des formulaires (édition admin, D-09) et des boutons favori (second bouton coeur, D-10) fermé.
 - Prêt pour la recette manuelle 04-06 (édition admin invalide → inline ; échec réseau → toast + données conservées ; favori offline → revert + toast ; libellés FR/EN).
 
+## Self-Check: PASSED
+- FOUND: src/components/AdminDashboard.tsx, src/App.tsx, 04-05-SUMMARY.md
+- FOUND commits: 257e5ba (Task 1), 6d1d316 (Task 2)
+
 ---
 *Phase: 04-formulaires-interactions*
 *Completed: 2026-07-31*
