@@ -5,7 +5,7 @@ milestone_name: Refactor UI/UX & Performance
 status: ready_to_plan
 stopped_at: Phase 04 complete (6/6) — ready to discuss Phase 5
 last_updated: 2026-07-31T07:35:55.512Z
-last_activity: 2026-07-31 - Completed quick task 260731-e56: Corriger 3 écarts de la recette Phase 4 (croix SpotDetail, description obligatoire, accent communauté)
+last_activity: 2026-07-31 - Completed quick task 260731-eul: Onglet Pending d'AdminDashboard rendu cohérent avec le DS (i18n, boutons DS, padding)
 progress:
   total_phases: 5
   completed_phases: 3
@@ -91,6 +91,7 @@ Voir `.planning/todos/pending/`.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260731-e56 | Corriger 3 écarts de la recette Phase 4 : croix SpotDetail coupée sur nom long, description de spot obligatoire (3 formulaires), accent manquant sur « communauté » | 2026-07-31 | dae4ad9 | [260731-e56-corriger-les-4-petits-bugs-carts-d-couve](./quick/260731-e56-corriger-les-4-petits-bugs-carts-d-couve/) |
+| 260731-eul | Onglet Pending d'AdminDashboard + Spot Preview Modal rendus cohérents avec le DS : traductions fr/en manquantes, 5 boutons migrés vers le composant Button, padding de carte harmonisé avec l'onglet All Spots | 2026-07-31 | (à suivre) | [260731-eul-rendre-l-onglet-pending-d-admindashboard](./quick/260731-eul-rendre-l-onglet-pending-d-admindashboard/) |
 
 ## Deferred Items
 
