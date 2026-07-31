@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect as useLayoutEffect } from 'react';
 import { App as CapApp } from '@capacitor/app';
+import { Toast } from '@capacitor/toast';
 import { supabase } from './lib/supabase';
 import { Heart } from 'lucide-react';
+import Button from './ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import Map from './components/Map';
 import NavBar from './components/NavBar';
@@ -171,15 +173,18 @@ function AppContent() {
                               <span className="text-xs text-slate-500 uppercase tracking-wide bg-slate-100 px-2 py-1 rounded-md">{spot.type}</span>
                             </div>
                           </div>
-                          <button
+                          <Button
+                            variant="ghost"
+                            iconOnly
+                            aria-label={t('fav.remove')}
+                            className="!p-2 text-rose-500 hover:!bg-rose-50 w-11 h-11"
                             onClick={(e) => {
                               e.stopPropagation();
-                              toggleFavorite(spot.id);
+                              toggleFavorite(spot.id).catch(() => Toast.show({ text: t('fav.error.revert'), duration: 'short' }));
                             }}
-                            className="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
                           >
-                            <Heart size={20} className="fill-rose-500" />
-                          </button>
+                            <Heart size={20} className="fill-rose-500 text-rose-500" />
+                          </Button>
                         </div>
                       ))}
                     </div>
