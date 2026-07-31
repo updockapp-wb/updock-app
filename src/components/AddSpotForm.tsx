@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { type StartType } from '../data/spots';
 import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
 
 interface AddSpotFormProps {
     isOpen: boolean;
@@ -23,6 +25,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     const { addSpot } = useSpots();
     const { t } = useLanguage();
     const [isSending, setIsSending] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Miroir de `imagePreviews` dans un ref — SANS cleanup. L'ancien effet révoquait les
     // URLs à chaque changement de `imagePreviews` (son cleanup se rejoue avant chaque re-run),
@@ -94,6 +97,15 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Validation client (D-02 : nom ≤100 / description ≤2000 ; D-03 : ≥1 type).
+        // Rappel : garde UX uniquement — la garde autoritaire reste RLS/Postgres (T-04-V2).
+        setError(null);
+        const trimmed = name.trim();
+        if (!trimmed) { setError(t('form.error.name_required')); return; }
+        if (trimmed.length > 100) { setError(t('form.error.name_too_long')); return; }
+        if (description.length > 2000) { setError(t('form.error.desc_too_long')); return; }
+        if (type.length === 0) { setError(t('form.error.type_required')); return; }
 
         if (!position) return;
 
@@ -196,28 +208,25 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                             </div>
 
                             {/* Name Input */}
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('add.name')}</label>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder={t('add.placeholder_name')}
-                                    className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                                    required
-                                />
-                            </div>
+                            <Input
+                                surface="light"
+                                label={t('add.name')}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder={t('add.placeholder_name')}
+                                maxLength={100}
+                            />
 
                             {/* Description */}
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('add.desc')}</label>
-                                <textarea
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder={t('add.placeholder_desc')}
-                                    className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none transition-colors min-h-[100px]"
-                                />
-                            </div>
+                            <Input
+                                surface="light"
+                                multiline
+                                label={t('add.desc')}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder={t('add.placeholder_desc')}
+                                maxLength={2000}
+                            />
 
                             {/* Photo Upload - Multiple Photos */}
                             <div>
@@ -233,7 +242,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveImage(index)}
-                                                className="absolute top-2 right-2 p-1.5 bg-rose-500 hover:bg-rose-600 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                                className="absolute top-2 right-2 p-2 bg-rose-500 hover:bg-rose-600 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                                             >
                                                 <Trash2 size={14} className="text-white" />
                                             </button>
@@ -259,13 +268,12 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                                     </label>
                                 )}
                             </div>
-                            <button
-                                type="submit"
-                                disabled={isSending}
-                                className={`w-full py-4 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl shadow-lg shadow-sky-200 transition-all active:scale-[0.98] ${isSending ? 'opacity-70 cursor-not-allowed' : ''}`}
-                            >
+                            {error && (
+                                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>
+                            )}
+                            <Button type="submit" variant="primary" size="lg" loading={isSending} className="w-full">
                                 {isSending ? t('add.sending') : t('add.submit')}
-                            </button>
+                            </Button>
                         </form>
                     </motion.div>
                 </div>
