@@ -162,8 +162,8 @@ Plans:
 Plans:
 **Wave 1** *(fondations, fichiers disjoints)*
 
-- [ ] 05-01-PLAN.md — Split des 7 contexts (use{Name}.ts) + lint 100% vert (CODE-02, CODE-01) [Wave 1]
-- [ ] 05-02-PLAN.md — Code mort + deps : delete test-fcm.mjs, add geojson, disposition knip (CODE-01) [Wave 1]
+- [x] 05-01-PLAN.md — Split des 7 contexts (use{Name}.ts) + lint 100% vert (CODE-02, CODE-01) [Wave 1]
+- [x] 05-02-PLAN.md — Code mort + deps : delete test-fcm.mjs, add geojson, disposition knip (CODE-01) [Wave 1]
 
 **Wave 2** *(bloqué sur 05-01 — fichiers contexts partagés)*
 
@@ -188,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 0/5 | Planned | - |
+| 5. Recette globale & nettoyage final | 2/5 | In Progress|  |
