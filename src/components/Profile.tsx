@@ -5,10 +5,11 @@ import { useLanguage } from '../context/useLanguage';
 import { useFavorites } from '../context/useFavorites';
 import { useAuth } from '../context/useAuth';
 import { useProfile } from '../context/useProfile';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { useSessions } from '../context/useSessions';
 import { useNotifications } from '../context/useNotifications';
-import PremiumModal from './PremiumModal';
+// Lazy-loaded at its call site: the premium chunk loads only on user tap (D-08).
+const PremiumModal = lazy(() => import('./PremiumModal'));
 import CommunityStatsScreen from './CommunityStatsScreen';
 import { supabase } from '../lib/supabase';
 import Card from '../ui/Card';
@@ -442,7 +443,11 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
                 <p className="text-xs text-slate-300">Updock v{__APP_VERSION__} (Beta)</p>
             </div>
 
-            <PremiumModal isOpen={isPremiumOpen} onClose={() => setIsPremiumOpen(false)} />
+            {isPremiumOpen && (
+                <Suspense fallback={null}>
+                    <PremiumModal isOpen onClose={() => setIsPremiumOpen(false)} />
+                </Suspense>
+            )}
 
             <CommunityStatsScreen
                 isOpen={isCommunityStatsOpen}

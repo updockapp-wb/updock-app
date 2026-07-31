@@ -28,7 +28,8 @@ import { SessionsProvider } from './context/SessionsContext';
 import AuthModal from './components/AuthModal';
 import SpotDetail from './components/SpotDetail';
 import WelcomeScreen from './components/WelcomeScreen';
-import AdminDashboard from './components/AdminDashboard';
+// Gated lazy mount: the ~490-line admin chunk is never fetched for non-admins (D-08, T-05-06).
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 import { type Spot } from './data/spots';
 
 // Map-area fallback shown while the lazy Mapbox chunk loads. Reuses the
@@ -291,11 +292,15 @@ function AppContent() {
           background-scale transform SpotDetail's shouldScaleBackground drawer applies
           to that wrapper; otherwise their z-index is compared in a local stacking
           context and loses to the drawer's body-portaled content (T-03-06 recette). */}
-      <AdminDashboard
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        onSpotSelect={handleSpotSelect}
-      />
+      {isAdminOpen && (
+        <Suspense fallback={null}>
+          <AdminDashboard
+            isOpen
+            onClose={() => setIsAdminOpen(false)}
+            onSpotSelect={handleSpotSelect}
+          />
+        </Suspense>
+      )}
 
       <AnimatePresence>
         {showWelcome && (
