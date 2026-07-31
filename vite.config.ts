@@ -16,7 +16,11 @@ export default defineConfig({
     ...(process.env.ANALYZE
       ? [
           visualizer({
-            filename: '.planning/phases/01-audit-design-system/audit/stats.html',
+            // Env-driven so the frozen Phase-1 baseline (01-audit-design-system/audit/stats.html)
+            // is never clobbered (D-09/T-05-08). Defaults to the current Phase-5 audit folder.
+            filename:
+              process.env.ANALYZE_OUT ||
+              '.planning/phases/05-recette-globale-nettoyage-final/audit/stats.html',
             template: 'treemap',
             gzipSize: true,
             brotliSize: true,

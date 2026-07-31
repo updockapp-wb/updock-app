@@ -1,0 +1,31 @@
+
+> dockstart-app@1.1.5 build
+> tsc -b && vite build
+
+vite v7.2.7 building client environment for production...
+(node:28139) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+transforming...
+✓ 2334 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.45 kB │ gzip:   0.30 kB
+dist/assets/Map-CwIg1m_Z.css             35.60 kB │ gzip:   4.77 kB
+dist/assets/index-DVW05gtO.css           55.64 kB │ gzip:   9.63 kB
+dist/assets/check-Ddyh50lL.js             0.12 kB │ gzip:   0.14 kB
+dist/assets/web-CrotT75p.js               0.28 kB │ gzip:   0.23 kB
+dist/assets/web-BTZNAM-N.js               0.36 kB │ gzip:   0.25 kB
+dist/assets/web-viaIWhbW.js               0.76 kB │ gzip:   0.35 kB
+dist/assets/web-i63sCky9.js               0.90 kB │ gzip:   0.47 kB
+dist/assets/PremiumModal-cFN6kKJU.js      1.44 kB │ gzip:   0.72 kB
+dist/assets/AdminDashboard-CCb47_W6.js   14.39 kB │ gzip:   3.88 kB
+dist/assets/Map-DU5ND9-h.js              41.61 kB │ gzip:  13.71 kB
+dist/assets/web-NmNhM_fo.js              45.83 kB │ gzip:  14.10 kB
+dist/assets/index-CJYPvb2l.js           683.85 kB │ gzip: 202.55 kB
+dist/assets/mapbox-gl-CCFMQJx0.js       987.84 kB │ gzip: 274.66 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.84s
