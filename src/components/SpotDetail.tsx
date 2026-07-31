@@ -684,7 +684,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         </div>
 
                         {/* Save button */}
-                        <div className="pt-4 border-t border-slate-100 mt-4 space-y-3 shrink-0">
+                        <div className="pt-4 border-t border-slate-100 mt-4 space-y-3 shrink-0 pb-[env(safe-area-inset-bottom)]">
                             {editError && (
                                 <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{editError}</div>
                             )}
