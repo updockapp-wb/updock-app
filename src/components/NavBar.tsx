@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Map, Heart, User, Plus, List, Lock } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 
 interface NavBarProps {
     activeTab: 'map' | 'favorites' | 'list' | 'profile';

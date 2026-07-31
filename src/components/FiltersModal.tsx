@@ -1,6 +1,6 @@
 import { Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle, Umbrella } from 'lucide-react';
 import { type StartType } from '../data/spots';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import Modal from '../ui/Modal';
 import Header from '../ui/Header';
 

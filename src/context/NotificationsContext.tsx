@@ -1,18 +1,17 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
+import { NotificationsContext } from './useNotifications';
 
 type PermissionStatus = 'unknown' | 'granted' | 'denied' | 'loading';
 
-interface NotificationsContextType {
+export interface NotificationsContextType {
     permissionStatus: PermissionStatus;
     hasToken: boolean;
     ensurePushToken: () => Promise<void>;
     checkPermission: () => Promise<void>;
 }
-
-const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
@@ -136,12 +135,4 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             {children}
         </NotificationsContext.Provider>
     );
-}
-
-export function useNotifications(): NotificationsContextType {
-    const context = useContext(NotificationsContext);
-    if (context === undefined) {
-        throw new Error('useNotifications must be used within a NotificationsProvider');
-    }
-    return context;
 }

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import Modal from '../ui/Modal';
 import Header from '../ui/Header';
 import Input from '../ui/Input';

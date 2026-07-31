@@ -1,7 +1,7 @@
 import { X, Check, Trash2, MapPin, Edit, LayoutList, CircleAlert, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Toast } from '@capacitor/toast';
-import { useSpots } from '../context/SpotsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useSpots } from '../context/useSpots';
+import { useLanguage } from '../context/useLanguage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { type Spot, type StartType } from '../data/spots';

@@ -1,7 +1,8 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
-import { useNotifications } from './NotificationsContext';
+import { useAuth } from './useAuth';
+import { useNotifications } from './useNotifications';
+import { SessionsContext } from './useSessions';
 
 export interface Session {
   id: string;
@@ -20,7 +21,7 @@ export interface Session {
   user_is_attending: boolean;
 }
 
-interface SessionsContextType {
+export interface SessionsContextType {
   sessions: Session[];
   isLoadingSessions: boolean;
   fetchSessionsForSpot: (spotId: string) => Promise<void>;
@@ -33,8 +34,6 @@ interface SessionsContextType {
   fetchUserSessions: () => Promise<void>;
   isLoadingUserSessions: boolean;
 }
-
-const SessionsContext = createContext<SessionsContextType | undefined>(undefined);
 
 export function SessionsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -364,12 +363,4 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
       {children}
     </SessionsContext.Provider>
   );
-}
-
-export function useSessions() {
-  const context = useContext(SessionsContext);
-  if (context === undefined) {
-    throw new Error('useSessions must be used within a SessionsProvider');
-  }
-  return context;
 }

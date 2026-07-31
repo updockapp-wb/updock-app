@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { type Session } from '../context/SessionsContext';
 import SessionCard from './SessionCard';
 

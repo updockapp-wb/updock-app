@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Star, User } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { type Review } from './ReviewForm';
 
 interface ReviewListProps {

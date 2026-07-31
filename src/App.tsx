@@ -10,14 +10,15 @@ import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import NearbySpotsList from './components/NearbySpotsList';
 
-import { useFavorites } from './context/FavoritesContext';
-import { useSpots } from './context/SpotsContext';
-import { useLanguage } from './context/LanguageContext';
+import { useFavorites } from './context/useFavorites';
+import { useSpots } from './context/useSpots';
+import { useLanguage } from './context/useLanguage';
 import { LanguageProvider } from './context/LanguageContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { SpotsProvider } from './context/SpotsContext';
 
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/useAuth';
 import { ProfileProvider } from './context/ProfileContext';
 import { NotificationsProvider } from './context/NotificationsContext';
 import { SessionsProvider } from './context/SessionsContext';

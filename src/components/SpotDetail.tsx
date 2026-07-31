@@ -1,8 +1,8 @@
 import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil, Save, Plus, Trash2, User as UserIcon } from 'lucide-react';
 import { type Spot, type StartType } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useFavorites } from '../context/FavoritesContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useFavorites } from '../context/useFavorites';
+import { useLanguage } from '../context/useLanguage';
 import { useState, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import { createPortal } from 'react-dom';
@@ -15,9 +15,9 @@ import { type Review } from './ReviewForm';
 import ReviewList from './ReviewList';
 import SessionForm from './SessionForm';
 import SessionList from './SessionList';
-import { useAuth } from '../context/AuthContext';
-import { useSessions } from '../context/SessionsContext';
-import { useSpots } from '../context/SpotsContext';
+import { useAuth } from '../context/useAuth';
+import { useSessions } from '../context/useSessions';
+import { useSpots } from '../context/useSpots';
 import { supabase } from '../lib/supabase';
 
 interface SpotDetailProps {

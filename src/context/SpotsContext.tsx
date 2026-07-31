@@ -1,14 +1,15 @@
-import { createContext, useContext, useState, useEffect, type ReactNode, useMemo } from 'react';
+import { useState, useEffect, type ReactNode, useMemo } from 'react';
 import { spots as staticSpots, type Spot, type StartType } from '../data/spots';
 import { supabase } from '../lib/supabase';
 import { getDistance } from '../utils/distance';
 import { Toast } from '@capacitor/toast';
 import { Geolocation } from '@capacitor/geolocation';
+import { SpotsContext } from './useSpots';
 
 // We rely on the Spot type from data/spots.ts having is_approved?
 // If not, we extend it here or update data/spots.ts (which I did in step 1384).
 
-interface SpotsContextType {
+export interface SpotsContextType {
     spots: Spot[];
     nearbySpots: Spot[];
     userLocation: [number, number] | null;
@@ -18,8 +19,6 @@ interface SpotsContextType {
     deleteSpot: (id: string) => Promise<void>;
     updateSpot: (spot: Spot) => Promise<void>;
 }
-
-const SpotsContext = createContext<SpotsContextType | undefined>(undefined);
 
 export function SpotsProvider({ children }: { children: ReactNode }) {
     // Start with static spots + cached spots
@@ -300,12 +299,4 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             {children}
         </SpotsContext.Provider>
     );
-}
-
-export function useSpots() {
-    const context = useContext(SpotsContext);
-    if (context === undefined) {
-        throw new Error('useSpots must be used within a SpotsProvider');
-    }
-    return context;
 }

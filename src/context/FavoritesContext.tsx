@@ -1,16 +1,15 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
 import { cacheSpotImages } from '../utils/offline';
-import { useSpots } from './SpotsContext';
+import { useSpots } from './useSpots';
+import { FavoritesContext } from './useFavorites';
 
-interface FavoritesContextType {
+export interface FavoritesContextType {
     favorites: string[];
     toggleFavorite: (spotId: string) => Promise<void>;
     isFavorite: (spotId: string) => boolean;
 }
-
-const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
     const [favorites, setFavorites] = useState<string[]>(() => {
@@ -113,12 +112,4 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
             {children}
         </FavoritesContext.Provider>
     );
-}
-
-export function useFavorites() {
-    const context = useContext(FavoritesContext);
-    if (context === undefined) {
-        throw new Error('useFavorites must be used within a FavoritesProvider');
-    }
-    return context;
 }

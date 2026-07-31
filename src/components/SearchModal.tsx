@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, MapPin, ChevronRight } from 'lucide-react';
-import { useSpots } from '../context/SpotsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useSpots } from '../context/useSpots';
+import { useLanguage } from '../context/useLanguage';
 import { type Spot } from '../data/spots';
 
 interface SearchModalProps {

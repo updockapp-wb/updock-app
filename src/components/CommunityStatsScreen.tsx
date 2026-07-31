@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { supabase } from '../lib/supabase';
 import { spots as staticSpots } from '../data/spots';
 import { getCountryFromCoords, countryCodeToFlag } from '../utils/countryFromCoords';

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { MapPin, Navigation, ChevronRight } from 'lucide-react';
-import { useSpots } from '../context/SpotsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useSpots } from '../context/useSpots';
+import { useLanguage } from '../context/useLanguage';
 import { type Spot } from '../data/spots';
 import { formatDistance } from '../utils/distance';
 
