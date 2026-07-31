@@ -332,14 +332,16 @@ const [error, setError] = useState<string | null>(null);
 | A4 | Boutons pill de type/difficulté restent des `<button>` stylés aux tokens (pas passés par `Button`) | D-01 / State of the Art | Faible — ce sont des toggles de sélection, pas des actions ; `Button` n'a pas de variante "pill sélectionnable". Cohérent avec le rôle de `Button`. |
 | A5 | Harmoniser la difficulté sur des boutons pill (comme SpotDetail/Admin) plutôt que le `<select>` natif d'AddSpotForm | State of the Art | Faible — améliore la cohérence mais change le rendu d'AddSpotForm ; à valider vs zéro-régression (c'est un changement UI voulu par UI-03, pas une régression). |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`Modal` obligatoire sur `AddSpotForm` ou Input/Button suffisent-ils pour UI-03 ?**
+   - **RESOLVED :** NON — Input/Button suffisent ; le master `Modal` est utilisé pour le dialogue de confirmation « pas de photo » (D-04), pas pour l'enveloppe du form. Voir 04-UI-SPEC.md « Résolution des questions ouvertes » (Q1, L179), consommé par 04-03.
    - Ce qu'on sait : UI-03 cite "(Input, Button, Modal)". `AddSpotForm` a son propre shell sheet en `max-w-lg` ; le master `Modal light+sheet` est `max-w-sm` (Pitfall 1).
    - Ce qui est flou : le critère de succès #1 exige "utilisent les composants du design system" — le verifier acceptera-t-il un formulaire dont seuls les champs (Input/Button) sont DS mais dont l'enveloppe reste custom ?
    - Recommandation : trancher au planning. Le plus sûr côté zéro-régression = migrer les champs (Input/Button) et, si `Modal` est exigé, ajouter un prop largeur au `Modal` (extraction verbatim) plutôt que rétrécir le formulaire.
 
 2. **Où déclencher le toast D-08 (context vs composant) pour rester i18n-cohérent ?**
+   - **RESOLVED :** Depuis le composant (pas `FavoritesContext`, sans accès à `t()`) ; clé `fav.error.revert` dans `fr.json`/`en.json`. Voir 04-UI-SPEC.md « Résolution des questions ouvertes » (Q2, L181), consommé par 04-02.
    - Ce qu'on sait : `FavoritesContext` n'a pas `t()` ; toasts existants codés en dur en FR (Pitfall 4).
    - Recommandation : passer le message traduit au context, ou lire `localStorage` langue dans le context. Décision de planning.
 
