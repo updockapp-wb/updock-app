@@ -251,7 +251,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             {/* Header Area */}
             <div className="w-full pt-6 pb-4 px-6 shrink-0">
                 <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
                             <motion.h2
                                 layoutId={`spot-name-${spot.id}`}
@@ -304,7 +304,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         )}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
