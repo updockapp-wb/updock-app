@@ -30,12 +30,12 @@
 
 - [ ] **PERF-01**: Les re-renders inutiles des écrans de navigation et de la vue Carte sont éliminés (avant/après vérifié au React Profiler)
 - [ ] **PERF-02**: Les images/médias des fiches détaillées et des profils sont chargés en lazy loading
-- [ ] **PERF-03**: La taille des bundles est réduite par rapport à la baseline de DS-03 (cible chiffrée atteinte)
+- [x] **PERF-03**: La taille des bundles est réduite par rapport à la baseline de DS-03 (cible chiffrée atteinte)
 
 ### Qualité de code (CODE)
 
-- [ ] **CODE-01**: Le code mort et les dépendances obsolètes/inutilisées sont identifiés puis supprimés
-- [ ] **CODE-02**: La gestion d'état est homogénéisée — patterns cohérents entre les différents contexts/providers
+- [x] **CODE-01**: Le code mort et les dépendances obsolètes/inutilisées sont identifiés puis supprimés
+- [x] **CODE-02**: La gestion d'état est homogénéisée — patterns cohérents entre les différents contexts/providers
 
 ### Robustesse (ROBUST)
 
@@ -80,9 +80,9 @@
 | UI-03 | Phase 4 | Pending |
 | ROBUST-01 | Phase 4 | Pending |
 | ROBUST-02 | Phase 4 | Pending |
-| CODE-01 | Phase 5 | Pending |
-| CODE-02 | Phase 5 | Pending |
-| PERF-03 | Phase 5 | Pending |
+| CODE-01 | Phase 5 | Complete |
+| CODE-02 | Phase 5 | Complete |
+| PERF-03 | Phase 5 | Complete |
 | QA-01 | Phase 5 | Complete |
 
 **Coverage:**

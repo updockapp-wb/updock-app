@@ -188,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 5/5 | Complete   | 2026-07-31 |
+| 5. Recette globale & nettoyage final | 5/5 | Complete    | 2026-07-31 |

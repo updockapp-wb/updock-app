@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: verifying
-stopped_at: 05-05 termine — recette globale approuvee (relecture), milestone v2.0 clos, phase 05 prete pour verification
-last_updated: "2026-07-31T20:38:56.232Z"
+status: milestone_complete
+stopped_at: Milestone complete (Phase 5 was final phase)
+last_updated: 2026-07-31T21:54:20.731Z
 last_activity: 2026-07-31 -- 05-05 clos : recette approuvee, Android ajoute, correctif Firebase GoogleService-Info.plist
 progress:
   total_phases: 5
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-28)
 
 **Core value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
-**Current focus:** Phase 05 — recette-globale-nettoyage-final
+**Current focus:** Milestone complete
 
 ## Current Position
 
-Phase: 05 (recette-globale-nettoyage-final) — COMPLETE (ready for verification)
-Plan: 5 of 5 — TERMINE (Task 3 : recette globale approuvee par relecture au checkpoint)
-Status: Phase 05 complete — tous les plans clos, milestone v2.0 clos, ready for verification
-Last activity: 2026-07-31 -- 05-05 clos (recette approuvee, Android ajoute, correctif Firebase)
+Phase: 5
+Plan: Not started
+Status: Milestone complete
+Last activity: 2026-07-31
 
 Progress: [██████████] 100%
 
@@ -47,6 +47,7 @@ Progress: [██████████] 100%
 | 1. Audit & Design System | 0/TBD | — | — |
 | 01 | 6 | - | - |
 | 04 | 6 | - | - |
+| 5 | 5 | - | - |
 
 **Recent Trend:**
 
