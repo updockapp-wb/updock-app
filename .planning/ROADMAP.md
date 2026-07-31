@@ -158,7 +158,24 @@ Plans:
   3. La taille des bundles est réduite par rapport à la baseline de DS-03 et atteint la cible chiffrée.
   4. La checklist des flux critiques (carte, fiche spot, favoris, avis, session, ajout/édition spot, profil, auth) passe à 100% en test manuel mobile — zéro régression fonctionnelle sur l'ensemble du milestone.
 
-**Plans**: TBD
+**Plans**: 5 plans (4 waves)
+Plans:
+**Wave 1** *(fondations, fichiers disjoints)*
+
+- [ ] 05-01-PLAN.md — Split des 7 contexts (use{Name}.ts) + lint 100% vert (CODE-02, CODE-01) [Wave 1]
+- [ ] 05-02-PLAN.md — Code mort + deps : delete test-fcm.mjs, add geojson, disposition knip (CODE-01) [Wave 1]
+
+**Wave 2** *(bloqué sur 05-01 — fichiers contexts partagés)*
+
+- [ ] 05-03-PLAN.md — Harmonisation erreurs D-05 (rethrow/Toast/Modal) + fix cacheSpotImages D-02 (CODE-02, CODE-01) [Wave 2]
+
+**Wave 3** *(bloqué sur 05-03 — Profile.tsx partagé)*
+
+- [ ] 05-04-PLAN.md — Code-splitting Map/AdminDashboard/PremiumModal + Error Boundary + mesure bundle (PERF-03) [Wave 3]
+
+**Wave 4** *(phase gate — bloqué sur toutes les waves)*
+
+- [ ] 05-05-PLAN.md — Checklist recette globale + gate lint/build/cap sync + recette device iOS+Android 100% (QA-01) [Wave 4]
 
 ## Progress
 
@@ -171,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
+| 5. Recette globale & nettoyage final | 0/5 | Planned | - |
