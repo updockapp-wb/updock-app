@@ -1,11 +1,14 @@
-import { useState, useCallback, useEffect as useLayoutEffect } from 'react';
+import { useState, useCallback, useEffect as useLayoutEffect, lazy, Suspense } from 'react';
 import { App as CapApp } from '@capacitor/app';
 import { Toast } from '@capacitor/toast';
 import { supabase } from './lib/supabase';
 import { Heart } from 'lucide-react';
 import Button from './ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
-import Map from './components/Map';
+import ErrorBoundary from './components/ErrorBoundary';
+// Code-split the large, conditionally-visible surfaces (D-06/D-07/D-08) so their
+// chunks stay off the initial parse path. Mapbox GL alone is ~54.5% of gzip JS.
+const Map = lazy(() => import('./components/Map'));
 import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import NearbySpotsList from './components/NearbySpotsList';
@@ -25,8 +28,20 @@ import { SessionsProvider } from './context/SessionsContext';
 import AuthModal from './components/AuthModal';
 import SpotDetail from './components/SpotDetail';
 import WelcomeScreen from './components/WelcomeScreen';
-import AdminDashboard from './components/AdminDashboard';
+// Gated lazy mount: the ~490-line admin chunk is never fetched for non-admins (D-08, T-05-06).
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 import { type Spot } from './data/spots';
+
+// Map-area fallback shown while the lazy Mapbox chunk loads. Reuses the
+// auth-loading spinner and is confined to the map area so the nav stays
+// interactive (D-07). No eager preload at login.
+function MapSkeleton() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+      <div className="w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+}
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<'map' | 'favorites' | 'list' | 'profile'>('map');
@@ -144,12 +159,28 @@ function AppContent() {
                   exit={{ opacity: 0 }}
                   className="flex-1 relative w-full h-full"
                 >
-                  <Map
-                    onSpotClick={handleSpotClick}
-                    selectedSpot={selectedSpot}
-                    isAddingSpotMode={isAddingSpotMode}
-                    onSetAddingSpotMode={setIsAddingSpotMode}
-                  />
+                  <ErrorBoundary
+                    fallback={(retry) => (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-slate-100 p-6 text-center">
+                        <p className="text-slate-600">{t('error.load_failed')}</p>
+                        <button
+                          onClick={retry}
+                          className="px-4 py-2 rounded-lg bg-sky-500 text-white font-medium"
+                        >
+                          {t('error.retry')}
+                        </button>
+                      </div>
+                    )}
+                  >
+                    <Suspense fallback={<MapSkeleton />}>
+                      <Map
+                        onSpotClick={handleSpotClick}
+                        selectedSpot={selectedSpot}
+                        isAddingSpotMode={isAddingSpotMode}
+                        onSetAddingSpotMode={setIsAddingSpotMode}
+                      />
+                    </Suspense>
+                  </ErrorBoundary>
                 </motion.div>
               )}
 
@@ -261,11 +292,15 @@ function AppContent() {
           background-scale transform SpotDetail's shouldScaleBackground drawer applies
           to that wrapper; otherwise their z-index is compared in a local stacking
           context and loses to the drawer's body-portaled content (T-03-06 recette). */}
-      <AdminDashboard
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
-        onSpotSelect={handleSpotSelect}
-      />
+      {isAdminOpen && (
+        <Suspense fallback={null}>
+          <AdminDashboard
+            isOpen
+            onClose={() => setIsAdminOpen(false)}
+            onSpotSelect={handleSpotSelect}
+          />
+        </Suspense>
+      )}
 
       <AnimatePresence>
         {showWelcome && (

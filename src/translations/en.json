@@ -94,6 +94,8 @@
     "error.email_exists": "Email already in use",
     "error.weak_password": "Password too weak (min 6 characters)",
     "error.generic": "An error occurred. Please try again.",
+    "error.load_failed": "Failed to load this section.",
+    "error.retry": "Retry",
     "welcome.title": "Welcome to Updock!",
     "welcome.subtitle": "Your account is verified. You're now part of the global dockstart community.",
     "welcome.btn": "Get Started",
