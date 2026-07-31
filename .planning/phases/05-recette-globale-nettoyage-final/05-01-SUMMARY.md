@@ -123,3 +123,7 @@ None - no external service configuration required.
 ---
 *Phase: 05-recette-globale-nettoyage-final*
 *Completed: 2026-07-31*
+
+## Self-Check: PASSED
+
+All 7 use{Name}.ts hook modules and 05-01-SUMMARY.md exist on disk; task commits 2062762, 4a6a45a and metadata commit d1a22fc verified in git log.
