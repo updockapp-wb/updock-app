@@ -141,7 +141,7 @@
     "spot.photos_login_required": "Connectez-vous pour voir les photos",
     "spot.edit": "Modifier",
     "spot.edit_title": "Modifier le spot",
-    "spot.edit_save": "Enregistrer",
+    "spot.edit_save": "Enregistrer les modifications",
     "spot.edit_photos": "Photos",
     "spot.edit_add_photo": "Ajouter une photo",
     "spot.edit_delete_photo": "Supprimer",
@@ -160,5 +160,17 @@
     "session.conflict_create_anyway": "Creer quand meme",
     "profile.notif_session_toggle": "Notifications de session",
     "profile.notif_session_desc": "Recevoir une notification quand une session est creee sur un spot favori",
-    "search.placeholder": "Rechercher un spot..."
+    "search.placeholder": "Rechercher un spot...",
+    "form.error.name_required": "Le nom du spot est obligatoire.",
+    "form.error.name_too_long": "Le nom est trop long (100 caractères max).",
+    "form.error.desc_too_long": "La description est trop longue (2000 caractères max).",
+    "form.error.type_required": "Sélectionne au moins un type de spot.",
+    "form.error.submit_failed": "Échec de l'envoi. Tes informations sont conservées, réessaie.",
+    "fav.error.revert": "Échec, réessaie.",
+    "form.confirm.no_photo.title": "Publier sans photo ?",
+    "form.confirm.no_photo.body": "Une photo aide les autres riders à repérer le spot en un coup d'œil. Tu pourras en ajouter une plus tard en modifiant le spot.",
+    "form.confirm.no_photo.confirm": "Publier quand même",
+    "form.confirm.no_photo.cancel": "Ajouter une photo",
+    "fav.remove": "Retirer des favoris",
+    "fav.add": "Ajouter aux favoris"
 }

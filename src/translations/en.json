@@ -160,5 +160,17 @@
     "session.conflict_create_anyway": "Create anyway",
     "profile.notif_session_toggle": "Session notifications",
     "profile.notif_session_desc": "Get notified when a session is created on a favorite spot",
-    "search.placeholder": "Search spots..."
+    "search.placeholder": "Search spots...",
+    "form.error.name_required": "Spot name is required.",
+    "form.error.name_too_long": "Name is too long (100 characters max).",
+    "form.error.desc_too_long": "Description is too long (2000 characters max).",
+    "form.error.type_required": "Select at least one spot type.",
+    "form.error.submit_failed": "Submission failed. Your details are saved, try again.",
+    "fav.error.revert": "Failed, try again.",
+    "form.confirm.no_photo.title": "Publish without a photo?",
+    "form.confirm.no_photo.body": "A photo helps other riders spot it at a glance. You can add one later by editing the spot.",
+    "form.confirm.no_photo.confirm": "Publish anyway",
+    "form.confirm.no_photo.cancel": "Add a photo",
+    "fav.remove": "Remove from favorites",
+    "fav.add": "Add to favorites"
 }
