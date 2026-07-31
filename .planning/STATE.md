@@ -5,7 +5,7 @@ milestone_name: Refactor UI/UX & Performance
 status: ready_to_plan
 stopped_at: Phase 04 complete (6/6) — ready to discuss Phase 5
 last_updated: 2026-07-31T07:35:55.512Z
-last_activity: 2026-07-31 -- Phase 04 execution started
+last_activity: 2026-07-31 - Completed quick task 260731-e56: Corriger 3 écarts de la recette Phase 4 (croix SpotDetail, description obligatoire, accent communauté)
 progress:
   total_phases: 5
   completed_phases: 3
@@ -85,6 +85,12 @@ Voir `.planning/todos/pending/`.
 - **Zéro régression** : 100% des fonctionnalités existantes doivent rester intactes ; la checklist QA-01 est le filet de sécurité de chaque phase.
 - **Baseline chiffrée (DS-03)** : PERF-03 dépend d'une baseline bundle/perf établie en Phase 1 — sans elle, la cible de réduction n'est pas mesurable.
 - **Types de spot en JSON string** : fragile ; hors scope mais à surveiller lors des modifications de formulaires (Phase 4).
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260731-e56 | Corriger 3 écarts de la recette Phase 4 : croix SpotDetail coupée sur nom long, description de spot obligatoire (3 formulaires), accent manquant sur « communauté » | 2026-07-31 | dae4ad9 | [260731-e56-corriger-les-4-petits-bugs-carts-d-couve](./quick/260731-e56-corriger-les-4-petits-bugs-carts-d-couve/) |
 
 ## Deferred Items
 
