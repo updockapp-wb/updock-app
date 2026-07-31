@@ -9,7 +9,7 @@ interface ReviewListProps {
   currentUserId: string | undefined;
 }
 
-export default function ReviewList({ reviews, isLoading, currentUserId: _currentUserId }: ReviewListProps) {
+export default function ReviewList({ reviews, isLoading }: ReviewListProps) {
   const { t } = useLanguage();
 
   if (isLoading) {

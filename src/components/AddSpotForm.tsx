@@ -11,7 +11,12 @@ import Modal from '../ui/Modal';
 interface AddSpotFormProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (data: {
+        name: string;
+        type: StartType[];
+        description: string;
+        position: [number, number] | null;
+    }) => void;
     position: [number, number] | null;
 }
 
@@ -44,7 +49,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         previewsRef.current = [];
     }, []);
 
-    const resetForm = () => {
+    const resetForm = useCallback(() => {
         revokeAll();
         setName('');
         setType(['Dockstart']);
@@ -53,13 +58,16 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         setImageFiles([]);
         setImagePreviews([]);
         setIsSending(false);
-    };
+    }, [revokeAll]);
 
     useEffect(() => {
         if (isOpen) {
+            // Reset volontaire des champs à l'ouverture du formulaire (le composant reste monté,
+            // seul son contenu est monté/démonté par AnimatePresence — pas de key possible).
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             resetForm();
         }
-    }, [isOpen]);
+    }, [isOpen, resetForm]);
 
     // Filet de sécurité au démontage RÉEL. À lui seul il ne suffirait pas : `AddSpotForm` est
     // rendu inconditionnellement par `Map.tsx`, seul son contenu interne est monté/démonté par
@@ -217,7 +225,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
                                 <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.difficulty')}</label>
                                 <select
                                     value={difficulty}
-                                    onChange={(e) => setDifficulty(e.target.value as any)}
+                                    onChange={(e) => setDifficulty(e.target.value as 'Easy' | 'Medium' | 'Hard' | 'Extreme')}
                                     className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none font-medium appearance-none"
                                 >
                                     <option value="Easy">Easy</option>

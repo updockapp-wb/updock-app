@@ -37,12 +37,18 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
     // Check permission on mount
     useEffect(() => {
+        // checkPermission() synchronise l'état de permission avec l'API native au montage ;
+        // sa mise à jour synchrone de permissionStatus est volontaire (comportement validé recette).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         checkPermission();
     }, [checkPermission]);
 
     // Check if user already has a token in push_tokens
     useEffect(() => {
         if (!user) {
+            // Reset au logout : on efface le flag token quand l'utilisateur se déconnecte
+            // (comportement de sécurité T-05-01 validé par la recette — ne pas retirer).
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setHasToken(false);
             return;
         }

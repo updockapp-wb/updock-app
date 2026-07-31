@@ -39,7 +39,7 @@ export default function FiltersModal({ isOpen, onClose, selectedFilter, onFilter
                 {filters.map((f) => (
                     <button
                         key={f.id}
-                        onClick={() => onFilterChange(f.id as any)}
+                        onClick={() => onFilterChange(f.id as StartType | 'All')}
                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all
                             ${selectedFilter === f.id
                                 ? 'border-sky-500 bg-sky-50'

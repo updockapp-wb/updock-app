@@ -25,6 +25,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     // Fetch profile whenever user changes
     useEffect(() => {
         if (!user) {
+            // Reset au logout : on efface le profil local quand l'utilisateur se déconnecte
+            // (comportement T-05-01 validé par la recette — ne pas retirer).
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setProfile(null);
             return;
         }

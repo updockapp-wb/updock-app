@@ -50,11 +50,14 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
         if (user) {
             fetchUserSessions();
         }
+        // fetchUserSessions vient du SessionsContext (non mémoïsé) : on ne dépend que de `user`
+        // pour ne récupérer les sessions qu'au changement d'utilisateur (pas de boucle de fetch).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     useEffect(() => {
         checkPermission();
-    }, []);
+    }, [checkPermission]);
 
     useEffect(() => {
         if (user) return;

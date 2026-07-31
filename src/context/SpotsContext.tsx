@@ -9,6 +9,22 @@ import { SpotsContext } from './useSpots';
 // We rely on the Spot type from data/spots.ts having is_approved?
 // If not, we extend it here or update data/spots.ts (which I did in step 1384).
 
+// Shape of a spot row as returned by Supabase (`spots` table). `type` is stored either
+// as a JSON-encoded string or a raw array depending on how the row was written.
+interface DbSpotRow {
+    id: string;
+    name: string;
+    type: string | string[] | null;
+    lat: number;
+    lng: number;
+    description: string;
+    difficulty: string;
+    height: number | null;
+    image_urls: string[] | null;
+    is_approved: boolean;
+    user_id: string | null;
+}
+
 export interface SpotsContextType {
     spots: Spot[];
     nearbySpots: Spot[];
@@ -76,11 +92,11 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
 
             if (data) {
                 // Map DB spots
-                const dbSpots: Spot[] = data.map((s: any) => {
+                const dbSpots: Spot[] = data.map((s: DbSpotRow) => {
                     let spotType: StartType[] = ['Dockstart'];
 
                     if (Array.isArray(s.type)) {
-                        spotType = s.type;
+                        spotType = s.type as StartType[];
                     } else if (typeof s.type === 'string') {
                         // Check if it's a JSON array string
                         try {
@@ -101,11 +117,11 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                         type: spotType,
                         position: [s.lat, s.lng],
                         description: s.description,
-                        difficulty: s.difficulty as any,
-                        height: s.height,
-                        image_urls: s.image_urls,
+                        difficulty: s.difficulty as Spot['difficulty'],
+                        height: s.height ?? undefined,
+                        image_urls: s.image_urls ?? undefined,
                         is_approved: s.is_approved,
-                        user_id: s.user_id || null
+                        user_id: s.user_id ?? undefined
                     };
                 });
 
@@ -193,7 +209,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                         type: spotType,
                         position: [data.lat, data.lng],
                         description: data.description,
-                        difficulty: data.difficulty as any,
+                        difficulty: data.difficulty as Spot['difficulty'],
                         height: data.height,
                         image_urls: data.image_urls,
                         is_approved: data.is_approved,
@@ -206,10 +222,11 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
                         duration: 'long'
                     });
                 }
-            } catch (error: any) {
+            } catch (error) {
                 console.error('Error adding spot in background:', error);
+                const message = error instanceof Error ? error.message : 'Échec de l\'envoi';
                 Toast.show({
-                    text: `Erreur : ${error.message || 'Échec de l\'envoi'}`,
+                    text: `Erreur : ${message}`,
                     duration: 'long'
                 });
             }
@@ -255,9 +272,10 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             if (error) throw error;
 
             setSpots(prev => prev.filter(s => s.id !== id));
-        } catch (error: any) {
+        } catch (error) {
             console.error('Error deleting spot:', error);
-            const errorMessage = error.message || error.error_description || 'Unknown error';
+            const err = error as { message?: string; error_description?: string } | null;
+            const errorMessage = err?.message || err?.error_description || 'Unknown error';
             Toast.show({ text: `Échec de la suppression : ${errorMessage}`, duration: 'long' });
         }
     };

@@ -27,6 +27,8 @@ export default function CommunityStatsScreen({ isOpen, onClose }: CommunityStats
     useEffect(() => {
         if (!isOpen) return;
 
+        // Remise en état de chargement à chaque ouverture avant le fetch (comportement voulu).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
 
         const fetchStats = async () => {

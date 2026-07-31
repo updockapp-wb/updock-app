@@ -283,7 +283,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                         {['Easy', 'Medium', 'Hard', 'Extreme'].map(d => (
                                                             <button
                                                                 key={d}
-                                                                onClick={() => setEditingSpot({ ...editingSpot, difficulty: d as any })}
+                                                                onClick={() => setEditingSpot({ ...editingSpot, difficulty: d as Spot['difficulty'] })}
                                                                 className={`flex-1 py-2 rounded-lg text-xs font-bold border-2 ${editingSpot.difficulty === d ? 'border-sky-500 bg-sky-50 text-sky-600' : 'border-slate-100 text-slate-400'}`}
                                                             >
                                                                 {d}

@@ -73,8 +73,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 alert(t('auth.alert_signup'));
                 onClose();
             }
-        } catch (err: any) {
-            setError(mapAuthError(err.message));
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            setError(mapAuthError(message));
         } finally {
             setLoading(false);
         }

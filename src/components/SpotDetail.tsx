@@ -119,6 +119,10 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         };
 
         fetchReviews();
+        // On ne relance le fetch (reviews + sessions) qu'au changement de spot ou d'utilisateur.
+        // fetchSessionsForSpot vient du SessionsContext (non mémoïsé) et `spot` est stable tant que
+        // son id ne change pas : dépendre des primitives évite une boucle de fetch.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [spot?.id, user?.id]);
 
     // Fetch uploader profile
@@ -133,7 +137,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             .eq('id', spot.user_id)
             .single()
             .then(({ data }) => setUploaderProfile(data));
-    }, [spot?.id]);
+    }, [spot?.user_id]);
 
     // Prefetch lightbox neighbors (±1) into the browser HTTP cache when the viewer
     // is open. Uses new Image() so no <img> is added to the DOM (D-03 respected):
@@ -148,7 +152,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             const img = new Image();
             img.src = spot.image_urls![i];
         });
-    }, [isImageOpen, currentPhotoIndex, spot?.id]);
+    }, [isImageOpen, currentPhotoIndex, spot?.image_urls]);
 
     const handleReviewSubmit = (review: Review) => {
         setReviews(prev => {
