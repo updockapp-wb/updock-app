@@ -1,9 +1,12 @@
-import { X, Check, Trash2, MapPin, Edit, Save, LayoutList, CircleAlert, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Check, Trash2, MapPin, Edit, LayoutList, CircleAlert, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Toast } from '@capacitor/toast';
 import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { type Spot, type StartType } from '../data/spots';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
 
 interface AdminDashboardProps {
     isOpen: boolean;
@@ -19,6 +22,8 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
     const [previewSpot, setPreviewSpot] = useState<Spot | null>(null);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+    const [editError, setEditError] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     const pendingSpots = spots.filter(s => s.is_approved === false);
     // Sort all spots by date created or just name? Default probably fine for now.
@@ -28,8 +33,22 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
 
     const handleSaveEdit = async () => {
         if (!editingSpot) return;
-        await updateSpot(editingSpot);
-        setEditingSpot(null);
+        setEditError(null);
+        const trimmedName = editingSpot.name.trim();
+        if (trimmedName.length === 0) { setEditError(t('form.error.name_required')); return; }
+        if (trimmedName.length > 100) { setEditError(t('form.error.name_too_long')); return; }
+        if (editingSpot.description.length > 2000) { setEditError(t('form.error.desc_too_long')); return; }
+        if (editingSpot.type.length === 0) { setEditError(t('form.error.type_required')); return; }
+        setIsSaving(true);
+        try {
+            await updateSpot(editingSpot);
+            setEditingSpot(null);
+        } catch {
+            // updateSpot rethrows on failure (04-02) — keep overlay open, data preserved (D-07)
+            Toast.show({ text: t('form.error.submit_failed'), duration: 'long' });
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -205,24 +224,22 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                             className="absolute inset-0 bg-white z-50 p-6 flex flex-col"
                                         >
                                             <div className="flex justify-between items-center mb-6">
-                                                <h3 className="text-xl font-bold text-slate-800">Edit Spot</h3>
-                                                <button onClick={() => setEditingSpot(null)} className="p-2 bg-slate-100 rounded-full">
+                                                <h3 className="text-xl font-bold text-slate-800">{t('spot.edit_title')}</h3>
+                                                <button onClick={() => { setEditingSpot(null); setEditError(null); }} className="p-2 bg-slate-100 rounded-full">
                                                     <X size={20} />
                                                 </button>
                                             </div>
 
                                             <div className="flex-1 overflow-y-auto space-y-6">
+                                                <Input
+                                                    surface="light"
+                                                    label={t('spot.edit_name')}
+                                                    value={editingSpot.name}
+                                                    onChange={e => setEditingSpot({ ...editingSpot, name: e.target.value })}
+                                                    maxLength={100}
+                                                />
                                                 <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-2">Name</label>
-                                                    <input
-                                                        type="text"
-                                                        value={editingSpot.name}
-                                                        onChange={e => setEditingSpot({ ...editingSpot, name: e.target.value })}
-                                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-2">Type</label>
+                                                    <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_type')}</label>
                                                     <div className="flex flex-wrap gap-2">
                                                         {['Dockstart', 'Rockstart', 'Dropstart', 'Deadstart', 'Rampstart'].map(t => (
                                                             <button
@@ -244,16 +261,16 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                         ))}
                                                     </div>
                                                 </div>
+                                                <Input
+                                                    surface="light"
+                                                    multiline
+                                                    label={t('spot.edit_description')}
+                                                    value={editingSpot.description}
+                                                    onChange={e => setEditingSpot({ ...editingSpot, description: e.target.value })}
+                                                    maxLength={2000}
+                                                />
                                                 <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                                                    <textarea
-                                                        value={editingSpot.description}
-                                                        onChange={e => setEditingSpot({ ...editingSpot, description: e.target.value })}
-                                                        className="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none min-h-[100px]"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-2">Difficulty</label>
+                                                    <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_difficulty')}</label>
                                                     <div className="flex gap-1">
                                                         {['Easy', 'Medium', 'Hard', 'Extreme'].map(d => (
                                                             <button
@@ -268,14 +285,19 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                 </div>
                                             </div>
 
-                                            <div className="pt-4 border-t border-slate-100">
-                                                <button
+                                            <div className="pt-4 border-t border-slate-100 space-y-3">
+                                                {editError && (
+                                                    <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{editError}</div>
+                                                )}
+                                                <Button
+                                                    variant="primary"
+                                                    size="lg"
+                                                    loading={isSaving}
                                                     onClick={handleSaveEdit}
-                                                    className="w-full bg-sky-500 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2"
+                                                    className="w-full"
                                                 >
-                                                    <Save size={18} />
-                                                    Save Changes
-                                                </button>
+                                                    {t('spot.edit_save')}
+                                                </Button>
                                             </div>
                                         </motion.div>
                                     )}
