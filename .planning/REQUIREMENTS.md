@@ -44,7 +44,7 @@
 
 ### Recette & non-régression (QA)
 
-- [ ] **QA-01**: Une checklist des flux critiques (carte, fiche spot, favoris, avis, session, ajout/édition spot, profil, auth) passe à 100% en test manuel mobile après chaque phase — zéro régression fonctionnelle
+- [x] **QA-01**: Une checklist des flux critiques (carte, fiche spot, favoris, avis, session, ajout/édition spot, profil, auth) passe à 100% en test manuel mobile après chaque phase — zéro régression fonctionnelle
 
 ## Future Requirements (hors v2.0)
 
@@ -83,7 +83,7 @@
 | CODE-01 | Phase 5 | Pending |
 | CODE-02 | Phase 5 | Pending |
 | PERF-03 | Phase 5 | Pending |
-| QA-01 | Phase 5 | Pending |
+| QA-01 | Phase 5 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 17 total

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
-status: executing
-stopped_at: 05-05 en pause au checkpoint (Task 3 recette device iOS+Android en attente utilisateur)
-last_updated: "2026-07-31T17:30:28.426Z"
-last_activity: 2026-07-31 -- 05-05 taches auto completes (checklist + gate lint/build/cap sync), checkpoint device atteint
+status: verifying
+stopped_at: 05-05 termine — recette globale approuvee (relecture), milestone v2.0 clos, phase 05 prete pour verification
+last_updated: "2026-07-31T20:38:56.232Z"
+last_activity: 2026-07-31 -- 05-05 clos : recette approuvee, Android ajoute, correctif Firebase GoogleService-Info.plist
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 26
-  completed_plans: 25
-  percent: 96
+  completed_plans: 26
+  percent: 100
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-07-28)
 
 ## Current Position
 
-Phase: 05 (recette-globale-nettoyage-final) — EXECUTING
-Plan: 5 of 5 — EN PAUSE AU CHECKPOINT (Task 3 : recette device iOS + Android en attente utilisateur)
-Status: 05-05 taches auto completes (checklist + gate lint/build/cap sync vert) ; checkpoint:human-verify bloquant atteint
-Last activity: 2026-07-31 -- 05-05 checkpoint device atteint
+Phase: 05 (recette-globale-nettoyage-final) — COMPLETE (ready for verification)
+Plan: 5 of 5 — TERMINE (Task 3 : recette globale approuvee par relecture au checkpoint)
+Status: Phase 05 complete — tous les plans clos, milestone v2.0 clos, ready for verification
+Last activity: 2026-07-31 -- 05-05 clos (recette approuvee, Android ajoute, correctif Firebase)
 
-Progress: [█████████░] 96%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -75,6 +75,8 @@ Décisions complètes dans PROJECT.md (Key Decisions). Récentes affectant le tr
 - Approche incrémentale imposée : un module/composant à la fois, jamais de balayage global
 - Pas d'infra de test : validation par checklist de recette manuelle mobile (QA-01) après chaque phase
 - Phase 3 : bug de modale masquée derrière le tiroir SpotDetail (isolation:isolate sur #root + portail Vaul) corrigé en gap closure immédiat pendant la recette QA-01 (commit 497f347) — createPortal sur le master Modal
+- [Phase 05]: Recette globale v2.0 validee sur relecture de checklist (approbation qualifiee), pas sur execution device scenario-par-scenario
+- [Phase 05]: Plateforme Android ajoutee au repo (npx cap add android) pour la recette D-11 cross-platform
 
 ### Pending Todos
 
@@ -99,10 +101,10 @@ Voir `.planning/todos/pending/`.
 |----------|------|--------|-------------|
 | Bug | Notifications push session non reçues sur iPhone (webhook OK, tokens manquants) | Reporté (hors milestone) | Clôture v1.1.3 |
 | Env | cap doctor/sync requièrent Node >=22 | ✅ Résolu (env courant Node v26, `npx cap sync` iOS OK au 2026-07-31) | v1.1.3 |
-| Platform | Plateforme Android absente du repo (`ios/` seul) — recette D-11 Android exige d'abord `npx cap add android` | En attente (surface au checkpoint 05-05) | 2026-07-31 |
+| Platform | Plateforme Android absente du repo (`ios/` seul) — recette D-11 Android exige d'abord `npx cap add android` | ✅ Résolu (Android ajouté au repo au 05-05, `cap sync` iOS + Android OK) | 2026-07-31 |
 
 ## Session Continuity
 
-Last session: 2026-07-31T17:30:28.422Z
+Last session: 2026-07-31T20:38:24.291Z
 Stopped at: Phase 5 context gathered
 Resume file: None

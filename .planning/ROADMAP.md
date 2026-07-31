@@ -17,7 +17,7 @@ Numérotation remise à 1 : les phases v1.1.3 (01→09) sont archivées dans `.p
 - [x] **Phase 2: Navigation & Vue Carte / Spots** - Adoption du design system sur la nav + optimisation rendu/markers/cache de la carte (completed 2026-07-29)
 - [x] **Phase 3: Fiches Détaillées & Profils** - Harmonisation UI des fiches et profils + lazy loading des médias (completed 2026-07-30)
 - [x] **Phase 4: Formulaires & Interactions** - Harmonisation UI des formulaires/favoris + validation et gestion d'erreurs robustes (completed 2026-07-31)
-- [ ] **Phase 5: Recette globale & nettoyage final** - Suppression code mort/deps, homogénéisation d'état, réduction bundle, non-régression
+- [x] **Phase 5: Recette globale & nettoyage final** - Suppression code mort/deps, homogénéisation d'état, réduction bundle, non-régression (completed 2026-07-31)
 
 ## Phase Details
 
@@ -175,7 +175,7 @@ Plans:
 
 **Wave 4** *(phase gate — bloqué sur toutes les waves)*
 
-- [ ] 05-05-PLAN.md — Checklist recette globale + gate lint/build/cap sync + recette device iOS+Android 100% (QA-01) [Wave 4]
+- [x] 05-05-PLAN.md — Checklist recette globale + gate lint/build/cap sync + recette device iOS+Android 100% (QA-01) [Wave 4]
 
 ## Progress
 
@@ -188,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 4/5 | In Progress|  |
+| 5. Recette globale & nettoyage final | 5/5 | Complete   | 2026-07-31 |
