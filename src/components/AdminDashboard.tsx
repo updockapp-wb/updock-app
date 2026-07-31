@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { type Spot, type StartType } from '../data/spots';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import Modal from '../ui/Modal';
 
 interface AdminDashboardProps {
     isOpen: boolean;
@@ -24,6 +25,8 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
     const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
     const [editError, setEditError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+    // Confirmation de suppression via le Modal de l'app (remplace le native confirm() du context, D-05).
+    const [spotToDelete, setSpotToDelete] = useState<string | null>(null);
 
     const pendingSpots = spots.filter(s => s.is_approved === false);
     // Sort all spots by date created or just name? Default probably fine for now.
@@ -154,8 +157,13 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                             disabled={actionLoadingId === spot.id}
                                                             onClick={async () => {
                                                                 setActionLoadingId(spot.id);
-                                                                await approveSpot(spot.id);
-                                                                setActionLoadingId(null);
+                                                                try {
+                                                                    await approveSpot(spot.id);
+                                                                } catch {
+                                                                    Toast.show({ text: t('error.generic'), duration: 'short' });
+                                                                } finally {
+                                                                    setActionLoadingId(null);
+                                                                }
                                                             }}
                                                         >
                                                             <Check size={18} />
@@ -168,11 +176,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                             aria-label={t('admin.delete')}
                                                             className="px-4 !bg-rose-50 hover:!bg-rose-100 !text-rose-500"
                                                             disabled={actionLoadingId === spot.id}
-                                                            onClick={async () => {
-                                                                setActionLoadingId(spot.id);
-                                                                await deleteSpot(spot.id);
-                                                                setActionLoadingId(null);
-                                                            }}
+                                                            onClick={() => setSpotToDelete(spot.id)}
                                                         >
                                                             <Trash2 size={18} />
                                                         </Button>
@@ -210,7 +214,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                             <Edit size={16} />
                                                         </button>
                                                         <button
-                                                            onClick={() => deleteSpot(spot.id)}
+                                                            onClick={() => setSpotToDelete(spot.id)}
                                                             className="p-2 bg-rose-50 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors"
                                                         >
                                                             <Trash2 size={16} />
@@ -458,7 +462,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                             size="md"
                                             className="px-6 !bg-emerald-500 hover:!bg-emerald-600"
                                             onClick={() => {
-                                                approveSpot(previewSpot.id);
+                                                approveSpot(previewSpot.id).catch(() => Toast.show({ text: t('error.generic'), duration: 'short' }));
                                                 setPreviewSpot(null);
                                             }}
                                         >
@@ -472,7 +476,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                             aria-label={t('admin.delete')}
                                             className="px-6"
                                             onClick={() => {
-                                                deleteSpot(previewSpot.id);
+                                                setSpotToDelete(previewSpot.id);
                                                 setPreviewSpot(null);
                                             }}
                                         >
@@ -485,6 +489,37 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Confirmation de suppression (D-05) — Modal light+center de l'app remplaçant le
+                native confirm() du context. `deleteSpot` rethrow → Toast traduit en cas d'échec. */}
+            <Modal isOpen={!!spotToDelete} onClose={() => setSpotToDelete(null)} surface="light" layout="center">
+                <div className="text-center space-y-4">
+                    <h3 className="text-xl font-bold text-slate-800">{t('admin.delete_confirm.title')}</h3>
+                    <p className="text-sm text-slate-500">{t('admin.delete_confirm.body')}</p>
+                    <div className="flex flex-col gap-2 pt-2">
+                        <Button
+                            variant="danger"
+                            size="lg"
+                            className="w-full"
+                            onClick={() => {
+                                const id = spotToDelete;
+                                setSpotToDelete(null);
+                                if (id) deleteSpot(id).catch(() => Toast.show({ text: t('error.generic'), duration: 'short' }));
+                            }}
+                        >
+                            {t('admin.delete_confirm.confirm')}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            size="lg"
+                            className="w-full"
+                            onClick={() => setSpotToDelete(null)}
+                        >
+                            {t('admin.delete_confirm.cancel')}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }

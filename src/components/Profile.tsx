@@ -1,4 +1,5 @@
 import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Camera, Calendar, Users, Bell, MapPin, BarChart2 } from 'lucide-react';
+import { Toast } from '@capacitor/toast';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../context/useLanguage';
 import { useFavorites } from '../context/useFavorites';
@@ -431,7 +432,7 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
             </div>
 
             {user && (
-                <Button variant="secondary" size="lg" onClick={() => signOut()} className="w-full mb-8">
+                <Button variant="secondary" size="lg" onClick={() => signOut().catch(() => Toast.show({ text: t('error.generic'), duration: 'short' }))} className="w-full mb-8">
                     <LogOut size={18} />
                     Log Out
                 </Button>
