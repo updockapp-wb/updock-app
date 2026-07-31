@@ -1,6 +1,8 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Geolocation } from '@capacitor/geolocation';
 import Map, { NavigationControl, GeolocateControl, Source, Layer, Marker, type LayerProps, type MapRef, type GeoJSONSource, type MapLayerMouseEvent } from 'react-map-gl';
+// Mapbox CSS lives with the lazy Map chunk so it defers off the initial parse path (D-07).
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { type Spot, type StartType } from '../data/spots';
 import AddSpotInfoModal from './AddSpotInfoModal';
 import AddSpotForm from './AddSpotForm';

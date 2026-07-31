@@ -94,6 +94,8 @@
     "error.email_exists": "Cet email est déjà utilisé",
     "error.weak_password": "Mot de passe trop court (min 6 caractères)",
     "error.generic": "Une erreur est survenue. Veuillez réessayer.",
+    "error.load_failed": "Impossible de charger cette section.",
+    "error.retry": "Réessayer",
     "welcome.title": "Bienvenue sur Updock !",
     "welcome.subtitle": "Votre compte est vérifié. Vous faites maintenant partie de la communauté mondiale du dockstart.",
     "welcome.btn": "C'est parti !",
