@@ -6,7 +6,7 @@ import { useSpots } from './SpotsContext';
 
 interface FavoritesContextType {
     favorites: string[];
-    toggleFavorite: (spotId: string) => void;
+    toggleFavorite: (spotId: string) => Promise<void>;
     isFavorite: (spotId: string) => boolean;
 }
 
@@ -100,6 +100,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
                     ? [...prev, spotId]
                     : prev.filter(id => id !== spotId)
             );
+            // Propager l'echec apres le revert : le composant appelant affiche
+            // le feedback traduit (t()) — le context n'a pas acces a i18n (Pitfall 4).
+            throw err;
         }
     };
 
