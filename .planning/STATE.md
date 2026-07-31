@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Refactor UI/UX & Performance
 status: executing
-stopped_at: Phase 5 context gathered
-last_updated: "2026-07-31T16:45:05.699Z"
-last_activity: 2026-07-31 -- Phase 05 execution started
+stopped_at: 05-05 en pause au checkpoint (Task 3 recette device iOS+Android en attente utilisateur)
+last_updated: "2026-07-31T17:30:28.426Z"
+last_activity: 2026-07-31 -- 05-05 taches auto completes (checklist + gate lint/build/cap sync), checkpoint device atteint
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 26
-  completed_plans: 21
-  percent: 80
+  completed_plans: 25
+  percent: 96
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-28)
 ## Current Position
 
 Phase: 05 (recette-globale-nettoyage-final) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 05
-Last activity: 2026-07-31 -- Phase 05 execution started
+Plan: 5 of 5 — EN PAUSE AU CHECKPOINT (Task 3 : recette device iOS + Android en attente utilisateur)
+Status: 05-05 taches auto completes (checklist + gate lint/build/cap sync vert) ; checkpoint:human-verify bloquant atteint
+Last activity: 2026-07-31 -- 05-05 checkpoint device atteint
 
-Progress: [██████░░░░] 60%
+Progress: [█████████░] 96%
 
 ## Performance Metrics
 
@@ -98,10 +98,11 @@ Voir `.planning/todos/pending/`.
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
 | Bug | Notifications push session non reçues sur iPhone (webhook OK, tokens manquants) | Reporté (hors milestone) | Clôture v1.1.3 |
-| Env | cap doctor/sync requièrent Node >=22 (env actuel v20) | En attente | v1.1.3 |
+| Env | cap doctor/sync requièrent Node >=22 | ✅ Résolu (env courant Node v26, `npx cap sync` iOS OK au 2026-07-31) | v1.1.3 |
+| Platform | Plateforme Android absente du repo (`ios/` seul) — recette D-11 Android exige d'abord `npx cap add android` | En attente (surface au checkpoint 05-05) | 2026-07-31 |
 
 ## Session Continuity
 
-Last session: 2026-07-31T12:03:43.708Z
+Last session: 2026-07-31T17:30:28.422Z
 Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-recette-globale-nettoyage-final/05-CONTEXT.md
+Resume file: None
