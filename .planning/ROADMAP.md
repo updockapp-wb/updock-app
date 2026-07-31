@@ -167,7 +167,7 @@ Plans:
 
 **Wave 2** *(bloqué sur 05-01 — fichiers contexts partagés)*
 
-- [ ] 05-03-PLAN.md — Harmonisation erreurs D-05 (rethrow/Toast/Modal) + fix cacheSpotImages D-02 (CODE-02, CODE-01) [Wave 2]
+- [x] 05-03-PLAN.md — Harmonisation erreurs D-05 (rethrow/Toast/Modal) + fix cacheSpotImages D-02 (CODE-02, CODE-01) [Wave 2]
 
 **Wave 3** *(bloqué sur 05-03 — Profile.tsx partagé)*
 
@@ -188,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 2/5 | In Progress|  |
+| 5. Recette globale & nettoyage final | 3/5 | In Progress|  |
