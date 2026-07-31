@@ -9,6 +9,7 @@ import { createPortal } from 'react-dom';
 import { Share } from '@capacitor/share';
 import { Toast } from '@capacitor/toast';
 import Button from '../ui/Button';
+import Input from '../ui/Input';
 import ReviewForm from './ReviewForm';
 import { type Review } from './ReviewForm';
 import ReviewList from './ReviewList';
@@ -58,6 +59,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
     const [newPhotoFiles, setNewPhotoFiles] = useState<File[]>([]);
     const [photosToDelete, setPhotosToDelete] = useState<string[]>([]);
     const [isSaving, setIsSaving] = useState(false);
+    const [editError, setEditError] = useState<string | null>(null);
     const { updateSpot } = useSpots();
 
     useEffect(() => {
@@ -198,6 +200,16 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
 
     const handleSaveEdit = async () => {
         if (!editForm) return;
+        setEditError(null);
+
+        // Validation client (ROBUST-01, D-02/D-03) — mêmes règles qu'AddSpotForm.
+        // Garde UX uniquement ; RLS/Postgres reste la garde autoritaire (T-04-V3).
+        const trimmedName = editForm.name.trim();
+        if (!trimmedName) { setEditError(t('form.error.name_required')); return; }
+        if (trimmedName.length > 100) { setEditError(t('form.error.name_too_long')); return; }
+        if ((editForm.description || '').length > 2000) { setEditError(t('form.error.desc_too_long')); return; }
+        if (editForm.type.length === 0) { setEditError(t('form.error.type_required')); return; }
+
         setIsSaving(true);
         try {
             // 1. Upload new photos to Supabase Storage
@@ -225,7 +237,10 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             setNewPhotoFiles([]);
             setPhotosToDelete([]);
         } catch (error) {
+            // updateSpot rethrow désormais (04-02) : afficher l'erreur inline en conservant
+            // les données saisies, overlay non bloqué (D-07, T-04-D2).
             console.error('Error saving spot edit:', error);
+            setEditError(t('form.error.submit_failed'));
         } finally {
             setIsSaving(false);
         }
@@ -275,6 +290,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                                 setEditForm(spot ? { ...spot } : null);
                                                 setNewPhotoFiles([]);
                                                 setPhotosToDelete([]);
+                                                setEditError(null);
                                                 setIsEditing(true);
                                             }}
                                             className="text-primary hover:text-sky-600 font-medium flex items-center gap-1"
@@ -554,22 +570,20 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                     >
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-xl font-bold text-slate-800">{t('spot.edit_title')}</h3>
-                            <button onClick={() => { setIsEditing(false); setEditForm(null); }} className="p-2 bg-slate-100 rounded-full">
+                            <button onClick={() => { setIsEditing(false); setEditForm(null); setEditError(null); }} className="p-2 bg-slate-100 rounded-full">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="flex-1 overflow-y-auto space-y-5">
                             {/* Name */}
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_name')}</label>
-                                <input
-                                    type="text"
-                                    value={editForm.name}
-                                    onChange={e => setEditForm({ ...editForm, name: e.target.value })}
-                                    className="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none"
-                                />
-                            </div>
+                            <Input
+                                surface="light"
+                                label={t('spot.edit_name')}
+                                value={editForm.name}
+                                onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                                maxLength={100}
+                            />
 
                             {/* Type multi-select */}
                             <div>
@@ -596,14 +610,14 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                             </div>
 
                             {/* Description */}
-                            <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('spot.edit_description')}</label>
-                                <textarea
-                                    value={editForm.description}
-                                    onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                    className="w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-sky-500 focus:outline-none min-h-[80px]"
-                                />
-                            </div>
+                            <Input
+                                surface="light"
+                                multiline
+                                label={t('spot.edit_description')}
+                                value={editForm.description}
+                                onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                                maxLength={2000}
+                            />
 
                             {/* Difficulty */}
                             <div>
@@ -670,15 +684,20 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         </div>
 
                         {/* Save button */}
-                        <div className="pt-4 border-t border-slate-100 mt-4">
-                            <button
+                        <div className="pt-4 border-t border-slate-100 mt-4 space-y-3">
+                            {editError && (
+                                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{editError}</div>
+                            )}
+                            <Button
+                                variant="primary"
+                                size="lg"
+                                loading={isSaving}
                                 onClick={handleSaveEdit}
-                                disabled={isSaving}
-                                className="w-full bg-sky-500 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="w-full"
                             >
                                 <Save size={18} />
-                                {isSaving ? '...' : t('spot.edit_save')}
-                            </button>
+                                {t('spot.edit_save')}
+                            </Button>
                         </div>
                     </motion.div>
                 )}
