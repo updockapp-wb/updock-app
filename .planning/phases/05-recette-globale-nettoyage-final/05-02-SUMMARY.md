@@ -105,6 +105,12 @@ None - aucun stub introduit (changements limités au graphe de dépendances).
 - Build vert, aucun flag knip actionnable restant (chaque flag résiduel a une raison de conservation documentée).
 - Packages requis pour la recette préservés : `@capacitor/android` (build Android D-11), `firebase` (push natif), edge functions supabase.
 
+## Self-Check: PASSED
+
+- FOUND: `.planning/phases/05-recette-globale-nettoyage-final/05-02-SUMMARY.md`
+- FOUND: `geojson` in package.json ; REMOVED: `autoprefixer` (as expected)
+- FOUND commits: `b508594`, `589b56d`, `62351b3`
+
 ---
 *Phase: 05-recette-globale-nettoyage-final*
 *Completed: 2026-07-31*
