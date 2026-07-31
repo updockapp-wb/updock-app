@@ -162,6 +162,7 @@
     "profile.notif_session_desc": "Get notified when a session is created on a favorite spot",
     "search.placeholder": "Search spots...",
     "form.error.name_required": "Spot name is required.",
+    "form.error.desc_required": "Spot description is required.",
     "form.error.name_too_long": "Name is too long (100 characters max).",
     "form.error.desc_too_long": "Description is too long (2000 characters max).",
     "form.error.type_required": "Select at least one spot type.",

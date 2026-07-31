@@ -207,6 +207,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         const trimmedName = editForm.name.trim();
         if (!trimmedName) { setEditError(t('form.error.name_required')); return; }
         if (trimmedName.length > 100) { setEditError(t('form.error.name_too_long')); return; }
+        if (!(editForm.description || '').trim()) { setEditError(t('form.error.desc_required')); return; }
         if ((editForm.description || '').length > 2000) { setEditError(t('form.error.desc_too_long')); return; }
         if (editForm.type.length === 0) { setEditError(t('form.error.type_required')); return; }
 
@@ -251,7 +252,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             {/* Header Area */}
             <div className="w-full pt-6 pb-4 px-6 shrink-0">
                 <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
                             <motion.h2
                                 layoutId={`spot-name-${spot.id}`}
@@ -304,7 +305,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         )}
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
