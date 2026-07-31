@@ -1,18 +1,17 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, type ReactNode } from 'react';
 import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
+import { NotificationsContext } from './useNotifications';
 
 type PermissionStatus = 'unknown' | 'granted' | 'denied' | 'loading';
 
-interface NotificationsContextType {
+export interface NotificationsContextType {
     permissionStatus: PermissionStatus;
     hasToken: boolean;
     ensurePushToken: () => Promise<void>;
     checkPermission: () => Promise<void>;
 }
-
-const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined);
 
 export function NotificationsProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
@@ -38,12 +37,18 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
 
     // Check permission on mount
     useEffect(() => {
+        // checkPermission() synchronise l'état de permission avec l'API native au montage ;
+        // sa mise à jour synchrone de permissionStatus est volontaire (comportement validé recette).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         checkPermission();
     }, [checkPermission]);
 
     // Check if user already has a token in push_tokens
     useEffect(() => {
         if (!user) {
+            // Reset au logout : on efface le flag token quand l'utilisateur se déconnecte
+            // (comportement de sécurité T-05-01 validé par la recette — ne pas retirer).
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setHasToken(false);
             return;
         }
@@ -136,12 +141,4 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             {children}
         </NotificationsContext.Provider>
     );
-}
-
-export function useNotifications(): NotificationsContextType {
-    const context = useContext(NotificationsContext);
-    if (context === undefined) {
-        throw new Error('useNotifications must be used within a NotificationsProvider');
-    }
-    return context;
 }

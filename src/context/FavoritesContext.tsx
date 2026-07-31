@@ -1,16 +1,15 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
 import { cacheSpotImages } from '../utils/offline';
-import { useSpots } from './SpotsContext';
+import { useSpots } from './useSpots';
+import { FavoritesContext } from './useFavorites';
 
-interface FavoritesContextType {
+export interface FavoritesContextType {
     favorites: string[];
     toggleFavorite: (spotId: string) => Promise<void>;
     isFavorite: (spotId: string) => boolean;
 }
-
-const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
     const [favorites, setFavorites] = useState<string[]>(() => {
@@ -19,6 +18,14 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     });
     const { user } = useAuth();
     const { spots } = useSpots();
+
+    // Miroir de `spots` dans un ref : la mise en cache des images utilise la dernière liste
+    // de spots connue sans rendre l'effet de fetch réactif à `spots` (éviter un re-fetch des
+    // favoris à chaque mise à jour de la liste des spots).
+    const spotsRef = useRef(spots);
+    useEffect(() => {
+        spotsRef.current = spots;
+    }, [spots]);
 
     // Fetch favorites when user connects
     useEffect(() => {
@@ -38,12 +45,12 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
             }
 
             if (data) {
-                const favIds = data.map((row: any) => row.spot_id);
+                const favIds = data.map((row: { spot_id: string }) => row.spot_id);
                 setFavorites(favIds);
                 localStorage.setItem('updock_favorites_cache', JSON.stringify(favIds));
 
                 // Cache images for all favorites
-                const favSpots = spots.filter(s => favIds.includes(s.id));
+                const favSpots = spotsRef.current.filter(s => favIds.includes(s.id));
                 favSpots.forEach(s => cacheSpotImages(s.image_urls));
             }
         };
@@ -113,12 +120,4 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
             {children}
         </FavoritesContext.Provider>
     );
-}
-
-export function useFavorites() {
-    const context = useContext(FavoritesContext);
-    if (context === undefined) {
-        throw new Error('useFavorites must be used within a FavoritesProvider');
-    }
-    return context;
 }

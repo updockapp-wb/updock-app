@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
-import { useAuth } from './AuthContext';
+import { useAuth } from './useAuth';
+import { ProfileContext } from './useProfile';
 
 interface ProfileData {
     display_name: string | null;
@@ -8,15 +9,13 @@ interface ProfileData {
     notif_session_enabled: boolean;
 }
 
-interface ProfileContextType {
+export interface ProfileContextType {
     profile: ProfileData | null;
     isLoading: boolean;
     updateDisplayName: (name: string) => Promise<void>;
     uploadAvatar: (file: File) => Promise<void>;
     toggleNotifSession: () => Promise<void>;
 }
-
-const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
     const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -26,6 +25,9 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     // Fetch profile whenever user changes
     useEffect(() => {
         if (!user) {
+            // Reset au logout : on efface le profil local quand l'utilisateur se déconnecte
+            // (comportement T-05-01 validé par la recette — ne pas retirer).
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setProfile(null);
             return;
         }
@@ -124,12 +126,4 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
             {children}
         </ProfileContext.Provider>
     );
-}
-
-export function useProfile() {
-    const context = useContext(ProfileContext);
-    if (context === undefined) {
-        throw new Error('useProfile must be used within a ProfileProvider');
-    }
-    return context;
 }

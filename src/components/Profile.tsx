@@ -1,12 +1,12 @@
 import { User, CreditCard, ChevronRight, Globe, LogOut, LogIn, Shield, Camera, Calendar, Users, Bell, MapPin, BarChart2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '../context/LanguageContext';
-import { useFavorites } from '../context/FavoritesContext';
-import { useAuth } from '../context/AuthContext';
-import { useProfile } from '../context/ProfileContext';
+import { useLanguage } from '../context/useLanguage';
+import { useFavorites } from '../context/useFavorites';
+import { useAuth } from '../context/useAuth';
+import { useProfile } from '../context/useProfile';
 import { useState, useRef, useEffect } from 'react';
-import { useSessions } from '../context/SessionsContext';
-import { useNotifications } from '../context/NotificationsContext';
+import { useSessions } from '../context/useSessions';
+import { useNotifications } from '../context/useNotifications';
 import PremiumModal from './PremiumModal';
 import CommunityStatsScreen from './CommunityStatsScreen';
 import { supabase } from '../lib/supabase';
@@ -50,11 +50,14 @@ export default function Profile({ onOpenAuth, onAdminClick, onSpotSelect }: Prof
         if (user) {
             fetchUserSessions();
         }
+        // fetchUserSessions vient du SessionsContext (non mémoïsé) : on ne dépend que de `user`
+        // pour ne récupérer les sessions qu'au changement d'utilisateur (pas de boucle de fetch).
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     useEffect(() => {
         checkPermission();
-    }, []);
+    }, [checkPermission]);
 
     useEffect(() => {
         if (user) return;

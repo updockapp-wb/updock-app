@@ -10,14 +10,15 @@ import NavBar from './components/NavBar';
 import Profile from './components/Profile';
 import NearbySpotsList from './components/NearbySpotsList';
 
-import { useFavorites } from './context/FavoritesContext';
-import { useSpots } from './context/SpotsContext';
-import { useLanguage } from './context/LanguageContext';
+import { useFavorites } from './context/useFavorites';
+import { useSpots } from './context/useSpots';
+import { useLanguage } from './context/useLanguage';
 import { LanguageProvider } from './context/LanguageContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { SpotsProvider } from './context/SpotsContext';
 
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/useAuth';
 import { ProfileProvider } from './context/ProfileContext';
 import { NotificationsProvider } from './context/NotificationsContext';
 import { SessionsProvider } from './context/SessionsContext';
@@ -40,13 +41,17 @@ function AppContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
-
-  // Detect Redirect from Email Confirmation (web)
-  useLayoutEffect(() => {
+  // Détection du redirect de confirmation d'email (web) : l'état initial est dérivé du hash
+  // au premier rendu (pas de setState dans l'effet), l'effet ne garde que le nettoyage d'URL.
+  const isEmailConfirmRedirect = () => {
     const hash = window.location.hash;
-    if (hash && (hash.includes('access_token=') || hash.includes('type=signup'))) {
-      setShowWelcome(true);
+    return !!(hash && (hash.includes('access_token=') || hash.includes('type=signup')));
+  };
+  const [showWelcome, setShowWelcome] = useState(isEmailConfirmRedirect);
+
+  // Nettoyage de l'URL après un redirect de confirmation d'email (web)
+  useLayoutEffect(() => {
+    if (isEmailConfirmRedirect()) {
       window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);

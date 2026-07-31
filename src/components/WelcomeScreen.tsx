@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { Waves, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface WelcomeScreenProps {

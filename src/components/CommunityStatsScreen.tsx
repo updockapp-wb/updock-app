@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { supabase } from '../lib/supabase';
 import { spots as staticSpots } from '../data/spots';
 import { getCountryFromCoords, countryCodeToFlag } from '../utils/countryFromCoords';
@@ -27,6 +27,8 @@ export default function CommunityStatsScreen({ isOpen, onClose }: CommunityStats
     useEffect(() => {
         if (!isOpen) return;
 
+        // Remise en état de chargement à chaque ouverture avant le fetch (comportement voulu).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
 
         const fetchStats = async () => {

@@ -1,8 +1,8 @@
 import { X, Heart, Wind, Waves, MapPin, ChevronLeft, ChevronRight, Share2, Star, MessageSquare, Calendar, Lock, Pencil, Save, Plus, Trash2, User as UserIcon } from 'lucide-react';
 import { type Spot, type StartType } from '../data/spots';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useFavorites } from '../context/FavoritesContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useFavorites } from '../context/useFavorites';
+import { useLanguage } from '../context/useLanguage';
 import { useState, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import { createPortal } from 'react-dom';
@@ -15,9 +15,9 @@ import { type Review } from './ReviewForm';
 import ReviewList from './ReviewList';
 import SessionForm from './SessionForm';
 import SessionList from './SessionList';
-import { useAuth } from '../context/AuthContext';
-import { useSessions } from '../context/SessionsContext';
-import { useSpots } from '../context/SpotsContext';
+import { useAuth } from '../context/useAuth';
+import { useSessions } from '../context/useSessions';
+import { useSpots } from '../context/useSpots';
 import { supabase } from '../lib/supabase';
 
 interface SpotDetailProps {
@@ -119,6 +119,10 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         };
 
         fetchReviews();
+        // On ne relance le fetch (reviews + sessions) qu'au changement de spot ou d'utilisateur.
+        // fetchSessionsForSpot vient du SessionsContext (non mémoïsé) et `spot` est stable tant que
+        // son id ne change pas : dépendre des primitives évite une boucle de fetch.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [spot?.id, user?.id]);
 
     // Fetch uploader profile
@@ -133,7 +137,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             .eq('id', spot.user_id)
             .single()
             .then(({ data }) => setUploaderProfile(data));
-    }, [spot?.id]);
+    }, [spot?.user_id]);
 
     // Prefetch lightbox neighbors (±1) into the browser HTTP cache when the viewer
     // is open. Uses new Image() so no <img> is added to the DOM (D-03 respected):
@@ -148,7 +152,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
             const img = new Image();
             img.src = spot.image_urls![i];
         });
-    }, [isImageOpen, currentPhotoIndex, spot?.id]);
+    }, [isImageOpen, currentPhotoIndex, spot?.image_urls]);
 
     const handleReviewSubmit = (review: Review) => {
         setReviews(prev => {

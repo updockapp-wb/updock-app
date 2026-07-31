@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Bell, User } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useSessions, type Session } from '../context/SessionsContext';
-import { useNotifications } from '../context/NotificationsContext';
+import { useAuth } from '../context/useAuth';
+import { useLanguage } from '../context/useLanguage';
+import { useSessions } from '../context/useSessions';
+import { type Session } from '../context/SessionsContext';
+import { useNotifications } from '../context/useNotifications';
 
 interface SessionCardProps {
   session: Session;

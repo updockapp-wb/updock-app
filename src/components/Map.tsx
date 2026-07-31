@@ -1,15 +1,15 @@
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Geolocation } from '@capacitor/geolocation';
-import Map, { NavigationControl, GeolocateControl, Source, Layer, Marker, type LayerProps, type MapRef, type GeoJSONSource } from 'react-map-gl';
+import Map, { NavigationControl, GeolocateControl, Source, Layer, Marker, type LayerProps, type MapRef, type GeoJSONSource, type MapLayerMouseEvent } from 'react-map-gl';
 import { type Spot, type StartType } from '../data/spots';
 import AddSpotInfoModal from './AddSpotInfoModal';
 import AddSpotForm from './AddSpotForm';
 import FiltersModal from './FiltersModal';
 import { SlidersHorizontal, X, Search, MapPin } from 'lucide-react';
-import { useSpots } from '../context/SpotsContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useSpots } from '../context/useSpots';
+import { useLanguage } from '../context/useLanguage';
 import { mapboxConfig, MAP_COLORS } from '../config/mapbox';
-import type { Feature, FeatureCollection } from 'geojson';
+import type { Feature, FeatureCollection, Point } from 'geojson';
 import SearchModal from './SearchModal';
 
 // Persists across tab remounts — fly-to runs only once per app session
@@ -183,7 +183,7 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
     const isInteractingWithMap = isAddingSpotMode && hasAcknowledgedInfo;
 
     // Handle map click
-    const onMapClick = useCallback((event: any) => {
+    const onMapClick = useCallback((event: MapLayerMouseEvent) => {
         if (isInteractingWithMap) {
             const { lng, lat } = event.lngLat;
             setNewSpotPosition([lat, lng]);
@@ -197,14 +197,14 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
 
         // Handle Cluster Click
         if (feature?.layer?.id === 'clusters') {
-            const clusterId = feature.properties.cluster_id;
+            const clusterId = feature.properties?.cluster_id;
             const mapboxSource = mapRef.current?.getSource('spots') as GeoJSONSource;
 
             mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
                 if (err || !mapRef.current) return;
 
                 mapRef.current.easeTo({
-                    center: feature.geometry.coordinates,
+                    center: (feature.geometry as Point).coordinates as [number, number],
                     zoom: zoom ?? 14,
                     duration: 500
                 });
@@ -215,7 +215,7 @@ export default function MapComponent({ onSpotClick, selectedSpot, isAddingSpotMo
         // Handle Unclustered Point Click
         if (feature?.layer?.id === 'unclustered-point') {
             const spotData = feature.properties;
-            const fullSpot = spots.find(s => s.id === spotData.id);
+            const fullSpot = spots.find(s => s.id === spotData?.id);
 
             if (fullSpot) {
                 onSpotClick(fullSpot);

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Star, User } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import { type Review } from './ReviewForm';
 
 interface ReviewListProps {
@@ -9,7 +9,7 @@ interface ReviewListProps {
   currentUserId: string | undefined;
 }
 
-export default function ReviewList({ reviews, isLoading, currentUserId: _currentUserId }: ReviewListProps) {
+export default function ReviewList({ reviews, isLoading }: ReviewListProps) {
   const { t } = useLanguage();
 
   if (isLoading) {

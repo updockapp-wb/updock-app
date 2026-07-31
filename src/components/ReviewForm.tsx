@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Star } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/useAuth';
+import { useLanguage } from '../context/useLanguage';
 import { supabase } from '../lib/supabase';
 
 export interface Review {

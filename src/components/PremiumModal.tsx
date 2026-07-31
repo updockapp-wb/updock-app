@@ -1,5 +1,5 @@
 import { X, Sparkles } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import Modal from '../ui/Modal';
 import Header from '../ui/Header';
 

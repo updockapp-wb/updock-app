@@ -1,6 +1,6 @@
 import { Check, Globe, Anchor, Mountain, ArrowDown, Activity, Triangle, Umbrella } from 'lucide-react';
 import { type StartType } from '../data/spots';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/useLanguage';
 import Modal from '../ui/Modal';
 import Header from '../ui/Header';
 
@@ -39,7 +39,7 @@ export default function FiltersModal({ isOpen, onClose, selectedFilter, onFilter
                 {filters.map((f) => (
                     <button
                         key={f.id}
-                        onClick={() => onFilterChange(f.id as any)}
+                        onClick={() => onFilterChange(f.id as StartType | 'All')}
                         className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all
                             ${selectedFilter === f.id
                                 ? 'border-sky-500 bg-sky-50'
