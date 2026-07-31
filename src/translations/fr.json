@@ -162,6 +162,7 @@
     "profile.notif_session_desc": "Recevoir une notification quand une session est creee sur un spot favori",
     "search.placeholder": "Rechercher un spot...",
     "form.error.name_required": "Le nom du spot est obligatoire.",
+    "form.error.desc_required": "La description du spot est obligatoire.",
     "form.error.name_too_long": "Le nom est trop long (100 caractères max).",
     "form.error.desc_too_long": "La description est trop longue (2000 caractères max).",
     "form.error.type_required": "Sélectionne au moins un type de spot.",

@@ -136,6 +136,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         const trimmed = name.trim();
         if (!trimmed) { setError(t('form.error.name_required')); return; }
         if (trimmed.length > 100) { setError(t('form.error.name_too_long')); return; }
+        if (!description.trim()) { setError(t('form.error.desc_required')); return; }
         if (description.length > 2000) { setError(t('form.error.desc_too_long')); return; }
         if (type.length === 0) { setError(t('form.error.type_required')); return; }
 

@@ -37,6 +37,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
         const trimmedName = editingSpot.name.trim();
         if (trimmedName.length === 0) { setEditError(t('form.error.name_required')); return; }
         if (trimmedName.length > 100) { setEditError(t('form.error.name_too_long')); return; }
+        if (editingSpot.description.trim().length === 0) { setEditError(t('form.error.desc_required')); return; }
         if (editingSpot.description.length > 2000) { setEditError(t('form.error.desc_too_long')); return; }
         if (editingSpot.type.length === 0) { setEditError(t('form.error.type_required')); return; }
         setIsSaving(true);

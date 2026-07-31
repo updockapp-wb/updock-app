@@ -207,6 +207,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
         const trimmedName = editForm.name.trim();
         if (!trimmedName) { setEditError(t('form.error.name_required')); return; }
         if (trimmedName.length > 100) { setEditError(t('form.error.name_too_long')); return; }
+        if (!(editForm.description || '').trim()) { setEditError(t('form.error.desc_required')); return; }
         if ((editForm.description || '').length > 2000) { setEditError(t('form.error.desc_too_long')); return; }
         if (editForm.type.length === 0) { setEditError(t('form.error.type_required')); return; }
 
