@@ -171,7 +171,7 @@ Plans:
 
 **Wave 3** *(bloqué sur 05-03 — Profile.tsx partagé)*
 
-- [ ] 05-04-PLAN.md — Code-splitting Map/AdminDashboard/PremiumModal + Error Boundary + mesure bundle (PERF-03) [Wave 3]
+- [x] 05-04-PLAN.md — Code-splitting Map/AdminDashboard/PremiumModal + Error Boundary + mesure bundle (PERF-03) [Wave 3]
 
 **Wave 4** *(phase gate — bloqué sur toutes les waves)*
 
@@ -188,4 +188,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
 | 4. Formulaires & Interactions | 6/6 | Complete   | 2026-07-31 |
-| 5. Recette globale & nettoyage final | 3/5 | In Progress|  |
+| 5. Recette globale & nettoyage final | 4/5 | In Progress|  |
