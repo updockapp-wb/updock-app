@@ -30,6 +30,8 @@ Requirements détaillés : voir `.planning/REQUIREMENTS.md`. Roadmap : voir `.pl
 
 **Phase 3 (Fiches Détaillées & Profils) — Complete (2026-07-30).** UI-01/UI-02/PERF-02 validés : SpotDetail et Profile/CommunityStatsScreen migrés vers le design system (tokens + composants maîtres), lazy loading des médias (`loading="lazy"` ×3 + prefetch lightbox), byte-identité CSS et visuelle prouvées (10/10 surfaces), recette QA-01 device iOS à 100% (12/12 items PASS). Bug de modale masquée derrière le tiroir SpotDetail découvert et corrigé en gap closure (`createPortal` sur le master Modal, commit `497f347`). Phase 4 (Formulaires & Interactions) peut démarrer.
 
+**Phase 4 (Formulaires & Interactions) — Complete (2026-07-31).** UI-03/ROBUST-01/ROBUST-02 validés : `Input` DS étendu (surface claire, textarea, maxLength, erreur inline) ; formulaires d'ajout/édition de spot (AddSpotForm, SpotDetail, AdminDashboard) et boutons favori (SpotDetail, App.tsx) migrés vers Input/Button/Modal avec validation client cohérente (nom requis/≤100, description ≤2000, ≥1 type) ; `alert()` natifs éliminés de `SpotsContext`/`FavoritesContext` au profit d'erreurs propagées (inline) et de `Toast` Capacitor (transitoire), sans état bloqué. Recette QA-01 device iOS à 100% (8/8 items PASS) — un bug bloquant (bouton Save coupé par la safe-area bottom manquante dans l'overlay d'édition) trouvé et corrigé en gap closure immédiat (`pb-[env(safe-area-inset-bottom)]`, commits `d1b3e14`/`46c239a`). Quatre constats hors régression (croix SpotDetail décalée sur nom long, description non obligatoire, onglet Pending admin non migré, accent manquant sur « communauté ») capturés en todos pour une phase future. Phase 5 (Recette globale & nettoyage final) peut démarrer.
+
 ## Requirements
 
 ### Validated
@@ -103,4 +105,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-29 — Phase 1 (Audit & Design System) complete*
+*Last updated: 2026-07-31 — Phase 4 (Formulaires & Interactions) complete*
