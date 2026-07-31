@@ -43,7 +43,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
         checkPermission();
     }, [checkPermission]);
 
-    // Check if user already has a token in push_tokens
+    // Register push token automatically when user logs in
     useEffect(() => {
         if (!user) {
             // Reset au logout : on efface le flag token quand l'utilisateur se déconnecte
@@ -57,12 +57,31 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             .select('token')
             .eq('user_id', user.id)
             .limit(1)
-            .then(({ data, error }) => {
+            .then(async ({ data, error }) => {
                 if (error) {
                     console.error('[Notifications] hasToken check error:', error);
                     return;
                 }
-                setHasToken(!!(data && data.length > 0));
+                if (data && data.length > 0) {
+                    setHasToken(true);
+                    return;
+                }
+                try {
+                    const { receive } = await FirebaseMessaging.requestPermissions();
+                    if (receive !== 'granted') return;
+                    const { token } = await FirebaseMessaging.getToken();
+                    if (!token) return;
+                    await supabase
+                        .from('push_tokens')
+                        .upsert(
+                            { user_id: user.id, token, platform: 'ios' },
+                            { onConflict: 'user_id,token' }
+                        );
+                    setPermissionStatus('granted');
+                    setHasToken(true);
+                } catch (err) {
+                    console.error('[Notifications] auto-register error:', err);
+                }
             });
     }, [user]);
 

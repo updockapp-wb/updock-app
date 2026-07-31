@@ -1,27 +1,61 @@
 import { createClient } from 'npm:@supabase/supabase-js@^2.87.0';
-import { GoogleAuth } from 'npm:google-auth-library@^9.0.0';
+import { encodeBase64Url } from 'https://deno.land/std@0.224.0/encoding/base64url.ts';
 import serviceAccount from '../service-account.json' with { type: 'json' };
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-const auth = new GoogleAuth({
-  credentials: serviceAccount,
-  scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
-});
+function pemToArrayBuffer(pem: string): ArrayBuffer {
+  const b64 = pem
+    .replace(/-----BEGIN PRIVATE KEY-----/, '')
+    .replace(/-----END PRIVATE KEY-----/, '')
+    .replace(/\s/g, '');
+  const binary = atob(b64);
+  const buf = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i);
+  return buf.buffer;
+}
 
 async function getAccessToken(): Promise<string> {
-  const client = await auth.getClient();
-  const tokenResponse = await client.getAccessToken();
-  return tokenResponse.token!;
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: 'RS256', typ: 'JWT' };
+  const payload = {
+    iss: serviceAccount.client_email,
+    scope: 'https://www.googleapis.com/auth/firebase.messaging',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600,
+  };
+
+  const enc = new TextEncoder();
+  const headerB64 = encodeBase64Url(enc.encode(JSON.stringify(header)));
+  const payloadB64 = encodeBase64Url(enc.encode(JSON.stringify(payload)));
+  const unsignedToken = `${headerB64}.${payloadB64}`;
+
+  const keyData = pemToArrayBuffer(serviceAccount.private_key);
+  const key = await crypto.subtle.importKey(
+    'pkcs8', keyData, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']
+  );
+  const signature = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', key, enc.encode(unsignedToken));
+  const jwt = `${unsignedToken}.${encodeBase64Url(new Uint8Array(signature))}`;
+
+  const resp = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+  });
+  const data = await resp.json();
+  console.log('[AUTH] OAuth response status:', resp.status, 'has token:', !!data.access_token, 'token prefix:', data.access_token?.slice(0, 20));
+  if (!resp.ok) throw new Error(`Google OAuth error: ${JSON.stringify(data)}`);
+  return data.access_token;
 }
 
 async function sendFcmMessage(
   accessToken: string,
   fcmToken: string,
   notification: { title: string; body: string }
-): Promise<{ success: boolean; unregistered: boolean }> {
+): Promise<{ success: boolean; unregistered: boolean; error?: string }> {
   const projectId = serviceAccount.project_id;
   const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
   const response = await fetch(url, {
@@ -36,12 +70,13 @@ async function sendFcmMessage(
   });
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
+    console.error('[FCM] error:', response.status, JSON.stringify(errorBody));
     const isUnregistered =
       errorBody?.error?.status === 'NOT_FOUND' ||
       errorBody?.error?.details?.some?.(
         (d: { errorCode?: string }) => d.errorCode === 'UNREGISTERED'
       );
-    return { success: false, unregistered: !!isUnregistered };
+    return { success: false, unregistered: !!isUnregistered, error: JSON.stringify(errorBody) };
   }
   return { success: true, unregistered: false };
 }
@@ -102,7 +137,12 @@ Deno.serve(async (req) => {
     if (!tokens?.length) return new Response('no tokens', { status: 200 });
 
     // 5. Send FCM messages in parallel
-    const accessToken = await getAccessToken();
+    let accessToken: string;
+    try {
+      accessToken = await getAccessToken();
+    } catch (authErr) {
+      return new Response(JSON.stringify({ error: 'google_auth_failed', detail: String(authErr) }), { status: 200 });
+    }
     const formattedDate = new Date(session.starts_at).toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
@@ -126,10 +166,12 @@ Deno.serve(async (req) => {
       await supabase.from('push_tokens').delete().in('token', staleTokens);
     }
 
+    const errors = results.filter((r) => !r.success).map((r) => r.error);
     return new Response(
       JSON.stringify({
         sent: results.filter((r) => r.success).length,
         failed: results.filter((r) => !r.success).length,
+        errors,
         stale_cleaned: staleTokens.length,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

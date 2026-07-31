@@ -32,3 +32,4 @@ _bmad-output/
 
 # Firebase service account (contains private key — NEVER commit)
 supabase/functions/service-account.json
+.claude/settings.json
