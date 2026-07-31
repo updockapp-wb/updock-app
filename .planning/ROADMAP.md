@@ -1,4 +1,4 @@
-# Roadmap: Updock — v2.0 Refactor UI/UX & Performance
+# Roadmap: Updock — 1.2.0 Refactor UI/UX & Performance
 
 ## Overview
 

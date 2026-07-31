@@ -1,6 +1,6 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
+milestone: 1.2.0
 milestone_name: Refactor UI/UX & Performance
 status: milestone_complete
 stopped_at: Milestone complete (Phase 5 was final phase)
@@ -36,7 +36,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed (v2.0): 0
+- Total plans completed (1.2.0): 0
 - Average duration: —
 - Total execution time: —
 
@@ -58,7 +58,7 @@ Progress: [██████████] 100%
 
 ## Accumulated Context
 
-### Roadmap (v2.0 — 5 phases)
+### Roadmap (1.2.0 — 5 phases)
 
 - Phase 1 — Audit & Design System : DS-01, DS-02, DS-03
 - Phase 2 — Navigation & Vue Carte / Spots : NAV-01, MAP-01, MAP-02, PERF-01
@@ -70,13 +70,13 @@ Progress: [██████████] 100%
 
 Décisions complètes dans PROJECT.md (Key Decisions). Récentes affectant le travail courant :
 
-- Milestone v2.0 = refactor sans nouvelle feature user — consolider la dette avant d'ajouter des features
+- Milestone 1.2.0 = refactor sans nouvelle feature user — consolider la dette avant d'ajouter des features
 - Numérotation remise à 1 ; phases v1.1.3 (01→09) archivées dans `.planning/archive/v1.1.3-community-features/`
 - Design system construit en Phase 1, adopté écran par écran (Phases 2-4) — tokens extraits de l'existant, pas de rebranding
 - Approche incrémentale imposée : un module/composant à la fois, jamais de balayage global
 - Pas d'infra de test : validation par checklist de recette manuelle mobile (QA-01) après chaque phase
 - Phase 3 : bug de modale masquée derrière le tiroir SpotDetail (isolation:isolate sur #root + portail Vaul) corrigé en gap closure immédiat pendant la recette QA-01 (commit 497f347) — createPortal sur le master Modal
-- [Phase 05]: Recette globale v2.0 validee sur relecture de checklist (approbation qualifiee), pas sur execution device scenario-par-scenario
+- [Phase 05]: Recette globale 1.2.0 validee sur relecture de checklist (approbation qualifiee), pas sur execution device scenario-par-scenario
 - [Phase 05]: Plateforme Android ajoutee au repo (npx cap add android) pour la recette D-11 cross-platform
 
 ### Pending Todos

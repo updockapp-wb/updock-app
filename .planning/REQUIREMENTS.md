@@ -1,4 +1,4 @@
-# Requirements: Updock — v2.0 Refactor UI/UX & Performance
+# Requirements: Updock — 1.2.0 Refactor UI/UX & Performance
 
 **Defined:** 2026-07-28
 **Core Value:** Trouver et découvrir des spots de pumpfoil partout dans le monde — simplicité et beauté avant tout.
@@ -6,7 +6,7 @@
 
 > **Nature du milestone :** refactor interne. Les requirements décrivent des états observables du code et de l'UI (pas de nouvelles fonctionnalités user). Chaque requirement doit être vérifiable sans altérer le comportement utilisateur existant.
 
-## v2.0 Requirements
+## 1.2.0 Requirements
 
 ### Design System (DS)
 
@@ -46,7 +46,7 @@
 
 - [x] **QA-01**: Une checklist des flux critiques (carte, fiche spot, favoris, avis, session, ajout/édition spot, profil, auth) passe à 100% en test manuel mobile après chaque phase — zéro régression fonctionnelle
 
-## Future Requirements (hors v2.0)
+## Future Requirements (hors 1.2.0)
 
 - **DS-04**: Étendre le design system aux composants secondaires (toasts, tabs, badges, skeletons)
 - **PERF-04**: Virtualisation de la liste des spots si le catalogue grossit fortement
@@ -86,10 +86,10 @@
 | QA-01 | Phase 5 | Complete |
 
 **Coverage:**
-- v2.0 requirements: 17 total
+- 1.2.0 requirements: 17 total
 - Mapped to phases: 17/17 (100%)
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-07-28 — Milestone v2.0 Refactor UI/UX & Performance*
+*Requirements defined: 2026-07-28 — Milestone 1.2.0 Refactor UI/UX & Performance*
 *Traceability filled: 2026-07-28 — Roadmap created (5 phases)*

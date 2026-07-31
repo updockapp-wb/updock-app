@@ -24,6 +24,6 @@ Artefacts archivés dans `.planning/archive/v1.1.3-community-features/`.
 
 ---
 
-## v2.0 — Refactor UI/UX & Performance (en cours)
+## 1.2.0 — Refactor UI/UX & Performance (en cours)
 
 Voir `.planning/PROJECT.md` (Current Milestone) et `.planning/ROADMAP.md`.
