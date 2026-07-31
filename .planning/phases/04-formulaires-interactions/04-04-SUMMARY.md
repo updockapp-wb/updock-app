@@ -112,3 +112,9 @@ Aucun. Les deux surfaces sont pleinement câblées (context favoris + updateSpot
 ---
 *Phase: 04-formulaires-interactions*
 *Completed: 2026-07-31*
+
+## Self-Check: PASSED
+
+- FOUND: .planning/phases/04-formulaires-interactions/04-04-SUMMARY.md
+- FOUND: src/components/SpotDetail.tsx
+- FOUND commits: a8a12f6 (Task 1), 2b811b3 (Task 2), 64e864c (docs)
