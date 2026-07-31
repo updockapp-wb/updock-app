@@ -146,29 +146,36 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                     </div>
 
                                                     <div className="flex gap-3 pt-4 border-t border-slate-50" onClick={(e) => e.stopPropagation()}>
-                                                        <button
+                                                        <Button
+                                                            variant="danger"
+                                                            size="md"
+                                                            className="flex-1 !bg-emerald-500 hover:!bg-emerald-600"
+                                                            loading={actionLoadingId === spot.id}
+                                                            disabled={actionLoadingId === spot.id}
                                                             onClick={async () => {
                                                                 setActionLoadingId(spot.id);
                                                                 await approveSpot(spot.id);
                                                                 setActionLoadingId(null);
                                                             }}
-                                                            disabled={actionLoadingId === spot.id}
-                                                            className={`flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Check size={18} />
-                                                            {actionLoadingId === spot.id ? '...' : t('admin.approve')}
-                                                        </button>
-                                                        <button
+                                                            {t('admin.approve')}
+                                                        </Button>
+                                                        <Button
+                                                            variant="danger"
+                                                            size="md"
+                                                            iconOnly
+                                                            aria-label={t('admin.delete')}
+                                                            className="px-4 !bg-rose-50 hover:!bg-rose-100 !text-rose-500"
+                                                            disabled={actionLoadingId === spot.id}
                                                             onClick={async () => {
                                                                 setActionLoadingId(spot.id);
                                                                 await deleteSpot(spot.id);
                                                                 setActionLoadingId(null);
                                                             }}
-                                                            disabled={actionLoadingId === spot.id}
-                                                            className={`px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold rounded-xl flex items-center justify-center transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Trash2 size={18} />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -432,37 +439,45 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
 
                             {/* Footer Actions */}
                             <div className="p-6 border-t border-slate-200 flex gap-3">
-                                <button
+                                <Button
+                                    variant="primary"
+                                    size="md"
+                                    className="flex-1"
                                     onClick={() => {
                                         onSpotSelect(previewSpot);
                                         setPreviewSpot(null);
                                     }}
-                                    className="flex-1 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
                                 >
                                     <MapPin size={18} />
                                     {t('admin.view_on_map')}
-                                </button>
+                                </Button>
                                 {!previewSpot.is_approved && (
                                     <>
-                                        <button
+                                        <Button
+                                            variant="danger"
+                                            size="md"
+                                            className="px-6 !bg-emerald-500 hover:!bg-emerald-600"
                                             onClick={() => {
                                                 approveSpot(previewSpot.id);
                                                 setPreviewSpot(null);
                                             }}
-                                            className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-colors flex items-center gap-2"
                                         >
                                             <Check size={18} />
                                             {t('admin.approve')}
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="md"
+                                            iconOnly
+                                            aria-label={t('admin.delete')}
+                                            className="px-6"
                                             onClick={() => {
                                                 deleteSpot(previewSpot.id);
                                                 setPreviewSpot(null);
                                             }}
-                                            className="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition-colors"
                                         >
                                             <Trash2 size={18} />
-                                        </button>
+                                        </Button>
                                     </>
                                 )}
                             </div>
