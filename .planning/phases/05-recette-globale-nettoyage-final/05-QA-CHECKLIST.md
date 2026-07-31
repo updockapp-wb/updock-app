@@ -2,8 +2,9 @@
 phase: 05-recette-globale-nettoyage-final
 plan: 05
 type: qa-checklist
-status: pending-device-pass
+status: reviewed-approved
 created: 2026-07-31
+approved: 2026-07-31
 requirements: [QA-01]
 decisions: [D-10, D-11, D-12, D-13]
 ---
@@ -37,17 +38,38 @@ decisions: [D-10, D-11, D-12, D-13]
 
 | Gate | Commande | Attendu | Résultat |
 |------|----------|---------|----------|
-| Lint | `npm run lint` | 0 problème (cible D-01 verte de la phase) | _(voir 05-05-SUMMARY.md)_ |
-| Build | `npm run build` (`tsc -b && vite build`) | succès, aucune erreur TS | _(voir 05-05-SUMMARY.md)_ |
-| Sync natif | `npx cap sync` | shells iOS + Android portent les nouveaux chunks hashés (Pitfall 1 : chunks périmés = écran blanc) | _(voir 05-05-SUMMARY.md — peut requérir Node ≥22, cf. Deferred Items)_ |
+| Lint | `npm run lint` | 0 problème (cible D-01 verte de la phase) | ✅ **PASS** — 0 problème |
+| Build | `npm run build` (`tsc -b && vite build`) | succès, aucune erreur TS | ✅ **PASS** — build vite OK, aucune erreur TS |
+| Sync natif | `npx cap sync` | shells iOS + Android portent les nouveaux chunks hashés (Pitfall 1 : chunks périmés = écran blanc) | ✅ **PASS** — `npx cap sync` OK pour iOS **et** Android (env Node v26, blocage Node<22 levé) |
 
-**Prérequis device :** si `npx cap sync` a été bloqué (env Node v20 < 22, cf. STATE.md Deferred
-Items), lancer `npm run build && npx cap sync` dans un environnement **Node 22** avant la passe
-device, afin que `public/` natif embarque les nouveaux chunks lazy hashés.
+**Note plateforme Android :** au démarrage du plan, le repo était **iOS-only** (`ios/` seul).
+La plateforme native Android a été ajoutée pendant le plan via `npx cap add android` (commit
+`db0bb73`), puis `npm run build && npx cap sync` a été relancé pour que les deux shells natifs
+(iOS + Android) embarquent les nouveaux chunks lazy hashés. Le blocage Node ≥22 mentionné dans
+les Deferred Items est levé (env courant Node v26).
 
 ---
 
 ## 1. Scénarios de recette manuelle (device iOS physique ET Android physique)
+
+> **⚠️ Statut réel de la passe device (transparence — 2026-07-31) :**
+> L'utilisateur a **revu et approuvé** cette checklist par une **relecture** de l'ensemble des
+> scénarios, et **non** par une exécution scénario-par-scénario sur device. Réponse exacte :
+> _« L'essentiel me semble correct, je n'ai pas testé les points un par un, mais je les ai
+> parcourus en les lisant et tout me semble bon, on valide. »_
+>
+> - **Ce qui est vérifié sur device réel :** l'app **boote et tourne sur un iPhone physique**
+>   après le correctif Firebase (voir plus bas) — c'est en lançant l'app que le crash
+>   `FirebaseApp.configure() could not find a valid GoogleService-Info.plist` a été détecté puis
+>   corrigé (commit `ecdabca`).
+> - **Ce qui n'est PAS individuellement exécuté :** chaque ligne PASS/FAIL ci-dessous n'a **pas**
+>   été jouée une à une sur iOS + Android. Les cases ☐ restent donc **non cochées** : elles
+>   représentent une **revue** approuvée, pas une exécution device certifiée par ligne. Ne pas
+>   interpréter cette checklist comme un « 100% PASS iOS + Android, zéro régression » exhaustif.
+> - **Incident trouvé ET corrigé pendant la recette :** le câblage `GoogleService-Info.plist` +
+>   `project.pbxproj` (voir §5) — exactement le type de risque cross-platform que cette recette
+>   existe pour attraper (rationale D-13), même si sa cause racine était un `git stash -u`
+>   orchestrateur antérieur et non le code de la Phase 5 lui-même.
 
 > **Étape NON reproductible en desktop.** Gestuelle tactile, toasts Capacitor natifs,
 > comportement offline réel et **chargement des chunks lazy en WebView native** exigent des
@@ -159,14 +181,36 @@ device, afin que `public/` natif embarque les nouveaux chunks lazy hashés.
 
 | Exigence | Preuve | Statut |
 |----------|--------|--------|
-| **QA-01 / D-10** — recette globale fusionnée (8 groupes de flux) | Sections 1.1–1.8 | ⏳ en attente device |
-| **D-11** — 100% PASS sur iOS **et** Android réels | Colonnes iOS + Android sections 1–2 | ⏳ en attente device |
-| **D-13** — passe unique finale après 05-01/02/03/04 | Filet auto (§0) + sections 1–2 | ⏳ en attente device |
+| **QA-01 / D-10** — recette globale fusionnée (8 groupes de flux) | Sections 1.1–1.8 | ✅ Revue et approuvée (relecture checklist, pas exécution scénario-par-scénario) |
+| **D-11** — 100% PASS sur iOS **et** Android réels | Colonnes iOS + Android sections 1–2 | ◑ Partiel — boot app **iOS** vérifié sur device réel (post-correctif Firebase) ; reste = revue de checklist, non exécuté ligne à ligne sur les 2 OS |
+| **D-13** — passe unique finale après 05-01/02/03/04 | Filet auto (§0) + sections 1–2 | ✅ Passe unique finale déroulée après les 4 plans (gate auto vert + revue) |
 | **D-12** — 2 bugs connus logués comme exclusions | Section 3 | ✅ documenté |
 
 **Règle de sortie :** toute régression **nouvelle** (hors K1/K2) → **STOP**, demander une gap
-closure (`/gsd:plan-phase 05 --gaps`), ne pas arbitrer. Recette validée uniquement si **100%
-PASS sur les deux plateformes** (exclusions D-12 mises à part).
+closure (`/gsd:plan-phase 05 --gaps`), ne pas arbitrer.
 
-**Verdict final :** _(à compléter par l'utilisateur après la passe device — voir Task 3 /
-checkpoint du plan 05-05)_
+**Verdict final (2026-07-31) — APPROUVÉ (qualifié) :** l'utilisateur a **validé la recette**
+sur la base d'une **relecture** intégrale de la checklist (_« tout me semble bon, on valide »_),
+pas d'une exécution device scénario-par-scénario. L'app **boote et tourne sur iPhone physique**
+après le correctif Firebase (§5). **Aucune régression nouvelle** signalée. Les 2 bugs D-12 (K1/K2)
+restent des exclusions connues hors périmètre. **QA-01 satisfait** au sens de cette validation
+qualifiée ; le refactor v2.0 est clôturé. **Ne PAS surinterpréter** comme un « 100% PASS exhaustif
+iOS + Android certifié par ligne » : ce n'était pas le cas.
+
+---
+
+## 5. Incident trouvé et corrigé pendant la recette — câblage GoogleService-Info.plist
+
+> Trouvé-et-corrigé pendant la recette (rationale D-13 : la recette existe pour attraper les
+> risques cross-platform de dernière minute).
+
+- **Symptôme :** au 1er lancement Xcode sur device iOS, crash `FirebaseApp.configure() could not
+  find a valid GoogleService-Info.plist`.
+- **Cause racine :** un `git stash -u` orchestrateur **antérieur à la phase** avait happé le
+  fichier `ios/App/App/GoogleService-Info.plist` (non suivi) **et** son câblage
+  `project.pbxproj` était en cours d'édition dans le même stash. Ce n'est **pas** une régression
+  du code Phase 5 — c'est un artefact d'environnement / d'opération git orchestrateur.
+- **Correctif (commit `ecdabca`) :** restauration du fichier `GoogleService-Info.plist` + du diff
+  `project.pbxproj` isolé qui le référence (`fileRef` + build file Resources + `App.entitlements`
+  + `CODE_SIGN_ENTITLEMENTS`), plus le bump `MARKETING_VERSION` 1.1.3 → 1.1.5 du build testé.
+- **Vérification :** après correctif, l'app boote sur iPhone physique.
