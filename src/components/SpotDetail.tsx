@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import { createPortal } from 'react-dom';
 import { Share } from '@capacitor/share';
+import { Toast } from '@capacitor/toast';
+import Button from '../ui/Button';
 import ReviewForm from './ReviewForm';
 import { type Review } from './ReviewForm';
 import ReviewList from './ReviewList';
@@ -297,16 +299,19 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                         >
                             <Share2 size={20} className="text-slate-600" />
                         </button>
-                        <button
+                        <Button
+                            variant="ghost"
+                            iconOnly
+                            aria-label={user && isFavorite(spot.id) ? t('fav.remove') : t('fav.add')}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 if (!user) {
                                     onOpenAuth?.();
                                     return;
                                 }
-                                toggleFavorite(spot.id);
+                                toggleFavorite(spot.id).catch(() => Toast.show({ text: t('fav.error.revert'), duration: 'short' }));
                             }}
-                            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors shadow-sm relative overflow-visible"
+                            className="w-11 h-11 !py-0 !bg-slate-100 hover:!bg-slate-200 shadow-sm relative overflow-visible"
                         >
                             <Heart
                                 size={20}
@@ -317,7 +322,7 @@ export default function SpotDetail({ spot, onClose, onOpenAuth }: SpotDetailProp
                                     <Lock size={10} className="text-slate-400" />
                                 </span>
                             )}
-                        </button>
+                        </Button>
                         <button
                             onClick={onClose}
                             className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors shadow-sm"
