@@ -6,6 +6,7 @@ import { useSpots } from '../context/SpotsContext';
 import { useLanguage } from '../context/LanguageContext';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import Modal from '../ui/Modal';
 
 interface AddSpotFormProps {
     isOpen: boolean;
@@ -26,6 +27,7 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
     const { t } = useLanguage();
     const [isSending, setIsSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [showNoPhotoConfirm, setShowNoPhotoConfirm] = useState(false);
 
     // Miroir de `imagePreviews` dans un ref — SANS cleanup. L'ancien effet révoquait les
     // URLs à chaque changement de `imagePreviews` (son cleanup se rejoue avant chaque re-run),
@@ -95,18 +97,9 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Validation client (D-02 : nom ≤100 / description ≤2000 ; D-03 : ≥1 type).
-        // Rappel : garde UX uniquement — la garde autoritaire reste RLS/Postgres (T-04-V2).
-        setError(null);
-        const trimmed = name.trim();
-        if (!trimmed) { setError(t('form.error.name_required')); return; }
-        if (trimmed.length > 100) { setError(t('form.error.name_too_long')); return; }
-        if (description.length > 2000) { setError(t('form.error.desc_too_long')); return; }
-        if (type.length === 0) { setError(t('form.error.type_required')); return; }
-
+    // Soumission effective (upload + addSpot + callbacks + reset). Réutilisée par le chemin
+    // "avec photo" et par la confirmation douce "sans photo" (D-04).
+    const doSubmit = async () => {
         if (!position) return;
 
         setIsSending(true);
@@ -126,18 +119,44 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
             onClose();
             resetForm();
 
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to add spot:', err);
-            // Error is handled in context (alert), but we can add more UI here if needed
+            // Données conservées (pas de reset sur échec) + message inline (ROBUST-01).
+            setError(t('form.error.submit_failed'));
             setIsSending(false);
         }
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Validation client (D-02 : nom ≤100 / description ≤2000 ; D-03 : ≥1 type).
+        // Rappel : garde UX uniquement — la garde autoritaire reste RLS/Postgres (T-04-V2).
+        setError(null);
+        const trimmed = name.trim();
+        if (!trimmed) { setError(t('form.error.name_required')); return; }
+        if (trimmed.length > 100) { setError(t('form.error.name_too_long')); return; }
+        if (description.length > 2000) { setError(t('form.error.desc_too_long')); return; }
+        if (type.length === 0) { setError(t('form.error.type_required')); return; }
+
+        if (!position) return;
+
+        // Confirmation douce D-04 : soumission valide sans photo → dialogue non bloquant
+        // (jamais culpabilisant), au lieu d'appeler addSpot directement.
+        if (imageFiles.length === 0) {
+            setShowNoPhotoConfirm(true);
+            return;
+        }
+
+        doSubmit();
+    };
+
     return (
-        // `onExitComplete` : libère les aperçus une fois l'animation de fermeture terminée,
-        // donc APRÈS que le contenu (et ses <img>) soit démonté — aucune image cassée pendant
-        // la sortie. Sans cela, les URLs de la dernière session resteraient vivantes jusqu'à la
-        // réouverture du formulaire (la fuite mesurée dans 02-BASELINE.md).
+        <>
+        {/* `onExitComplete` : libère les aperçus une fois l'animation de fermeture terminée,
+            donc APRÈS que le contenu (et ses <img>) soit démonté — aucune image cassée pendant
+            la sortie. Sans cela, les URLs de la dernière session resteraient vivantes jusqu'à la
+            réouverture du formulaire (la fuite mesurée dans 02-BASELINE.md). */}
         <AnimatePresence onExitComplete={revokeAll}>
             {isOpen && (
                 <div className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center pointer-events-none">
@@ -280,5 +299,33 @@ export default function AddSpotForm({ isOpen, onClose, onSubmit, position }: Add
             )
             }
         </AnimatePresence >
+
+            {/* Confirmation douce « pas de photo » (D-04) — Modal light+center, non bloquant,
+                deux actions positives, jamais culpabilisant. */}
+            <Modal isOpen={showNoPhotoConfirm} onClose={() => setShowNoPhotoConfirm(false)} surface="light" layout="center">
+                <div className="text-center space-y-4">
+                    <h3 className="text-xl font-bold text-slate-800">{t('form.confirm.no_photo.title')}</h3>
+                    <p className="text-sm text-slate-500">{t('form.confirm.no_photo.body')}</p>
+                    <div className="flex flex-col gap-2 pt-2">
+                        <Button
+                            variant="primary"
+                            size="lg"
+                            className="w-full"
+                            onClick={() => { setShowNoPhotoConfirm(false); doSubmit(); }}
+                        >
+                            {t('form.confirm.no_photo.confirm')}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            size="lg"
+                            className="w-full"
+                            onClick={() => setShowNoPhotoConfirm(false)}
+                        >
+                            {t('form.confirm.no_photo.cancel')}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+        </>
     );
 }
