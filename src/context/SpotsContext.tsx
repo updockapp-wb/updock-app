@@ -2,7 +2,6 @@ import { useState, useEffect, type ReactNode, useMemo } from 'react';
 import { spots as staticSpots, type Spot, type StartType } from '../data/spots';
 import { supabase } from '../lib/supabase';
 import { getDistance } from '../utils/distance';
-import { Toast } from '@capacitor/toast';
 import { Geolocation } from '@capacitor/geolocation';
 import { SpotsContext } from './useSpots';
 
@@ -138,102 +137,83 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
     };
 
     const addSpot = async (newSpotData: Omit<Spot, 'id'>, imageFiles?: File[]) => {
+        // Le context n'a pas d'accès i18n (Pitfall 4) : on rethrow vers l'appelant
+        // (AddSpotForm) qui affiche le feedback traduit via t(). Aucun Toast codé en dur ici.
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-            Toast.show({ text: 'You must be logged in.' });
-            return;
+            throw new Error('Not authenticated');
         }
 
-        // Return immediately to close the form
-        Toast.show({
-            text: 'Envoi du spot en cours...',
-            duration: 'short'
-        });
+        try {
+            const imageUrls: string[] = [];
 
-        // Background processing
-        (async () => {
-            try {
-                const imageUrls: string[] = [];
+            // Upload Images if present (up to 5)
+            if (imageFiles && imageFiles.length > 0) {
+                const filesToUpload = imageFiles.slice(0, 5);
 
-                // Upload Images if present (up to 5)
-                if (imageFiles && imageFiles.length > 0) {
-                    const filesToUpload = imageFiles.slice(0, 5);
+                for (const imageFile of filesToUpload) {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const filePath = `public/${fileName}`;
 
-                    for (const imageFile of filesToUpload) {
-                        const fileExt = imageFile.name.split('.').pop();
-                        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-                        const filePath = `public/${fileName}`;
+                    const { error: uploadError } = await supabase.storage
+                        .from('spots')
+                        .upload(filePath, imageFile);
 
-                        const { error: uploadError } = await supabase.storage
+                    if (uploadError) {
+                        console.error('Upload error:', uploadError);
+                    } else {
+                        const { data: { publicUrl } } = supabase.storage
                             .from('spots')
-                            .upload(filePath, imageFile);
-
-                        if (uploadError) {
-                            console.error('Upload error:', uploadError);
-                        } else {
-                            const { data: { publicUrl } } = supabase.storage
-                                .from('spots')
-                                .getPublicUrl(filePath);
-                            imageUrls.push(publicUrl);
-                        }
+                            .getPublicUrl(filePath);
+                        imageUrls.push(publicUrl);
                     }
                 }
+            }
 
-                const dbPayload = {
-                    name: newSpotData.name,
-                    description: newSpotData.description,
-                    type: JSON.stringify(newSpotData.type),
-                    lat: newSpotData.position[0],
-                    lng: newSpotData.position[1],
-                    difficulty: newSpotData.difficulty,
-                    height: newSpotData.height,
-                    image_urls: imageUrls.length > 0 ? imageUrls : null,
-                    user_id: user.id
+            const dbPayload = {
+                name: newSpotData.name,
+                description: newSpotData.description,
+                type: JSON.stringify(newSpotData.type),
+                lat: newSpotData.position[0],
+                lng: newSpotData.position[1],
+                difficulty: newSpotData.difficulty,
+                height: newSpotData.height,
+                image_urls: imageUrls.length > 0 ? imageUrls : null,
+                user_id: user.id
+            };
+
+            const { data, error } = await supabase.from('spots').insert([dbPayload]).select().single();
+            if (error) throw error;
+
+            if (data) {
+                let spotType: StartType[] = ['Dockstart'];
+                try {
+                    const parsed = typeof data.type === 'string' ? JSON.parse(data.type) : data.type;
+                    spotType = Array.isArray(parsed) ? parsed : [parsed];
+                } catch {
+                    spotType = [data.type as StartType];
+                }
+
+                const createdSpot: Spot = {
+                    id: data.id,
+                    name: data.name,
+                    type: spotType,
+                    position: [data.lat, data.lng],
+                    description: data.description,
+                    difficulty: data.difficulty as Spot['difficulty'],
+                    height: data.height,
+                    image_urls: data.image_urls,
+                    is_approved: data.is_approved,
+                    user_id: data.user_id
                 };
 
-                const { data, error } = await supabase.from('spots').insert([dbPayload]).select().single();
-                if (error) throw error;
-
-                if (data) {
-                    let spotType: StartType[] = ['Dockstart'];
-                    try {
-                        const parsed = typeof data.type === 'string' ? JSON.parse(data.type) : data.type;
-                        spotType = Array.isArray(parsed) ? parsed : [parsed];
-                    } catch {
-                        spotType = [data.type as StartType];
-                    }
-
-                    const createdSpot: Spot = {
-                        id: data.id,
-                        name: data.name,
-                        type: spotType,
-                        position: [data.lat, data.lng],
-                        description: data.description,
-                        difficulty: data.difficulty as Spot['difficulty'],
-                        height: data.height,
-                        image_urls: data.image_urls,
-                        is_approved: data.is_approved,
-                        user_id: data.user_id
-                    };
-
-                    setSpots(prev => [createdSpot, ...prev]);
-                    Toast.show({
-                        text: 'Spot envoyé ! Il apparaîtra après validation.',
-                        duration: 'long'
-                    });
-                }
-            } catch (error) {
-                console.error('Error adding spot in background:', error);
-                const message = error instanceof Error ? error.message : 'Échec de l\'envoi';
-                Toast.show({
-                    text: `Erreur : ${message}`,
-                    duration: 'long'
-                });
+                setSpots(prev => [createdSpot, ...prev]);
             }
-        })();
-
-        // Resolve immediately so the UI doesn't wait
-        return Promise.resolve();
+        } catch (error) {
+            console.error('Error adding spot:', error);
+            throw error;
+        }
     };
 
     const approveSpot = async (id: string) => {
@@ -243,13 +223,14 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             setSpots(prev => prev.map(s => s.id === id ? { ...s, is_approved: true } : s));
         } catch (error) {
             console.error('Error approving:', error);
-            Toast.show({ text: "Échec de l'approbation.", duration: 'long' });
+            throw error;
         }
     };
 
+    // La confirmation de suppression est remontée au site d'appel (AdminDashboard) via
+    // le Modal de l'app : `deleteSpot` reçoit un appel déjà confirmé, exécute la suppression
+    // et rethrow en cas d'échec pour que l'appelant affiche un Toast traduit.
     const deleteSpot = async (id: string) => {
-        if (!confirm('Delete this spot?')) return;
-
         // Handle static spots (local only)
         if (id.startsWith('fr-') || id.startsWith('ch-') || id.startsWith('es-')) {
             setSpots(prev => prev.filter(s => s.id !== id));
@@ -274,9 +255,7 @@ export function SpotsProvider({ children }: { children: ReactNode }) {
             setSpots(prev => prev.filter(s => s.id !== id));
         } catch (error) {
             console.error('Error deleting spot:', error);
-            const err = error as { message?: string; error_description?: string } | null;
-            const errorMessage = err?.message || err?.error_description || 'Unknown error';
-            Toast.show({ text: `Échec de la suppression : ${errorMessage}`, duration: 'long' });
+            throw error;
         }
     };
 

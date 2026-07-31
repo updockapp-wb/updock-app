@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Mail, Lock, User } from 'lucide-react';
+import { Toast } from '@capacitor/toast';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../context/useLanguage';
 import Modal from '../ui/Modal';
@@ -70,7 +71,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         display_name: displayName,
                     });
                 }
-                alert(t('auth.alert_signup'));
+                Toast.show({ text: t('auth.alert_signup'), duration: 'short' });
                 onClose();
             }
         } catch (err) {

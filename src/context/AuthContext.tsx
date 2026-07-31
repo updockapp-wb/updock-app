@@ -34,7 +34,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const signOut = async () => {
-        await supabase.auth.signOut();
+        // Le context n'a pas d'accès i18n (Pitfall 4) : on log puis rethrow vers l'appelant
+        // (Profile) qui affiche le feedback traduit via t(). Ne plus avaler l'erreur (D-05).
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+        } catch (err) {
+            console.error('Error signing out:', err);
+            throw err;
+        }
     };
 
     return (
