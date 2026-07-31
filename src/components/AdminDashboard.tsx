@@ -87,7 +87,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                         className={`pb-4 text-sm font-bold flex items-center gap-2 transition-colors relative ${view === 'pending' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
                                     >
                                         <CircleAlert size={16} />
-                                        Pending ({pendingSpots.length})
+                                        {t('admin.tab_pending')} ({pendingSpots.length})
                                         {pendingSpots.length > 0 && (
                                             <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                                         )}
@@ -98,7 +98,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                         className={`pb-4 text-sm font-bold flex items-center gap-2 transition-colors relative ${view === 'all' ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
                                     >
                                         <LayoutList size={16} />
-                                        All Spots ({allSpots.length})
+                                        {t('admin.tab_all')} ({allSpots.length})
                                         {view === 'all' && <motion.div layoutId="underline" className="absolute bottom-0 left-0 right-0 h-1 bg-sky-500 rounded-t-full" />}
                                     </button>
                                 </div>
@@ -118,7 +118,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                             {pendingSpots.map(spot => (
                                                 <div
                                                     key={spot.id}
-                                                    className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col gap-4 cursor-pointer hover:border-sky-300 hover:shadow-md transition-all"
+                                                    className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex flex-col gap-4 cursor-pointer hover:border-sky-300 hover:shadow-md transition-all"
                                                     onClick={() => {
                                                         setPreviewSpot(spot);
                                                         setCurrentPhotoIndex(0);
@@ -146,29 +146,36 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                                     </div>
 
                                                     <div className="flex gap-3 pt-4 border-t border-slate-50" onClick={(e) => e.stopPropagation()}>
-                                                        <button
+                                                        <Button
+                                                            variant="danger"
+                                                            size="md"
+                                                            className="flex-1 !bg-emerald-500 hover:!bg-emerald-600"
+                                                            loading={actionLoadingId === spot.id}
+                                                            disabled={actionLoadingId === spot.id}
                                                             onClick={async () => {
                                                                 setActionLoadingId(spot.id);
                                                                 await approveSpot(spot.id);
                                                                 setActionLoadingId(null);
                                                             }}
-                                                            disabled={actionLoadingId === spot.id}
-                                                            className={`flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Check size={18} />
-                                                            {actionLoadingId === spot.id ? '...' : t('admin.approve')}
-                                                        </button>
-                                                        <button
+                                                            {t('admin.approve')}
+                                                        </Button>
+                                                        <Button
+                                                            variant="danger"
+                                                            size="md"
+                                                            iconOnly
+                                                            aria-label={t('admin.delete')}
+                                                            className="px-4 !bg-rose-50 hover:!bg-rose-100 !text-rose-500"
+                                                            disabled={actionLoadingId === spot.id}
                                                             onClick={async () => {
                                                                 setActionLoadingId(spot.id);
                                                                 await deleteSpot(spot.id);
                                                                 setActionLoadingId(null);
                                                             }}
-                                                            disabled={actionLoadingId === spot.id}
-                                                            className={`px-4 bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold rounded-xl flex items-center justify-center transition-colors ${actionLoadingId === spot.id ? 'opacity-50' : ''}`}
                                                         >
                                                             <Trash2 size={18} />
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -179,7 +186,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                     allSpots.length === 0 ? (
                                         <div className="h-full flex flex-col items-center justify-center text-slate-400">
                                             <LayoutList size={48} className="mb-4 opacity-50" />
-                                            <p className="font-medium">No spots yet</p>
+                                            <p className="font-medium">{t('admin.no_spots')}</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-4">
@@ -410,11 +417,11 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
                                 {/* Details Grid */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <div className="bg-slate-50 rounded-xl p-4">
-                                        <p className="text-xs text-slate-500 mb-1">Difficulté</p>
+                                        <p className="text-xs text-slate-500 mb-1">{t('spot.difficulty')}</p>
                                         <p className="font-bold text-slate-900">{previewSpot.difficulty}</p>
                                     </div>
                                     <div className="bg-slate-50 rounded-xl p-4 col-span-2">
-                                        <p className="text-xs text-slate-500 mb-1">Coordonnées</p>
+                                        <p className="text-xs text-slate-500 mb-1">{t('admin.coordinates')}</p>
                                         <p className="font-mono text-sm text-slate-900">
                                             {previewSpot.position[0].toFixed(6)}, {previewSpot.position[1].toFixed(6)}
                                         </p>
@@ -423,7 +430,7 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
 
                                 {/* Description */}
                                 <div className="mb-6">
-                                    <h3 className="font-bold text-slate-800 mb-3">Description</h3>
+                                    <h3 className="font-bold text-slate-800 mb-3">{t('spot.desc')}</h3>
                                     <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
                                         {previewSpot.description}
                                     </p>
@@ -432,37 +439,45 @@ export default function AdminDashboard({ isOpen, onClose, onSpotSelect }: AdminD
 
                             {/* Footer Actions */}
                             <div className="p-6 border-t border-slate-200 flex gap-3">
-                                <button
+                                <Button
+                                    variant="primary"
+                                    size="md"
+                                    className="flex-1"
                                     onClick={() => {
                                         onSpotSelect(previewSpot);
                                         setPreviewSpot(null);
                                     }}
-                                    className="flex-1 py-3 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
                                 >
                                     <MapPin size={18} />
-                                    Voir sur la carte
-                                </button>
+                                    {t('admin.view_on_map')}
+                                </Button>
                                 {!previewSpot.is_approved && (
                                     <>
-                                        <button
+                                        <Button
+                                            variant="danger"
+                                            size="md"
+                                            className="px-6 !bg-emerald-500 hover:!bg-emerald-600"
                                             onClick={() => {
                                                 approveSpot(previewSpot.id);
                                                 setPreviewSpot(null);
                                             }}
-                                            className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-colors flex items-center gap-2"
                                         >
                                             <Check size={18} />
-                                            Approuver
-                                        </button>
-                                        <button
+                                            {t('admin.approve')}
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="md"
+                                            iconOnly
+                                            aria-label={t('admin.delete')}
+                                            className="px-6"
                                             onClick={() => {
                                                 deleteSpot(previewSpot.id);
                                                 setPreviewSpot(null);
                                             }}
-                                            className="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition-colors"
                                         >
                                             <Trash2 size={18} />
-                                        </button>
+                                        </Button>
                                     </>
                                 )}
                             </div>
