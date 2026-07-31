@@ -131,8 +131,8 @@ Plans:
 Plans:
 **Wave 1** *(fondations, fichiers disjoints)*
 
-- [ ] 04-01-PLAN.md — Extension Input (surface light + multiline + maxLength + error) + clés i18n validation/confirmation/favori [Wave 1]
-- [ ] 04-02-PLAN.md — Propagation d'erreur contexts : updateSpot rethrow + Toast approve/delete, toggleFavorite Promise rejetante (ROBUST-02) [Wave 1]
+- [x] 04-01-PLAN.md — Extension Input (surface light + multiline + maxLength + error) + clés i18n validation/confirmation/favori [Wave 1]
+- [x] 04-02-PLAN.md — Propagation d'erreur contexts : updateSpot rethrow + Toast approve/delete, toggleFavorite Promise rejetante (ROBUST-02) [Wave 1]
 
 **Wave 2** *(migrations formulaires/favoris, fichiers disjoints — bloqué sur Wave 1)*
 
@@ -170,5 +170,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
-| 4. Formulaires & Interactions | 0/6 | Not started | - |
+| 4. Formulaires & Interactions | 2/6 | In Progress|  |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
