@@ -136,9 +136,9 @@ Plans:
 
 **Wave 2** *(migrations formulaires/favoris, fichiers disjoints — bloqué sur Wave 1)*
 
-- [ ] 04-03-PLAN.md — AddSpotForm : champs→Input, submit→Button, validation client, confirmation douce pas-de-photo (D-04) [Wave 2]
-- [ ] 04-04-PLAN.md — SpotDetail : bouton favori Button iconOnly + toast revert (D-08/D-10), édition inline→Input/Button + validation/erreur inline [Wave 2]
-- [ ] 04-05-PLAN.md — AdminDashboard édition→Input/Button + i18n + feedback (D-09) + App.tsx bouton favori liste (D-10) [Wave 2]
+- [x] 04-03-PLAN.md — AddSpotForm : champs→Input, submit→Button, validation client, confirmation douce pas-de-photo (D-04) [Wave 2]
+- [x] 04-04-PLAN.md — SpotDetail : bouton favori Button iconOnly + toast revert (D-08/D-10), édition inline→Input/Button + validation/erreur inline [Wave 2]
+- [x] 04-05-PLAN.md — AdminDashboard édition→Input/Button + i18n + feedback (D-09) + App.tsx bouton favori liste (D-10) [Wave 2]
 
 **Wave 3** *(phase gate — bloqué sur Wave 2)*
 
@@ -170,5 +170,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Audit & Design System | 6/6 | Complete   | 2026-07-28 |
 | 2. Navigation & Vue Carte / Spots | 3/3 | Complete   | 2026-07-29 |
 | 3. Fiches Détaillées & Profils | 6/6 | Complete   | 2026-07-30 |
-| 4. Formulaires & Interactions | 2/6 | In Progress|  |
+| 4. Formulaires & Interactions | 5/6 | In Progress|  |
 | 5. Recette globale & nettoyage final | 0/TBD | Not started | - |
