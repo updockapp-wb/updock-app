@@ -97,7 +97,10 @@ function AppContent() {
     setSelectedSpot(null);
   }, [setActiveTab, setSelectedSpot]);
 
-  const handleAddSpotClick = useCallback(() => setIsAddingSpotMode(true), [setIsAddingSpotMode]);
+  const handleAddSpotClick = useCallback(() => {
+    setActiveTab('map');
+    setIsAddingSpotMode(true);
+  }, [setActiveTab, setIsAddingSpotMode]);
 
   const handleOpenAuth = useCallback(() => setIsAuthModalOpen(true), [setIsAuthModalOpen]);
 
